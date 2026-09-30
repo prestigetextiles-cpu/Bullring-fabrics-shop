@@ -1,0 +1,184 @@
+{%- comment -%}
+  Bull Ring Fabrics — Apple-style interactions
+  1. Desktop mega menu: frosted-glass flyout that morphs its height between menu items,
+     the page behind blurs and dims, and the columns fade in one after another.
+  2. Collection & search filter bar: pinned under the header while you scroll,
+     turning to frosted glass once it is stuck.
+  Rendered once from layout/theme.liquid.
+{%- endcomment -%}
+<style>
+  :root{--brf-ease:cubic-bezier(.4,0,.6,1);--brf-glass:rgba(250,250,252,.82);--brf-glass-line:rgba(0,0,0,.08)}
+
+  /* ================= 1. Desktop menu ================= */
+  @media (min-width:1000px){
+    .brf-mm__bg{position:absolute;left:0;right:0;top:100%;height:0;z-index:29;pointer-events:none;overflow:hidden;
+      background:rgba(250,250,252,.93);-webkit-backdrop-filter:saturate(180%) blur(20px);backdrop-filter:saturate(180%) blur(20px);
+      box-shadow:0 1px 0 var(--brf-glass-line);opacity:0;
+      transition:height .32s var(--brf-ease),opacity .2s var(--brf-ease) .12s}
+    .brf-mm.is-flyout .brf-mm__bg{opacity:1;transition:height .32s var(--brf-ease),opacity .12s var(--brf-ease)}
+
+    /* The panels ride on top of the shared glass layer */
+    .brf-mm__panel{background:transparent!important;border-top:0!important;box-shadow:none!important;transform:none!important;
+      opacity:0;visibility:hidden;transition:opacity .16s var(--brf-ease),visibility 0s linear .16s!important}
+    .brf-mm__item.is-open .brf-mm__panel{opacity:1;visibility:visible;transition:opacity .2s var(--brf-ease)!important}
+
+    /* Columns glide in one after another */
+    .brf-mm__grid>*{opacity:0;transform:translateY(-8px);transition:opacity .24s var(--brf-ease),transform .24s var(--brf-ease)}
+    .brf-mm__item.is-open .brf-mm__grid>*{opacity:1;transform:none}
+    .brf-mm__item.is-open .brf-mm__grid>*:nth-child(1){transition-delay:.06s}
+    .brf-mm__item.is-open .brf-mm__grid>*:nth-child(2){transition-delay:.1s}
+    .brf-mm__item.is-open .brf-mm__grid>*:nth-child(3){transition-delay:.14s}
+    .brf-mm__item.is-open .brf-mm__grid>*:nth-child(4){transition-delay:.18s}
+
+    /* Page behind: blurred and softly dimmed */
+    .brf-mm__scrim{background:rgba(232,232,237,.4)!important;-webkit-backdrop-filter:blur(20px);backdrop-filter:blur(20px);
+      transition:opacity .32s var(--brf-ease),visibility 0s linear .32s!important}
+    .brf-mm__scrim.is-on{transition:opacity .32s var(--brf-ease)!important}
+
+    /* Header matches the flyout while it is open, so bar + panel read as one sheet of glass */
+    #shopify-section-header{transition:background-color .24s var(--brf-ease)}
+    html.brf-mm-open #shopify-section-header{background:rgba(250,250,252,.9)!important;-webkit-backdrop-filter:saturate(180%) blur(20px)!important;backdrop-filter:saturate(180%) blur(20px)!important}
+
+    /* Menu bar: quiet grey labels that darken on hover, no underline */
+    .brf-mm{border-top-color:transparent}
+    .brf-mm__top{color:rgba(29,29,31,.8);transition:color .2s var(--brf-ease)}
+    .brf-mm__top::after{display:none}
+    .brf-mm__top:hover,.brf-mm__item.is-open .brf-mm__top{color:#1D1D1F}
+    .brf-mm__top--sale,.brf-mm__top--sale:hover{color:var(--mm-madder)}
+
+    /* Apple-like type inside the panel */
+    .brf-mm__h{font-size:12px;font-weight:400;letter-spacing:0;text-transform:none;color:#6E6E73;margin-bottom:14px}
+    .brf-mm__col--links .brf-mm__link{font-size:17px;font-weight:600;letter-spacing:-.022em;padding:4px 0}
+    .brf-mm__link{font-size:13px;font-weight:500;color:#333336;transition:color .2s var(--brf-ease)}
+    .brf-mm__link:hover{color:#0066CC;text-decoration:none}
+    .brf-mm__all{color:#0066CC}
+    .brf-mm__help{background:rgba(255,255,255,.7);box-shadow:inset 0 0 0 1px rgba(0,0,0,.05)}
+    .brf-tile__img,.brf-prod__img{border-radius:12px}
+  }
+
+  /* ================= 2. Sticky filter bar ================= */
+  /* doubled class so it outranks page-level rules like "main > *{position:relative}" on the Halloween page */
+  html body .brf-fstick.brf-fstick{position:-webkit-sticky;position:sticky;top:var(--brf-stick-top,0px);z-index:4;margin:0 0 8px}
+  html body .brf-fstick.brf-fstick:has(.brf-panel:not([hidden])),html body .brf-fstick.brf-fstick:has(.is-open){z-index:1002}
+  /* glass spans the full window width even when the bar sits inside a centred container */
+  .brf-fstick::before{content:"";position:absolute;top:0;bottom:0;left:50%;width:100vw;margin-left:-50vw;z-index:-1;pointer-events:none;opacity:0;
+    background:var(--brf-glass);-webkit-backdrop-filter:saturate(180%) blur(20px);backdrop-filter:saturate(180%) blur(20px);
+    box-shadow:0 1px 0 var(--brf-glass-line);transition:opacity .3s var(--brf-ease)}
+  .brf-fstick.is-stuck::before{opacity:1}
+  .brf-fstick__in{padding-top:10px;padding-bottom:10px;transition:padding .3s var(--brf-ease)}
+  .brf-fstick.is-stuck .brf-fstick__in{padding-top:8px;padding-bottom:8px}
+  .brf-fstick .brf-fbar{margin:0!important}
+  .brf-fstick.is-stuck .brf-fbar__chips{display:none}
+  .brf-fstick__sentinel{height:1px;margin-bottom:-1px;pointer-events:none}
+  @media (max-width:749px){
+    .brf-fstick__in{padding-top:6px;padding-bottom:6px}
+    .brf-fstick.is-stuck .brf-fstick__in{padding-top:4px;padding-bottom:4px}
+    .brf-fstick .brf-fbar__meta{gap:12px;min-width:0;justify-content:space-between}
+    .brf-fstick .brf-fbar__count{display:none}
+    .brf-fstick .brf-sort{min-width:0;white-space:nowrap}
+  }
+  /* Halloween page: dark glass */
+  html.brf-hw-page .brf-fstick::before{background:rgba(22,18,27,.78);box-shadow:0 1px 0 rgba(240,138,36,.18)}
+
+  /* Older Safari (before 15) repaints the page wrongly under a full-screen backdrop blur: after the menu
+     opens and you scroll, parts of the page stay stuck as a stretched, blurred copy. Use plain tints there. */
+  @supports not (aspect-ratio:1/1){
+    .brf-mm__scrim{-webkit-backdrop-filter:none!important;backdrop-filter:none!important;background:rgba(232,232,237,.7)!important}
+    .brf-mm__bg,html.brf-mm-open #shopify-section-header{-webkit-backdrop-filter:none!important;backdrop-filter:none!important}
+    .brf-mm__bg{background:#FAFAFC}
+    html.brf-mm-open #shopify-section-header{background:#FAFAFC!important}
+  }
+
+  @media (prefers-reduced-motion:reduce){
+    .brf-mm__bg,.brf-mm__panel,.brf-mm__grid>*,.brf-mm__scrim,.brf-fstick::before,.brf-fstick__in{transition:none!important}
+  }
+</style>
+
+<script>
+(function(){
+  /* ---------- 1. Morphing glass behind the desktop mega menu ---------- */
+  function initMenu(){
+    var nav = document.querySelector('[data-brf-mm]');
+    if (!nav || nav.__brfApple) return;
+    nav.__brfApple = true;
+    var bg = document.createElement('div');
+    bg.className = 'brf-mm__bg';
+    bg.setAttribute('aria-hidden', 'true');
+    nav.appendChild(bg);
+    var items = nav.querySelectorAll('.brf-mm__item');
+    function sync(){
+      var li = nav.querySelector('.brf-mm__item.is-open');
+      var panel = li && li.querySelector('.brf-mm__panel');
+      var h = panel ? panel.offsetHeight + 'px' : '0px';
+      if (bg.style.height !== h) bg.style.height = h;
+      /* only touch the class when it actually changes */
+      if (nav.classList.contains('is-flyout') !== !!panel) nav.classList.toggle('is-flyout', !!panel);
+    }
+    /* watch just the menu items (not the nav itself), so our own class change can't re-trigger this */
+    var mo = new MutationObserver(sync);
+    for (var i = 0; i < items.length; i++) mo.observe(items[i], {attributes: true, attributeFilter: ['class']});
+    window.addEventListener('resize', sync, {passive: true});
+  }
+
+  /* ---------- 2. Filter bar pinned under the header ---------- */
+  function initFilters(){
+    var bar = document.querySelector('[data-brf-fbar]');
+    if (!bar || bar.closest('.brf-fstick')) return;
+    var sec = bar.closest('.shopify-section');
+    if (!sec || !sec.parentElement) return;
+
+    /* Sticky only works inside a tall parent. If the bar already shares a wrapper with the
+       products (search page), pin it right there; otherwise (collection head) move it to
+       just after its section so it can ride down the whole product grid. */
+    var host = null, ref = null, inPlace = false;
+    for (var a = bar.parentElement; a && a !== sec; a = a.parentElement) {
+      if (a.querySelector('.product-item, .product-list')) { host = a; break; }
+    }
+    if (host) {
+      ref = bar;
+      while (ref.parentElement !== host) ref = ref.parentElement;
+      inPlace = true;
+    } else {
+      host = sec.parentElement;
+      ref = sec.nextSibling;
+    }
+
+    var sentinel = document.createElement('div');
+    sentinel.className = 'brf-fstick__sentinel';
+    var shell = document.createElement('div');
+    shell.className = 'brf-fstick';
+    var inner = document.createElement('div');
+    inner.className = inPlace ? 'brf-fstick__in' : 'container brf-fstick__in';
+    host.insertBefore(sentinel, ref);
+    host.insertBefore(shell, ref);
+    inner.appendChild(bar);
+    shell.appendChild(inner);
+
+    var hdr = document.getElementById('shopify-section-header') || document.querySelector('.shopify-section__header');
+    var root = document.documentElement;
+    function headerOffset(){
+      if (!hdr) return 0;
+      var pos = getComputedStyle(hdr).position;
+      return (pos === 'sticky' || pos === 'fixed') ? hdr.offsetHeight : 0;
+    }
+    var top = 0;
+    function measure(){
+      top = headerOffset();
+      root.style.setProperty('--brf-stick-top', top + 'px');
+      check();
+    }
+    function check(){
+      var stuck = sentinel.getBoundingClientRect().top < top - 0.5;
+      shell.classList.toggle('is-stuck', stuck);
+    }
+    measure();
+    window.addEventListener('scroll', check, {passive: true});
+    window.addEventListener('resize', measure, {passive: true});
+    if (window.ResizeObserver && hdr) new ResizeObserver(measure).observe(hdr);
+  }
+
+  function init(){ initMenu(); initFilters(); }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init); else init();
+  window.addEventListener('load', init);
+})();
+</script>
