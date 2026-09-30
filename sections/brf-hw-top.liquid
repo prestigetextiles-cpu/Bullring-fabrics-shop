@@ -1,0 +1,298 @@
+{%- comment -%}
+  Halloween collection landing — sits above the standard product grid (templates/collection.halloween.liquid).
+{%- endcomment -%}
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Figtree:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  /* Replace the default collection header (banner image + long intro) on this template only */
+  .template-collection .collection__header,
+  .template-collection .collection__image-wrapper{display:none!important}
+  .brf-hw{font-family:Figtree,system-ui,-apple-system,sans-serif;color:#1C1B19;-webkit-font-smoothing:antialiased}
+  .brf-hw *{box-sizing:border-box}
+  .brf-hw a{text-decoration:none}
+  .brf-hw__serif{font-family:Fraunces,Georgia,serif;font-weight:500;letter-spacing:-.01em}
+  .brf-hw__wrap{max-width:1480px;margin:0 auto;padding:0 40px}
+  .brf-hw__hero{position:relative;overflow:hidden;background:#16121B;color:#EDE6DA;padding:56px 0 44px}
+  .brf-hw__deco{position:absolute;pointer-events:none}
+  .brf-hw__web{top:0;left:0;width:200px;height:200px;opacity:.14;color:#EDE6DA}
+  .brf-hw__moon{top:36px;right:8%;width:130px;height:130px}
+  .brf-hw__bats{top:150px;right:calc(8% + 150px);width:170px;height:85px}
+  .brf-hw__eyebrow{display:inline-flex;align-items:center;gap:10px;font-size:13px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:#F08A24;margin:0 0 12px}
+  .brf-hw__count{letter-spacing:.04em;text-transform:none;font-weight:600;color:#16121B;background:#F08A24;border-radius:999px;padding:4px 12px;font-size:13px}
+  .brf-hw__hero h1{position:relative;margin:0;font-size:56px;line-height:1.04;color:#FBF6EE;max-width:760px}
+  .brf-hw__lede{position:relative;margin:14px 0 0;max-width:620px;font-size:17px;line-height:1.6;color:#C9C0D3}
+  .brf-hw__ctas{position:relative;display:flex;flex-wrap:wrap;gap:12px;margin-top:24px}
+  .brf-hw__btn{display:inline-flex;align-items:center;justify-content:center;min-height:50px;padding:0 26px;border-radius:999px;font-size:15px;font-weight:600;border:1.5px solid transparent;transition:background .15s,color .15s}
+  .brf-hw__btn--pumpkin{background:#F08A24;color:#16121B!important}
+  .brf-hw__btn--pumpkin:hover{background:#F5A04A}
+  .brf-hw__btn--ghost{border-color:#EDE6DA;color:#EDE6DA!important}
+  .brf-hw__btn--ghost:hover{background:#EDE6DA;color:#16121B!important}
+  .brf-hw__chips{position:relative;display:flex;flex-wrap:wrap;gap:8px;margin-top:30px;padding-top:24px;border-top:1px solid rgba(237,230,218,.15)}
+  .brf-hw__chips span{font-size:13px;font-weight:600;color:#9D93A8;align-self:center;margin-right:6px}
+  .brf-hw__chip{display:inline-flex;align-items:center;min-height:40px;padding:0 16px;border-radius:999px;border:1px solid rgba(237,230,218,.3);color:#EDE6DA!important;font-size:14px;font-weight:500}
+  .brf-hw__chip:hover,.brf-hw__chip.is-active{background:#EDE6DA;color:#16121B!important;border-color:#EDE6DA}
+  .brf-hw__trust{background:#F7F3EC;border-bottom:1px solid #E4DCCD}
+  .brf-hw__trust-row{display:grid;grid-template-columns:repeat(4,1fr);gap:20px;padding:18px 0}
+  .brf-hw__trust-item{display:flex;align-items:center;gap:12px;font-size:14px;line-height:1.35}
+  .brf-hw__trust-item svg{flex:none;color:#1F4D3A}
+  .brf-hw__trust-item strong{display:block;font-size:14px}
+  .brf-hw__trust-item span{color:#5E5A52;font-size:13px}
+  .brf-hw__picks{padding:44px 0 8px}
+  .brf-hw__head{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;margin-bottom:20px}
+  .brf-hw__head h2{margin:0;font-size:32px;line-height:1.1}
+  .brf-hw__head p{margin:6px 0 0;color:#5E5A52;font-size:15px}
+  .brf-hw__grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:20px}
+  .brf-hw__card{display:flex;flex-direction:column;gap:10px}
+  .brf-hw__media{position:relative;display:block;aspect-ratio:1/1.1;border-radius:6px;overflow:hidden;background:#2A2233}
+  .brf-hw__media img{display:block;width:100%;height:100%;object-fit:cover;transition:transform .5s ease}
+  .brf-hw__card:hover .brf-hw__media img{transform:scale(1.04)}
+  .brf-hw__badge{position:absolute;left:10px;top:10px;padding:4px 10px;background:#F08A24;color:#16121B;font-size:12px;font-weight:700;border-radius:999px}
+  .brf-hw__low{position:absolute;left:10px;bottom:10px;padding:4px 10px;background:rgba(22,18,27,.85);color:#F5A04A;font-size:12px;font-weight:600;border-radius:999px}
+  .brf-hw__title{color:#1C1B19!important;font-size:15px;font-weight:500;line-height:1.4}
+  .brf-hw__title:hover{text-decoration:underline}
+  .brf-hw__price{display:flex;gap:8px;align-items:baseline}
+  .brf-hw__price strong{font-size:17px}
+  .brf-hw__price strong.is-sale{color:#A3372B}
+  .brf-hw__price s{font-size:13px;color:#5E5A52}
+  .brf-hw__card form{margin:0}
+  .brf-hw__add{width:100%;min-height:44px;border-radius:999px;border:1.5px solid #1C1B19;background:#fff;color:#1C1B19!important;font:inherit;font-size:14px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center}
+  .brf-hw__add:hover{background:#1C1B19;color:#fff!important}
+  .brf-hw__all{padding:36px 0 8px}
+  .brf-hw__all h2{margin:0;font-size:28px}
+  .brf-hw__all p{margin:6px 0 0;color:#5E5A52;font-size:15px}
+  /* Older Safari (before 15) has no aspect-ratio: padding-box fallback keeps the image boxes sized */
+  .brf-hw__grid>*{min-width:0}
+  @supports not (aspect-ratio:1/1){
+    .brf-hw__media{height:0;padding-bottom:110%}
+    .brf-hw__media img{position:absolute;top:0;left:0}
+  }
+  @media (max-width:1023px){
+    .brf-hw__wrap{padding:0 24px}
+    .brf-hw__moon,.brf-hw__bats{display:none}
+    .brf-hw__trust-row{grid-template-columns:repeat(2,1fr)}
+    .brf-hw__grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  }
+  @media (max-width:640px){
+    .brf-hw__wrap{padding:0 16px}
+    .brf-hw__hero{padding:32px 0 28px}
+    .brf-hw__hero h1{font-size:36px}
+    .brf-hw__lede{font-size:15px}
+    .brf-hw__ctas .brf-hw__btn{flex:1 1 100%}
+    .brf-hw__chips{flex-wrap:nowrap;overflow-x:auto;margin-left:-16px;margin-right:-16px;padding-left:16px;padding-right:16px;scrollbar-width:none}
+    .brf-hw__chips::-webkit-scrollbar{display:none}
+    .brf-hw__chip{flex:none}
+    .brf-hw__chips span{display:none}
+    .brf-hw__trust-item svg{display:none}
+    .brf-hw__trust-row{gap:12px;padding:14px 0}
+    .brf-hw__head h2{font-size:26px}
+    .brf-hw__grid{gap:14px 10px}
+    .brf-hw__title{font-size:14px}
+  }
+</style>
+
+{%- comment -%} Days until Halloween (this year) {%- endcomment -%}
+{%- assign hw_now = 'now' | date: '%s' | plus: 0 -%}
+{%- assign hw_year = 'now' | date: '%Y' -%}
+{%- assign hw_target = hw_year | append: '-10-31 23:59:59' | date: '%s' | plus: 0 -%}
+{%- assign hw_secs = hw_target | minus: hw_now -%}
+{%- assign hw_days = hw_secs | divided_by: 86400 -%}
+
+<script>document.documentElement.classList.add('brf-hw-page');</script>
+<style>
+  /* ---------- Spooky theme for the whole Halloween collection page ---------- */
+  html.brf-hw-page body,html.brf-hw-page main,html.brf-hw-page #main{background:#100D15!important}
+  html.brf-hw-page main{color:#DCD3E6!important}
+  html.brf-hw-page main::before{content:"";position:fixed;top:0;right:0;bottom:0;left:0;z-index:0;pointer-events:none;
+    background:radial-gradient(60% 40% at 85% 0%,rgba(240,138,36,.14),transparent 70%),radial-gradient(50% 35% at 0% 60%,rgba(120,72,170,.16),transparent 70%)}
+  html.brf-hw-page main > *{position:relative;z-index:1}
+  html.brf-hw-page main h1,html.brf-hw-page main h2,html.brf-hw-page main h3,html.brf-hw-page .brf-hw__all h2,html.brf-hw-page .brf-hw__head h2{color:#FBF6EE!important}
+  html.brf-hw-page .brf-hw__all p,html.brf-hw-page .brf-hw__head p{color:#B9AEC6!important}
+  /* trust strip */
+  html.brf-hw-page .brf-hw__trust{background:#1A1422!important;border-bottom:1px solid rgba(240,138,36,.18)!important}
+  html.brf-hw-page .brf-hw__trust{margin-top:36px;border-top:1px solid rgba(240,138,36,.18)!important;box-shadow:none!important}
+  @media (max-width:767px){html.brf-hw-page .brf-hw__trust{margin-top:24px}}
+  html.brf-hw-page .brf-hw__trust-item strong{color:#FBF6EE!important}
+  html.brf-hw-page .brf-hw__trust-item span{color:#B9AEC6!important}
+  html.brf-hw-page .brf-hw__trust-item svg{color:#F08A24!important}
+  /* featured picks */
+  html.brf-hw-page .brf-hw__title{color:#F3EDE4!important}
+  html.brf-hw-page .brf-hw__price strong{color:#FBF6EE!important}
+  html.brf-hw-page .brf-hw__price strong.is-sale{color:#F5A04A!important}
+  html.brf-hw-page .brf-hw__price s{color:#9D93A8!important}
+  html.brf-hw-page .brf-hw__add{background:transparent!important;border-color:rgba(237,230,218,.6)!important;color:#EDE6DA!important}
+  html.brf-hw-page .brf-hw__add:hover{background:#F08A24!important;border-color:#F08A24!important;color:#16121B!important}
+  /* product grid cards: dark glass with a pumpkin glow on hover */
+  html.brf-hw-page .product-item{background:rgba(34,26,44,.72)!important;border:1px solid rgba(240,138,36,.16)!important;box-shadow:0 1px 0 rgba(255,255,255,.06) inset,0 14px 30px -18px rgba(0,0,0,.8)!important;-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px)}
+  html.brf-hw-page .product-item:hover{border-color:rgba(240,138,36,.45)!important;box-shadow:0 0 0 1px rgba(240,138,36,.25),0 18px 40px -16px rgba(240,138,36,.35)!important}
+  html.brf-hw-page .product-item__title,html.brf-hw-page .product-item__title a{color:#F3EDE4!important}
+  html.brf-hw-page .product-item__price-list,html.brf-hw-page .product-item .price{color:#FBF6EE!important}
+  html.brf-hw-page .product-item .price--highlight{color:#F5A04A!important}
+  html.brf-hw-page .product-item .price--compare{color:#9D93A8!important}
+  html.brf-hw-page .product-item__inventory,html.brf-hw-page .product-item .inventory{color:#F5A04A!important}
+  html.brf-hw-page .product-item .button--primary,html.brf-hw-page .product-item .product-item__action-button{background:#F08A24!important;border-color:#F08A24!important;color:#16121B!important}
+  html.brf-hw-page .product-item .button--primary:hover,html.brf-hw-page .product-item .product-item__action-button:hover{background:#F5A04A!important}
+  html.brf-hw-page .product-item .product-label--on-sale,html.brf-hw-page .product-item .product-label{background:#F08A24!important;color:#16121B!important;border-color:#F08A24!important}
+  /* filter + sort bar */
+  html.brf-hw-page .brf-fbar,html.brf-hw-page .brf-fbar .brf-sort,html.brf-hw-page .brf-fbar .brf-switch{color:#EDE6DA!important}
+  html.brf-hw-page .brf-fbar .brf-pill{background:rgba(34,26,44,.8)!important;border-color:rgba(237,230,218,.22)!important;color:#EDE6DA!important}
+  html.brf-hw-page .brf-fbar .brf-pill.is-active,html.brf-hw-page .brf-fbar .brf-pill:hover{border-color:#F08A24!important;color:#F5A04A!important}
+  html.brf-hw-page .brf-fbar .brf-sort strong{color:#FBF6EE!important}
+  html.brf-hw-page .collection__showing-count,html.brf-hw-page .brf-fbar__count{color:#B9AEC6!important}
+  html.brf-hw-page .pagination,html.brf-hw-page .pagination a{color:#EDE6DA!important}
+  /* closing section */
+  html.brf-hw-page .brf-hwb{background:#16121B!important;color:#DCD3E6!important}
+  html.brf-hw-page .brf-hwb h2{color:#FBF6EE!important}
+  html.brf-hw-page .brf-hwb__about{color:#C9C0D3!important}
+  html.brf-hw-page .brf-hwb__idea{background:rgba(34,26,44,.8)!important;border-color:rgba(240,138,36,.18)!important}
+  html.brf-hw-page .brf-hwb__idea strong{color:#FBF6EE!important}
+  html.brf-hw-page .brf-hwb__idea span{color:#B9AEC6!important}
+  /* cobweb in the page corner */
+  html.brf-hw-page main::after{content:"";position:fixed;right:-10px;bottom:-10px;width:180px;height:180px;z-index:0;pointer-events:none;opacity:.12;
+    background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200' fill='none' stroke='%23EDE6DA' stroke-width='1.2'%3E%3Cpath d='M200 200L0 140M200 200L30 70M200 200L80 20M200 200L145 0M200 200L200 0M200 200L0 200'/%3E%3Cpath d='M160 200q6-12 2-11 8-11 26-25 2-4 12-6M115 200q9-22 3-25 12-21 40-47 18-8 42-16M65 200q11-36 3-42 18-30 56-68 26-16 76-28'/%3E%3C/svg%3E") no-repeat right bottom/contain}
+</style>
+<div class="brf-hw">
+  <section class="brf-hw__hero">
+    {%- render 'brf-spooky-layer' -%}
+    <svg class="brf-hw__deco brf-hw__web" viewBox="0 0 200 200" fill="none" stroke="currentColor" stroke-width="1.2" aria-hidden="true"><path d="M0 0L200 60M0 0L170 130M0 0L120 180M0 0L55 200M0 0L0 200M0 0L200 0"/><path d="M40 0Q34 12 38 11Q30 22 12 36Q10 40 0 42"/><path d="M85 0Q76 22 82 25Q70 46 42 72Q24 80 0 88"/><path d="M135 0Q124 36 132 42Q114 72 76 110Q50 126 0 138"/><path d="M190 0Q172 50 182 58Q160 100 110 148Q76 170 0 190"/></svg>
+    <svg class="brf-hw__deco brf-hw__moon" viewBox="0 0 120 120" aria-hidden="true"><circle cx="60" cy="60" r="52" fill="#F3E3B8"/><circle cx="44" cy="46" r="8" fill="#E2CE98"/><circle cx="74" cy="72" r="11" fill="#E2CE98"/><circle cx="78" cy="38" r="5" fill="#E2CE98"/></svg>
+    <svg class="brf-hw__deco brf-hw__bats" viewBox="0 0 180 90" fill="#EDE6DA" opacity=".55" aria-hidden="true"><path d="M20 40c6-8 13-9 18-3 2-4 6-4 8 0 5-6 12-5 18 3-6-2-10 0-12 4-2-2-5-2-7 0-2-2-5-2-7 0-3-4-7-6-18-4z"/><path d="M92 18c4-5 9-6 12-2 1-3 4-3 5 0 3-4 8-3 12 2-4-1-7 0-8 3-1-1-3-1-5 0-1-1-3-1-5 0-2-3-5-4-11-3z"/><path d="M130 62c5-7 11-8 15-3 2-3 5-3 7 0 4-5 10-4 15 3-5-2-9 0-10 3-2-1-4-1-6 0-2-1-4-1-6 0-2-3-6-5-15-3z"/></svg>
+    <div class="brf-hw__wrap">
+      <p class="brf-hw__eyebrow">
+        {{ section.settings.eyebrow }}
+        {%- if section.settings.show_countdown and hw_secs > 0 -%}
+          {%- if hw_days >= 1 %} <span class="brf-hw__count">{{ hw_days }} day{% if hw_days != 1 %}s{% endif %} to Halloween</span>
+          {%- else %} <span class="brf-hw__count">It's Halloween!</span>{%- endif -%}
+        {%- endif -%}
+      </p>
+      <h1 class="brf-hw__serif">{{ section.settings.heading | default: collection.title }}</h1>
+      <p class="brf-hw__lede">{{ section.settings.lede }}</p>
+      <div class="brf-hw__ctas">
+        <a class="brf-hw__btn brf-hw__btn--pumpkin" href="#brf-hw-all">Shop all {{ collection.all_products_count }} fabrics</a>
+        <a class="brf-hw__btn brf-hw__btn--ghost" href="/pages/wholesale-trade-enquiries">Bulk &amp; trade orders</a>
+      </div>
+
+      {%- assign chip_words = section.settings.chips | split: ',' -%}
+      {%- assign all_in_col = collections[collection.handle] -%}
+      {%- assign chip_min = section.settings.chip_min | plus: 0 -%}
+      {%- capture chips_html -%}
+        {%- for w in chip_words -%}
+          {%- assign want = w | strip | downcase -%}
+          {%- if want == blank -%}{%- continue -%}{%- endif -%}
+          {%- for t in collection.all_tags -%}
+            {%- assign td = t | downcase -%}
+            {%- if td == want -%}
+              {%- assign cnt = 0 -%}
+              {%- for p in all_in_col.products limit: 60 -%}{%- if p.tags contains t -%}{%- assign cnt = cnt | plus: 1 -%}{%- endif -%}{%- endfor -%}
+              {%- if cnt >= chip_min or current_tags contains t -%}
+                {%- assign th = t | handleize -%}
+                <a class="brf-hw__chip{% if current_tags contains t %} is-active{% endif %}" href="{{ collection.url }}/{{ th }}#brf-hw-all">{{ w | strip }}</a>
+              {%- endif -%}
+              {%- break -%}
+            {%- endif -%}
+          {%- endfor -%}
+        {%- endfor -%}
+      {%- endcapture -%}
+      {%- if chips_html != blank -%}
+      <nav class="brf-hw__chips" aria-label="Shop Halloween fabric by theme">
+        <span>Shop by theme:</span>
+        <a class="brf-hw__chip{% if current_tags == blank %} is-active{% endif %}" href="{{ collection.url }}#brf-hw-all">All</a>
+        {{ chips_html }}
+      </nav>
+      {%- endif -%}
+    </div>
+  </section>
+
+  <div class="brf-hw__trust">
+    <div class="brf-hw__wrap brf-hw__trust-row">
+      <div class="brf-hw__trust-item"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 7h11v9H3zM14 10h4l3 3v3h-7z"/><circle cx="7" cy="17.5" r="1.8"/><circle cx="17" cy="17.5" r="1.8"/></svg><div><strong>Free UK delivery over £65</strong><span>2-day tracked, UK mainland</span></div></div>
+      <div class="brf-hw__trust-item"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/></svg><div><strong>Same-day dispatch</strong><span>Order before 10pm, Mon–Fri</span></div></div>
+      <div class="brf-hw__trust-item"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12l9-8 9 8M5 10v10h14V10"/><path d="M10 20v-6h4v6"/></svg><div><strong>Bulk &amp; trade pricing</strong><span>Rolls for schools, theatres, events</span></div></div>
+      <div class="brf-hw__trust-item"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="10" width="14" height="10" rx="2"/><path d="M8 10V7a4 4 0 018 0v3"/></svg><div><strong>Secure checkout</strong><span>PayPal, Apple Pay, cards</span></div></div>
+    </div>
+  </div>
+
+  {%- if current_tags == blank and section.settings.show_picks -%}
+    {%- assign kw = section.settings.pick_keywords | downcase | split: ',' -%}
+    {%- assign picks = ',' -%}{%- assign n = 0 -%}
+    {%- for product in collection.products limit: 50 -%}
+      {%- if n >= 4 -%}{%- break -%}{%- endif -%}
+      {%- unless product.available -%}{%- continue -%}{%- endunless -%}
+      {%- assign t = product.title | downcase -%}{%- assign hit = false -%}
+      {%- for w in kw -%}{%- assign ws = w | strip -%}{%- if ws != blank and t contains ws -%}{%- assign hit = true -%}{%- endif -%}{%- endfor -%}
+      {%- if hit -%}{%- assign picks = picks | append: product.handle | append: ',' -%}{%- assign n = n | plus: 1 -%}{%- endif -%}
+    {%- endfor -%}
+    {%- if n > 0 -%}
+    {%- assign pick_handles = picks | split: ',' -%}
+    <section class="brf-hw__picks">
+      <div class="brf-hw__wrap">
+        <div class="brf-hw__head">
+          <div>
+            <h2 class="brf-hw__serif">{{ section.settings.picks_heading }}</h2>
+            <p>{{ section.settings.picks_text }}</p>
+          </div>
+        </div>
+        <div class="brf-hw__grid">
+          {%- for h in pick_handles -%}
+            {%- if h == blank -%}{%- continue -%}{%- endif -%}
+            {%- assign product = all_products[h] -%}
+            {%- if product.id == blank -%}{%- continue -%}{%- endif -%}
+            {%- assign v = product.selected_or_first_available_variant -%}
+            <div class="brf-hw__card">
+              <a class="brf-hw__media" href="{{ product.url | within: collection }}">
+                {%- if product.featured_image -%}<img src="{{ product.featured_image | img_url: '600x' }}" alt="{{ product.featured_image.alt | default: product.title | escape }}" loading="lazy">{%- endif -%}
+                {%- if product.compare_at_price > product.price -%}
+                  {%- assign save = product.compare_at_price | minus: product.price | times: 100 | divided_by: product.compare_at_price -%}
+                  <span class="brf-hw__badge">Save {{ save }}%</span>
+                {%- endif -%}
+                {%- if product.has_only_default_variant and v.inventory_management == 'shopify' and v.inventory_quantity > 0 and v.inventory_quantity <= 15 -%}
+                  <span class="brf-hw__low">Only {{ v.inventory_quantity }} left</span>
+                {%- endif -%}
+              </a>
+              <a class="brf-hw__title" href="{{ product.url | within: collection }}">{{ product.title }}</a>
+              <div class="brf-hw__price">
+                {%- if product.price_varies -%}<strong>From {{ product.price_min | money }}</strong>
+                {%- elsif product.compare_at_price > product.price -%}<strong class="is-sale">{{ product.price | money }}</strong><s>{{ product.compare_at_price | money }}</s>
+                {%- else -%}<strong>{{ product.price | money }}</strong>{%- endif -%}
+              </div>
+              {%- if product.has_only_default_variant -%}
+                {%- form 'product', product -%}
+                  <input type="hidden" name="id" value="{{ v.id }}">
+                  <button type="submit" class="brf-hw__add">Add to basket</button>
+                {%- endform -%}
+              {%- else -%}
+                <a class="brf-hw__add" href="{{ product.url | within: collection }}">Choose options</a>
+              {%- endif -%}
+            </div>
+          {%- endfor -%}
+        </div>
+      </div>
+    </section>
+    {%- endif -%}
+  {%- endif -%}
+
+  <div class="brf-hw__all" id="brf-hw-all">
+    <div class="brf-hw__wrap">
+      <h2 class="brf-hw__serif">{% if current_tags != blank %}{{ current_tags | join: ', ' | capitalize }} fabrics{% else %}All Halloween fabrics{% endif %}</h2>
+      <p>{% if current_tags != blank %}<a href="{{ collection.url }}#brf-hw-all" style="color:#1F4D3A;font-weight:600">&larr; Back to all Halloween fabrics</a>{% else %}Plains and prints for costumes, décor, draping and party makes. Filter by fabric type or sort to narrow it down.{% endif %}</p>
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Halloween page top",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Small label", "default": "Spooky season" },
+    { "type": "checkbox", "id": "show_countdown", "label": "Show days-to-Halloween countdown", "default": true },
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Halloween Fabric" },
+    { "type": "textarea", "id": "lede", "label": "Intro", "default": "Sugar skulls, spiderwebs, gothic velvets and glittering tulle — everything you need for costumes, décor and party makes, at wholesale prices." },
+    { "type": "text", "id": "chips", "label": "Theme shortcuts", "info": "Comma-separated product tags. Only tags used in this collection are shown.", "default": "Skulls, Spiders, Bats, Ghosts & Witches, Gothic, Velvet, Satin, Organza, Lace, Sequins" },
+    { "type": "range", "id": "chip_min", "label": "Only show a shortcut with at least this many products", "min": 1, "max": 6, "step": 1, "default": 3 },
+    { "type": "checkbox", "id": "show_picks", "label": "Show spooky favourites row", "default": true },
+    { "type": "text", "id": "picks_heading", "label": "Favourites heading", "default": "Spooky season favourites" },
+    { "type": "text", "id": "picks_text", "label": "Favourites text", "default": "Our best-selling Halloween prints this season." },
+    { "type": "text", "id": "pick_keywords", "label": "Favourites: title keywords", "info": "Products whose title contains any of these are picked, in best-selling order", "default": "halloween, skull, spider, pumpkin, ghost, witch, skeleton, cobweb, goth, bat print" }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,586 @@
+{%- comment -%}
+  Bull Ring Fabrics — redesigned homepage (static section, rendered from templates/index.liquid).
+  All styles are scoped under .brf-home so nothing else in the theme is affected.
+{%- endcomment -%}
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Figtree:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+  .brf-home{--brf-ground:#F7F3EC;--brf-surface:#FFFFFF;--brf-ink:#1C1B19;--brf-muted:#5E5A52;--brf-line:#E4DCCD;--brf-accent:{{ section.settings.accent | default: '#1F4D3A' }};--brf-brass:#8A5A1C;--brf-sale:#A3372B;--brf-sand:#EDE3D1;
+    background:var(--brf-ground);color:var(--brf-ink);font-family:Figtree,system-ui,-apple-system,sans-serif;font-size:16px;line-height:1.5;-webkit-font-smoothing:antialiased}
+  .brf-home *,.brf-home *::before,.brf-home *::after{box-sizing:border-box}
+  .brf-home a{color:var(--brf-accent);text-decoration:none}
+  .brf-home a:hover{text-decoration:underline}
+  .brf-home img{display:block;width:100%;height:100%;object-fit:cover}
+  .brf-wrap{max-width:1440px;margin:0 auto;padding:0 80px}
+  .brf-serif{font-family:Fraunces,Georgia,serif;font-weight:500;letter-spacing:-.01em}
+  .brf-eyebrow{display:block;font-size:13px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--brf-brass);margin:0 0 10px}
+  .brf-h2{margin:0;font-size:44px;line-height:1.1}
+  .brf-section{padding-top:96px;padding-bottom:96px}
+  .brf-head{display:flex;align-items:flex-end;justify-content:space-between;gap:24px;margin-bottom:40px}
+  .brf-head a{font-size:15px;font-weight:600;white-space:nowrap}
+  .brf-btn{display:inline-flex;align-items:center;justify-content:center;min-height:52px;padding:0 28px;border-radius:999px;font-size:16px;font-weight:600;border:1.5px solid transparent;cursor:pointer;font-family:inherit;transition:background .15s,color .15s}
+  .brf-home a.brf-btn:hover{text-decoration:none}
+  .brf-btn--solid{background:var(--brf-accent);color:#fff!important}
+  .brf-btn--solid:hover{filter:brightness(.9)}
+  .brf-btn--ink{background:var(--brf-ink);color:#fff!important}
+  .brf-btn--line{border-color:var(--brf-ink);color:var(--brf-ink)!important;background:transparent}
+  .brf-btn--line:hover{background:var(--brf-ink);color:#fff!important}
+  .brf-btn--light{background:var(--brf-ground);color:var(--brf-ink)!important}
+  .brf-swatch{background-color:#C98B7E;background-image:repeating-linear-gradient(45deg,rgba(255,255,255,.07) 0 2px,transparent 2px 6px),repeating-linear-gradient(-45deg,rgba(0,0,0,.06) 0 2px,transparent 2px 6px);border-radius:6px;overflow:hidden}
+
+  /* Hero */
+  .brf-hero{display:grid;grid-template-columns:1fr 1fr;gap:64px;align-items:center;padding-top:64px;padding-bottom:64px}
+  .brf-hero h1{margin:0 0 24px;font-size:68px;line-height:1.03;letter-spacing:-.02em}
+  .brf-hero h1.brf-hero__h1{margin:0;font-size:inherit;line-height:inherit;letter-spacing:normal;font-weight:inherit}
+  .brf-hero__title{display:block;margin:0 0 24px;font-size:68px;line-height:1.03;letter-spacing:-.02em}
+  .brf-hero p{margin:0 0 32px;font-size:19px;line-height:1.6;color:var(--brf-muted);max-width:520px}
+  .brf-hero__ctas{display:flex;flex-wrap:wrap;gap:14px}
+  .brf-hero__media{position:relative;height:520px;display:grid;grid-template-columns:1.4fr 1fr;grid-template-rows:1fr 1fr;gap:16px}
+  .brf-hero__media>.brf-swatch:first-child{grid-row:1 / span 2}
+  .brf-hero__card{position:absolute;left:24px;bottom:24px;background:#fff;border-radius:6px;padding:16px 20px;box-shadow:0 8px 24px rgba(28,27,25,.14);max-width:320px}
+  .brf-hero__card .brf-eyebrow{margin-bottom:4px;font-size:12px}
+  .brf-hero__card strong{display:block;font-family:Fraunces,Georgia,serif;font-weight:500;font-size:20px;line-height:1.25;margin-bottom:4px}
+  .brf-hero__card a{font-size:14px;font-weight:600}
+
+  /* Trust */
+  .brf-trust{display:grid;grid-template-columns:repeat(4,1fr);gap:24px;border-top:1px solid var(--brf-line);border-bottom:1px solid var(--brf-line);padding:28px 0}
+  .brf-trust__item{display:flex;align-items:center;gap:14px}
+  .brf-trust__item svg{flex:none;color:var(--brf-accent)}
+  .brf-trust__item strong{display:block;font-size:15px}
+  .brf-trust__item span{font-size:13px;color:var(--brf-muted)}
+
+  /* Fabric tiles */
+  .brf-grid4{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:24px}
+  .brf-grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:24px}
+  .brf-tile{display:flex;flex-direction:column;gap:14px;color:var(--brf-ink)!important}
+  .brf-home a.brf-tile:hover{text-decoration:none}
+  .brf-tile .brf-swatch{aspect-ratio:1/1.05}
+  .brf-tile .brf-swatch img{transition:transform .5s ease}
+  .brf-tile:hover .brf-swatch img{transform:scale(1.04)}
+  .brf-tile__meta{display:flex;justify-content:space-between;align-items:baseline;gap:12px}
+  .brf-tile__name{font-family:Fraunces,Georgia,serif;font-size:22px;font-weight:500}
+  .brf-tile__count{font-size:14px;color:var(--brf-muted);white-space:nowrap}
+
+  /* Projects */
+  .brf-project{position:relative;display:flex;height:440px;border-radius:6px;overflow:hidden;color:#fff!important}
+  .brf-home a.brf-project:hover{text-decoration:none}
+  .brf-project .brf-swatch{position:absolute;inset:0;border-radius:0}
+  .brf-project__body{position:relative;margin-top:auto;width:100%;padding:32px;background:rgba(20,18,16,.58)}
+  .brf-project__body strong{display:block;font-family:Fraunces,Georgia,serif;font-weight:500;font-size:30px;margin-bottom:6px}
+  .brf-project__body span{display:block;font-size:15px;line-height:1.5}
+  .brf-project__body em{display:block;font-style:normal;font-weight:600;font-size:15px;margin-top:10px}
+
+  /* Products */
+  .brf-products{background:var(--brf-surface)}
+  .brf-card{display:flex;flex-direction:column;gap:12px}
+  .brf-card__media{position:relative;display:block;aspect-ratio:1/1.15}
+  .brf-card__media .brf-swatch{width:100%;height:100%}
+  .brf-badge{position:absolute;left:12px;top:12px;padding:5px 10px;background:var(--brf-sale);color:#fff;font-size:12px;font-weight:700;border-radius:999px}
+  .brf-card__title{color:var(--brf-ink)!important;font-size:16px;font-weight:500;line-height:1.4}
+  .brf-card__price{display:flex;gap:10px;align-items:baseline}
+  .brf-card__price strong{font-size:18px}
+  .brf-card__price strong.is-sale{color:var(--brf-sale)}
+  .brf-card__price s{font-size:14px;color:var(--brf-muted)}
+  .brf-card form{margin:0}
+  .brf-card .brf-btn{width:100%;min-height:44px;font-size:14px;margin-top:auto}
+
+  /* Promo panels */
+  .brf-panels{display:grid;grid-template-columns:1fr 1fr;gap:24px}
+  .brf-panel{min-height:400px;padding:48px;border-radius:6px;display:flex;flex-direction:column}
+  .brf-panel h2{margin:0 0 16px;font-size:48px;line-height:1.05}
+  .brf-panel p{margin:0 0 28px;font-size:17px;line-height:1.6;max-width:460px}
+  .brf-panel__ctas{margin-top:auto;display:flex;flex-wrap:wrap;align-items:center;gap:20px}
+  .brf-panel__ctas a:not(.brf-btn){font-weight:600;font-size:15px}
+  .brf-panel--sand{background:var(--brf-sand)}
+  .brf-panel--sand p{color:var(--brf-muted)}
+  .brf-panel--dark{background:var(--brf-accent);color:var(--brf-ground)}
+  .brf-panel--dark .brf-eyebrow{color:#E7C98F}
+  .brf-panel--dark p{color:#E9E2D4}
+  .brf-panel--dark .brf-panel__ctas a:not(.brf-btn){color:var(--brf-ground)}
+
+  /* Outlet */
+  .brf-outlet{display:grid;grid-template-columns:1fr 1fr;background:var(--brf-surface);border:1px solid var(--brf-line);border-radius:6px;overflow:hidden;min-height:420px}
+  .brf-outlet .brf-swatch{border-radius:0;background-color:#8C5A3C}
+  .brf-outlet__body{padding:56px;display:flex;flex-direction:column;gap:18px}
+  .brf-outlet__body h2{margin:0;font-size:40px;line-height:1.1}
+  .brf-outlet__body p{margin:0;font-size:17px;line-height:1.6;color:var(--brf-muted)}
+  .brf-outlet__facts{display:grid;grid-template-columns:1fr 1fr;gap:24px;font-size:15px;line-height:1.6}
+  .brf-outlet__facts span{color:var(--brf-muted)}
+  .brf-outlet__body > a{margin-top:auto;font-weight:600}
+
+  /* Blog */
+  .brf-post{display:flex;flex-direction:column;gap:14px;color:var(--brf-ink)!important}
+  .brf-home a.brf-post:hover{text-decoration:none}
+  .brf-post:hover .brf-post__title{text-decoration:underline}
+  .brf-post .brf-swatch{aspect-ratio:16/10}
+  .brf-post time{font-size:13px;color:var(--brf-muted)}
+  .brf-post__title{font-family:Fraunces,Georgia,serif;font-weight:500;font-size:23px;line-height:1.3}
+
+  /* Halloween */
+  .brf-spooky{position:relative;overflow:hidden;background:#16121B;color:#EDE6DA;padding:88px 0}
+  .brf-spooky__deco{position:absolute;pointer-events:none;color:#EDE6DA}
+  .brf-spooky__web{top:0;left:0;width:220px;height:220px;opacity:.16}
+  .brf-spooky__moon{top:48px;right:96px;width:120px;height:120px}
+  .brf-spooky__bats{top:150px;right:230px;width:180px;height:90px;opacity:.85}
+  .brf-spooky .brf-head{position:relative}
+  .brf-spooky .brf-eyebrow{color:#F08A24}
+  .brf-spooky .brf-h2{color:#FBF6EE;font-size:52px}
+  .brf-spooky__lede{margin:14px 0 0;max-width:560px;font-size:17px;line-height:1.6;color:#C9C0D3}
+  .brf-home .brf-spooky .brf-head a{color:#F5A04A}
+  .brf-btn--pumpkin{background:#F08A24;color:#16121B!important}
+  .brf-btn--pumpkin:hover{background:#F5A04A}
+  .brf-spooky .brf-card__title{color:#F3EDE4!important}
+  .brf-spooky .brf-card__price strong{color:#FBF6EE}
+  .brf-spooky .brf-card__price strong.is-sale{color:#F5A04A}
+  .brf-spooky .brf-card__price s{color:#9D93A8}
+  .brf-spooky .brf-badge{background:#F08A24;color:#16121B}
+  .brf-spooky .brf-swatch{background-color:#2A2233}
+  .brf-spooky .brf-btn--line{border-color:#EDE6DA;color:#EDE6DA!important}
+  .brf-spooky .brf-btn--line:hover{background:#EDE6DA;color:#16121B!important}
+  .brf-spooky__foot{position:relative;margin-top:40px;display:flex;justify-content:center}
+
+  /* Older Safari (before 15) has no aspect-ratio or inset: without these, the image boxes have no height
+     and the grid columns grow to the image's full size. Padding-box fallback keeps the same proportions. */
+  .brf-grid4>*,.brf-grid3>*{min-width:0}
+  .brf-project .brf-swatch{top:0;right:0;bottom:0;left:0}
+  @supports not (aspect-ratio:1/1){
+    .brf-card__media{height:0;padding-bottom:115%}
+    .brf-card__media .brf-swatch{position:absolute;top:0;left:0}
+    .brf-tile .brf-swatch{position:relative;height:0;padding-bottom:105%}
+    .brf-post .brf-swatch{position:relative;height:0;padding-bottom:62.5%}
+    .brf-tile .brf-swatch img,.brf-post .brf-swatch img{position:absolute;top:0;left:0}
+  }
+
+  @media (max-width:1023px){
+    .brf-wrap{padding:0 32px}
+    .brf-hero{grid-template-columns:1fr;gap:40px}
+    .brf-hero__media{height:420px}
+    .brf-grid4{grid-template-columns:repeat(2,minmax(0,1fr))}
+    .brf-trust{grid-template-columns:repeat(2,1fr)}
+    .brf-panels,.brf-outlet{grid-template-columns:1fr}
+    .brf-outlet .brf-swatch{min-height:280px}
+    .brf-spooky__moon,.brf-spooky__bats{display:none}
+  }
+  @media (max-width:640px){
+    .brf-wrap{padding:0 16px}
+    .brf-section{padding-top:48px;padding-bottom:48px}
+    .brf-hero{padding-top:20px;padding-bottom:36px;gap:24px}
+    .brf-hero__media{order:-1;height:300px;gap:8px}
+    .brf-hero__card{display:none}
+    .brf-hero h1{font-size:40px;margin-bottom:16px}
+    .brf-hero__title{font-size:40px;margin-bottom:16px}
+    .brf-hero p{font-size:16px;margin-bottom:24px}
+    .brf-hero__ctas{flex-direction:column}
+    .brf-hero__ctas .brf-btn{width:100%}
+    .brf-h2{font-size:30px}
+    .brf-head{margin-bottom:22px}
+    .brf-head .brf-eyebrow{display:none}
+    .brf-grid4{gap:16px 12px}
+    .brf-grid3{grid-template-columns:1fr;gap:16px}
+    .brf-tile{gap:8px}
+    .brf-tile__name{font-family:inherit;font-size:15px;font-weight:600}
+    .brf-tile__count{display:none}
+    .brf-project{height:260px}
+    .brf-project__body{padding:20px}
+    .brf-project__body strong{font-size:24px}
+    .brf-trust{gap:18px 12px;padding:20px 0}
+    .brf-trust__item svg{display:none}
+    .brf-panel{min-height:0;padding:32px 24px}
+    .brf-panel h2{font-size:32px}
+    .brf-outlet__body{padding:32px 24px}
+    .brf-outlet__body h2{font-size:30px}
+    .brf-outlet__facts{grid-template-columns:1fr}
+    .brf-card__title{font-size:14px}
+    .brf-spooky{padding:48px 0}
+    .brf-spooky .brf-h2{font-size:34px}
+    .brf-spooky__lede{font-size:15px}
+    .brf-spooky__foot .brf-btn{width:100%}
+  }
+</style>
+
+{%- comment -%} Default content used until blocks/settings are filled in the theme editor {%- endcomment -%}
+{%- assign fabric_blocks = section.blocks | where: 'type', 'fabric' -%}
+{%- assign default_handles = 'rose-hubble,satin,lace,taffeta,plush-velvet,craft-cotton,tapestry,denim' | split: ',' -%}
+{%- assign default_labels = 'Cotton Poplin,Satin,Lace,Taffeta,Plush Velvet,Craft Cotton,Tapestry,Denim' | split: ',' -%}
+{%- assign swatch_colours = '#C98B7E,#D9C3A0,#E6DCCB,#6B3A4B,#1F4A4F,#C9A23A,#8C5A3C,#3B5270' | split: ',' -%}
+
+<div class="brf-home">
+
+  {%- comment -%} HERO {%- endcomment -%}
+  {%- assign hero_col = section.settings.hero_collection -%}{%- if hero_col.handle == blank -%}{%- assign hero_col = collections[section.settings.hero_collection] -%}{%- endif -%}
+  {%- if hero_col == blank or hero_col.handle == blank -%}{%- assign hero_col = collections['rose-hubble'] -%}{%- endif -%}
+  <section class="brf-wrap brf-hero">
+    <div>
+      <h1 class="brf-hero__h1"><span class="brf-eyebrow">{{ section.settings.hero_eyebrow }}</span> <span class="brf-serif brf-hero__title">{{ section.settings.hero_heading }}</span></h1>
+      <p>{{ section.settings.hero_text }}</p>
+      <div class="brf-hero__ctas">
+        <a class="brf-btn brf-btn--solid" href="{{ section.settings.hero_btn1_link | default: '/collections' }}">{{ section.settings.hero_btn1_label }}</a>
+        <a class="brf-btn brf-btn--line" href="{{ section.settings.hero_btn2_link | default: '/pages/wholesale-trade-enquiries' }}">{{ section.settings.hero_btn2_label }}</a>
+      </div>
+    </div>
+    <div class="brf-hero__media">
+      {%- assign m1 = section.settings.hero_image_1 | default: hero_col.image -%}
+      {%- assign m2 = section.settings.hero_image_2 | default: collections['plush-velvet'].image -%}
+      {%- assign m3 = section.settings.hero_image_3 | default: collections['satin'].image -%}
+      <div class="brf-swatch">{% if m1 %}<img src="{{ m1 | img_url: '900x' }}" alt="{{ m1.alt | default: hero_col.title | escape }}" width="900" height="1100" fetchpriority="high">{% endif %}</div>
+      <div class="brf-swatch" style="background-color:#1F4A4F">{% if m2 %}<img src="{{ m2 | img_url: '600x' }}" alt="{{ m2.alt | escape }}" loading="lazy">{% endif %}</div>
+      <div class="brf-swatch" style="background-color:#D9C3A0">{% if m3 %}<img src="{{ m3 | img_url: '600x' }}" alt="{{ m3.alt | escape }}" loading="lazy">{% endif %}</div>
+      {%- if hero_col.handle != blank -%}
+      <div class="brf-hero__card">
+        <span class="brf-eyebrow">{{ section.settings.hero_card_label }}</span>
+        <strong>{{ section.settings.hero_card_title | default: hero_col.title }}</strong>
+        <a href="{{ hero_col.url }}">Shop {{ hero_col.products_count }} designs &rarr;</a>
+      </div>
+      {%- endif -%}
+    </div>
+  </section>
+
+  {%- comment -%} TRUST STRIP {%- endcomment -%}
+  <div class="brf-wrap">
+    <div class="brf-trust">
+      <div class="brf-trust__item"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 7h11v9H3zM14 10h4l3 3v3h-7z"/><circle cx="7" cy="17.5" r="1.8"/><circle cx="17" cy="17.5" r="1.8"/></svg><div><strong>{{ section.settings.trust_1_title }}</strong><span>{{ section.settings.trust_1_text }}</span></div></div>
+      <div class="brf-trust__item"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/></svg><div><strong>{{ section.settings.trust_2_title }}</strong><span>{{ section.settings.trust_2_text }}</span></div></div>
+      <div class="brf-trust__item"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12l9-8 9 8M5 10v10h14V10"/><path d="M10 20v-6h4v6"/></svg><div><strong>{{ section.settings.trust_3_title }}</strong><span>{{ section.settings.trust_3_text }}</span></div></div>
+      <div class="brf-trust__item"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="10" width="14" height="10" rx="2"/><path d="M8 10V7a4 4 0 018 0v3"/></svg><div><strong>{{ section.settings.trust_4_title }}</strong><span>{{ section.settings.trust_4_text }}</span></div></div>
+    </div>
+  </div>
+
+  {%- comment -%} PROMO TILES (scrolling offers strip) {%- endcomment -%}
+  {%- render 'brf-promo-strip' -%}
+
+  {%- comment -%} HALLOWEEN (auto-hides after the end date) {%- endcomment -%}
+  {%- assign hw_today = 'now' | date: '%Y%m%d' | plus: 0 -%}
+  {%- assign hw_end = section.settings.halloween_end | remove: '-' | strip | plus: 0 -%}
+  {%- assign hw_show = section.settings.show_halloween -%}
+  {%- if hw_end > 0 and hw_today > hw_end -%}{%- assign hw_show = false -%}{%- endif -%}
+  {%- assign hw = section.settings.halloween_collection -%}{%- if hw.handle == blank -%}{%- assign hw = collections[section.settings.halloween_collection] -%}{%- endif -%}
+  {%- if hw.handle == blank -%}{%- assign hw = collections['halloween'] -%}{%- endif -%}
+  {%- if hw_show and hw.handle != blank and hw.products_count > 0 -%}
+  {%- assign hw_kw = section.settings.halloween_keywords | downcase | split: ',' -%}
+  {%- assign hw_list = ',' -%}{%- assign hw_n = 0 -%}
+  {%- for product in hw.products limit: 50 -%}
+    {%- if hw_n >= 4 -%}{%- break -%}{%- endif -%}
+    {%- unless product.available -%}{%- continue -%}{%- endunless -%}
+    {%- assign t = product.title | downcase -%}{%- assign hit = false -%}
+    {%- for w in hw_kw -%}{%- assign ws = w | strip -%}{%- if ws != blank and t contains ws -%}{%- assign hit = true -%}{%- endif -%}{%- endfor -%}
+    {%- if hit -%}{%- assign hw_list = hw_list | append: product.handle | append: ',' -%}{%- assign hw_n = hw_n | plus: 1 -%}{%- endif -%}
+  {%- endfor -%}
+  {%- for product in hw.products limit: 50 -%}
+    {%- if hw_n >= 4 -%}{%- break -%}{%- endif -%}
+    {%- unless product.available -%}{%- continue -%}{%- endunless -%}
+    {%- assign key = ',' | append: product.handle | append: ',' -%}
+    {%- if hw_list contains key -%}{%- continue -%}{%- endif -%}
+    {%- assign hw_list = hw_list | append: product.handle | append: ',' -%}{%- assign hw_n = hw_n | plus: 1 -%}
+  {%- endfor -%}
+  {%- assign hw_handles = hw_list | split: ',' -%}
+  <section class="brf-spooky" aria-labelledby="brf-spooky-title">
+    {%- render 'brf-spooky-layer' -%}
+    <svg class="brf-spooky__deco brf-spooky__web" viewBox="0 0 200 200" fill="none" stroke="currentColor" stroke-width="1.2" aria-hidden="true"><path d="M0 0L200 60M0 0L170 130M0 0L120 180M0 0L55 200M0 0L0 200M0 0L200 0"/><path d="M40 0Q34 12 38 11Q30 22 12 36Q10 40 0 42"/><path d="M85 0Q76 22 82 25Q70 46 42 72Q24 80 0 88"/><path d="M135 0Q124 36 132 42Q114 72 76 110Q50 126 0 138"/><path d="M190 0Q172 50 182 58Q160 100 110 148Q76 170 0 190"/></svg>
+    <svg class="brf-spooky__deco brf-spooky__moon" viewBox="0 0 120 120" aria-hidden="true"><circle cx="60" cy="60" r="52" fill="#F3E3B8"/><circle cx="44" cy="46" r="8" fill="#E2CE98"/><circle cx="74" cy="72" r="11" fill="#E2CE98"/><circle cx="78" cy="38" r="5" fill="#E2CE98"/></svg>
+    <svg class="brf-spooky__deco brf-spooky__bats" viewBox="0 0 180 90" fill="#0B090E" aria-hidden="true"><path d="M20 40c6-8 13-9 18-3 2-4 6-4 8 0 5-6 12-5 18 3-6-2-10 0-12 4-2-2-5-2-7 0-2-2-5-2-7 0-3-4-7-6-18-4z"/><path d="M92 18c4-5 9-6 12-2 1-3 4-3 5 0 3-4 8-3 12 2-4-1-7 0-8 3-1-1-3-1-5 0-1-1-3-1-5 0-2-3-5-4-11-3z"/><path d="M130 62c5-7 11-8 15-3 2-3 5-3 7 0 4-5 10-4 15 3-5-2-9 0-10 3-2-1-4-1-6 0-2-1-4-1-6 0-2-3-6-5-15-3z"/></svg>
+    <div class="brf-wrap">
+      <div class="brf-head">
+        <div>
+          <span class="brf-eyebrow">{{ section.settings.halloween_eyebrow }}</span>
+          <h2 class="brf-h2 brf-serif" id="brf-spooky-title">{{ section.settings.halloween_heading }}</h2>
+          <p class="brf-spooky__lede">{{ section.settings.halloween_text }}</p>
+        </div>
+      </div>
+      <div class="brf-grid4">
+        {%- for h in hw_handles -%}
+          {%- if h == blank -%}{%- continue -%}{%- endif -%}
+          {%- assign product = all_products[h] -%}
+          {%- if product.id == blank -%}{%- continue -%}{%- endif -%}
+          <div class="brf-card">
+            <a class="brf-card__media" href="{{ product.url | within: hw }}">
+              <div class="brf-swatch">{% if product.featured_image %}<img src="{{ product.featured_image | img_url: '600x' }}" alt="{{ product.featured_image.alt | default: product.title | escape }}" loading="lazy">{% endif %}</div>
+              {%- if product.compare_at_price > product.price -%}
+                {%- assign save = product.compare_at_price | minus: product.price | times: 100 | divided_by: product.compare_at_price -%}
+                <span class="brf-badge">Save {{ save }}%</span>
+              {%- endif -%}
+            </a>
+            <a class="brf-card__title" href="{{ product.url | within: hw }}">{{ product.title }}</a>
+            <div class="brf-card__price">
+              {%- if product.price_varies -%}<strong>From {{ product.price_min | money }}</strong>
+              {%- elsif product.compare_at_price > product.price -%}<strong class="is-sale">{{ product.price | money }}</strong><s>{{ product.compare_at_price | money }}</s>
+              {%- else -%}<strong>{{ product.price | money }}</strong>{%- endif -%}
+            </div>
+            {%- if product.has_only_default_variant -%}
+              {%- form 'product', product -%}
+                <input type="hidden" name="id" value="{{ product.selected_or_first_available_variant.id }}">
+                <button type="submit" class="brf-btn brf-btn--line">Add to basket</button>
+              {%- endform -%}
+            {%- else -%}
+              <a class="brf-btn brf-btn--line" href="{{ product.url | within: hw }}">Choose options</a>
+            {%- endif -%}
+          </div>
+        {%- endfor -%}
+      </div>
+      <div class="brf-spooky__foot">
+        <a class="brf-btn brf-btn--pumpkin" href="{{ hw.url }}">Shop all {{ hw.products_count }} Halloween fabrics</a>
+      </div>
+    </div>
+  </section>
+  {%- endif -%}
+
+  {%- comment -%} SHOP BY FABRIC {%- endcomment -%}
+  <section class="brf-wrap brf-section">
+    <div class="brf-head">
+      <div><span class="brf-eyebrow">Shop by fabric</span><h2 class="brf-h2 brf-serif">{{ section.settings.fabrics_heading }}</h2></div>
+      <a href="/collections">View all fabrics &rarr;</a>
+    </div>
+    <div class="brf-grid4">
+      {%- if fabric_blocks.size > 0 -%}
+        {%- for block in fabric_blocks -%}
+          {%- assign c = block.settings.collection -%}{%- if c.handle == blank -%}{%- assign c = collections[block.settings.collection] -%}{%- endif -%}
+          {%- if c.handle == blank -%}{%- continue -%}{%- endif -%}
+          {%- assign ci = forloop.index0 | modulo: 8 -%}
+          <a class="brf-tile" href="{{ c.url }}" {{ block.shopify_attributes }}>
+            <div class="brf-swatch" style="background-color:{{ swatch_colours[ci] }}">{% assign img = block.settings.image | default: c.image %}{% if img %}<img src="{{ img | img_url: '600x' }}" alt="{{ block.settings.label | default: c.title | escape }}" loading="lazy">{% endif %}</div>
+            <div class="brf-tile__meta"><span class="brf-tile__name">{{ block.settings.label | default: c.title }}</span><span class="brf-tile__count">{{ c.products_count }} fabrics</span></div>
+          </a>
+        {%- endfor -%}
+      {%- else -%}
+        {%- for h in default_handles -%}
+          {%- assign c = collections[h] -%}
+          {%- if c.handle == blank -%}{%- continue -%}{%- endif -%}
+          {%- assign i = forloop.index0 -%}
+          <a class="brf-tile" href="{{ c.url }}">
+            <div class="brf-swatch" style="background-color:{{ swatch_colours[i] }}">{% if c.image %}<img src="{{ c.image | img_url: '600x' }}" alt="{{ default_labels[i] | escape }}" loading="lazy">{% endif %}</div>
+            <div class="brf-tile__meta"><span class="brf-tile__name">{{ default_labels[i] }}</span><span class="brf-tile__count">{{ c.products_count }} fabrics</span></div>
+          </a>
+        {%- endfor -%}
+      {%- endif -%}
+    </div>
+  </section>
+
+  {%- comment -%} SHOP BY PROJECT {%- endcomment -%}
+  <section class="brf-wrap" style="padding-bottom:96px">
+    <div class="brf-head">
+      <div><span class="brf-eyebrow">Shop by project</span><h2 class="brf-h2 brf-serif">What are you making?</h2></div>
+    </div>
+    <div class="brf-grid3">
+      {%- for n in (1..3) -%}
+        {%- case n -%}
+          {%- when 1 -%}{%- assign p_title = section.settings.project_1_title -%}{%- assign p_text = section.settings.project_1_text -%}{%- assign p_col = section.settings.project_1_collection -%}{%- if p_col.handle == blank -%}{%- assign p_col = collections[section.settings.project_1_collection] -%}{%- endif -%}{%- assign p_fallback = 'satin' -%}{%- assign p_img = section.settings.project_1_image -%}{%- assign p_bg = '#7A4556' -%}
+          {%- when 2 -%}{%- assign p_title = section.settings.project_2_title -%}{%- assign p_text = section.settings.project_2_text -%}{%- assign p_col = section.settings.project_2_collection -%}{%- if p_col.handle == blank -%}{%- assign p_col = collections[section.settings.project_2_collection] -%}{%- endif -%}{%- assign p_fallback = 'craft-cotton' -%}{%- assign p_img = section.settings.project_2_image -%}{%- assign p_bg = '#A7822F' -%}
+          {%- when 3 -%}{%- assign p_title = section.settings.project_3_title -%}{%- assign p_text = section.settings.project_3_text -%}{%- assign p_col = section.settings.project_3_collection -%}{%- if p_col.handle == blank -%}{%- assign p_col = collections[section.settings.project_3_collection] -%}{%- endif -%}{%- assign p_fallback = 'plush-velvet' -%}{%- assign p_img = section.settings.project_3_image -%}{%- assign p_bg = '#2E4A43' -%}
+        {%- endcase -%}
+        {%- if p_col.handle == blank -%}{%- assign p_col = collections[p_fallback] -%}{%- endif -%}
+        {%- assign p_img = p_img | default: p_col.image -%}
+        <a class="brf-project" href="{{ p_col.url | default: '/collections' }}">
+          <div class="brf-swatch" style="background-color:{{ p_bg }}">{% if p_img %}<img src="{{ p_img | img_url: '800x' }}" alt="" loading="lazy">{% endif %}</div>
+          <div class="brf-project__body"><strong>{{ p_title }}</strong><span>{{ p_text }}</span><em>Shop now &rarr;</em></div>
+        </a>
+      {%- endfor -%}
+    </div>
+  </section>
+
+  {%- comment -%} FEATURED / SEASONAL PRODUCTS {%- endcomment -%}
+  {%- assign feat = section.settings.featured_collection -%}{%- if feat.handle == blank -%}{%- assign feat = collections[section.settings.featured_collection] -%}{%- endif -%}
+  {%- if feat.handle == blank -%}{%- assign feat = collections['christmas'] -%}{%- endif -%}
+  {%- if feat.handle != blank and feat.products_count > 0 -%}
+  <section class="brf-products brf-section">
+    <div class="brf-wrap">
+      <div class="brf-head">
+        <div><span class="brf-eyebrow" style="color:var(--brf-sale)">{{ section.settings.featured_eyebrow }}</span><h2 class="brf-h2 brf-serif">{{ section.settings.featured_heading }}</h2></div>
+        <a href="{{ feat.url }}">Shop the collection &rarr;</a>
+      </div>
+      <div class="brf-grid4">
+        {%- assign feat_limit = section.settings.featured_count | plus: 0 -%}{%- if feat_limit < 1 -%}{%- assign feat_limit = 4 -%}{%- endif -%}
+        {%- assign feat_excl = section.settings.featured_exclude | downcase | split: ',' -%}
+        {%- assign feat_shown = 0 -%}
+        {%- for product in feat.products limit: 50 -%}
+          {%- if feat_shown >= feat_limit -%}{%- break -%}{%- endif -%}
+          {%- assign t = product.title | downcase -%}
+          {%- assign skip = false -%}
+          {%- for w in feat_excl -%}{%- assign ws = w | strip -%}{%- if ws != blank and t contains ws -%}{%- assign skip = true -%}{%- endif -%}{%- endfor -%}
+          {%- if skip -%}{%- continue -%}{%- endif -%}
+          {%- assign feat_shown = feat_shown | plus: 1 -%}
+          <div class="brf-card">
+            <a class="brf-card__media" href="{{ product.url | within: feat }}">
+              <div class="brf-swatch" style="background-color:#3E6B4F">{% if product.featured_image %}<img src="{{ product.featured_image | img_url: '600x' }}" alt="{{ product.featured_image.alt | default: product.title | escape }}" loading="lazy">{% endif %}</div>
+              {%- if product.compare_at_price > product.price -%}
+                {%- assign save = product.compare_at_price | minus: product.price | times: 100 | divided_by: product.compare_at_price -%}
+                <span class="brf-badge">Save {{ save }}%</span>
+              {%- endif -%}
+            </a>
+            <a class="brf-card__title" href="{{ product.url | within: feat }}">{{ product.title }}</a>
+            <div class="brf-card__price">
+              {%- if product.price_varies -%}<strong>From {{ product.price_min | money }}</strong>
+              {%- elsif product.compare_at_price > product.price -%}<strong class="is-sale">{{ product.price | money }}</strong><s>{{ product.compare_at_price | money }}</s>
+              {%- else -%}<strong>{{ product.price | money }}</strong>{%- endif -%}
+            </div>
+            {%- if product.available and product.has_only_default_variant -%}
+              {%- form 'product', product -%}
+                <input type="hidden" name="id" value="{{ product.selected_or_first_available_variant.id }}">
+                <button type="submit" class="brf-btn brf-btn--line">Add to basket</button>
+              {%- endform -%}
+            {%- elsif product.available -%}
+              <a class="brf-btn brf-btn--line" href="{{ product.url | within: feat }}">Choose options</a>
+            {%- else -%}
+              <span class="brf-btn brf-btn--line" style="opacity:.5;cursor:default">Sold out</span>
+            {%- endif -%}
+          </div>
+        {%- endfor -%}
+      </div>
+    </div>
+  </section>
+  {%- endif -%}
+
+  {%- comment -%} POUND FABRICS + TRADE {%- endcomment -%}
+  {%- assign pound = collections['pound-fabrics'] -%}
+  <section class="brf-wrap brf-section">
+    <div class="brf-panels">
+      <div class="brf-panel brf-panel--sand">
+        <span class="brf-eyebrow">Bargain rail</span>
+        <h2 class="brf-serif">Pound Fabrics</h2>
+        <p>{% if pound.products_count > 0 %}{{ pound.products_count }} fabrics{% else %}Fabrics{% endif %} at our lowest prices — perfect for toiles, practice pieces and big craft projects.</p>
+        <div class="brf-panel__ctas">
+          <a class="brf-btn brf-btn--ink" href="{{ pound.url | default: '/collections/pound-fabrics' }}">Shop Pound Fabrics</a>
+          <a href="/collections/black-friday">Clearance &amp; end of rolls &rarr;</a>
+        </div>
+      </div>
+      <div class="brf-panel brf-panel--dark">
+        <span class="brf-eyebrow">For businesses</span>
+        <h2 class="brf-serif">Wholesale &amp; trade</h2>
+        <p>Full rolls and job lots for designers, manufacturers, schools and theatres. Open a trade account for bulk pricing.</p>
+        <div class="brf-panel__ctas">
+          <a class="brf-btn brf-btn--light" href="/pages/wholesale-trade-enquiries">Make a trade enquiry</a>
+          <a href="/collections/trade-outlet">Browse job lots &rarr;</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  {%- comment -%} VISIT THE OUTLET {%- endcomment -%}
+  {%- if section.settings.show_outlet -%}
+  <section class="brf-wrap" style="padding-bottom:96px">
+    <div class="brf-outlet">
+      <div class="brf-swatch">{% if section.settings.outlet_image %}<img src="{{ section.settings.outlet_image | img_url: '900x' }}" alt="{{ section.settings.outlet_image.alt | default: 'Our Birmingham fabric outlet' | escape }}" loading="lazy">{% endif %}</div>
+      <div class="brf-outlet__body">
+        <span class="brf-eyebrow" style="margin:0">Visit us</span>
+        <h2 class="brf-serif">{{ section.settings.outlet_heading }}</h2>
+        <p>{{ section.settings.outlet_text }}</p>
+        {%- if section.settings.outlet_address != blank or section.settings.outlet_hours != blank -%}
+        <div class="brf-outlet__facts">
+          {%- if section.settings.outlet_address != blank -%}<div><strong>Address</strong><br><span>{{ section.settings.outlet_address | newline_to_br }}</span></div>{%- endif -%}
+          {%- if section.settings.outlet_hours != blank -%}<div><strong>Opening hours</strong><br><span>{{ section.settings.outlet_hours | newline_to_br }}</span></div>{%- endif -%}
+        </div>
+        {%- endif -%}
+        <a href="{{ section.settings.outlet_link | default: '/pages/about-us' }}">{{ section.settings.outlet_link_label }} &rarr;</a>
+      </div>
+    </div>
+  </section>
+  {%- endif -%}
+
+  {%- comment -%} BLOG {%- endcomment -%}
+  {%- assign blog = section.settings.blog -%}{%- if blog.handle == blank -%}{%- assign blog = blogs[section.settings.blog] -%}{%- endif -%}
+  {%- if blog.handle == blank -%}{%- assign blog = blogs.news -%}{%- endif -%}
+  {%- if blog.articles_count > 0 -%}
+  <section class="brf-wrap" style="padding-bottom:96px">
+    <div class="brf-head">
+      <div><span class="brf-eyebrow">Guides &amp; inspiration</span><h2 class="brf-h2 brf-serif">From the cutting table</h2></div>
+      <a href="{{ blog.url }}">All articles &rarr;</a>
+    </div>
+    <div class="brf-grid3">
+      {%- for article in blog.articles limit: 3 -%}
+        <a class="brf-post" href="{{ article.url }}">
+          <div class="brf-swatch" style="background-color:{{ swatch_colours[forloop.index0] }}">{% if article.image %}<img src="{{ article.image | img_url: '700x' }}" alt="{{ article.image.alt | default: article.title | escape }}" loading="lazy">{% endif %}</div>
+          <time datetime="{{ article.published_at | date: '%Y-%m-%d' }}">{{ article.published_at | date: '%-d %B %Y' }}</time>
+          <span class="brf-post__title">{{ article.title }}</span>
+        </a>
+      {%- endfor -%}
+    </div>
+  </section>
+  {%- endif -%}
+
+</div>
+
+{% schema %}
+{
+  "name": "Homepage (redesign)",
+  "class": "brf-home-section",
+  "max_blocks": 12,
+  "settings": [
+    { "type": "color", "id": "accent", "label": "Accent colour", "default": "#1F4D3A" },
+    { "type": "header", "content": "Hero" },
+    { "type": "text", "id": "hero_eyebrow", "label": "Small label", "default": "Fabric by the metre · Trade prices for everyone" },
+    { "type": "text", "id": "hero_heading", "label": "Heading", "default": "Beautiful fabric, cut to order in Birmingham." },
+    { "type": "textarea", "id": "hero_text", "label": "Text", "default": "Cotton poplins, satins, taffetas, velvets and upholstery weaves for dressmakers, crafters and the trade — at wholesale prices. Order before 10pm for same-day dispatch, delivered UK-wide and worldwide." },
+    { "type": "text", "id": "hero_btn1_label", "label": "Button 1 label", "default": "Shop all fabrics" },
+    { "type": "url", "id": "hero_btn1_link", "label": "Button 1 link" },
+    { "type": "text", "id": "hero_btn2_label", "label": "Button 2 label", "default": "Trade & wholesale" },
+    { "type": "url", "id": "hero_btn2_link", "label": "Button 2 link" },
+    { "type": "image_picker", "id": "hero_image_1", "label": "Large image", "info": "Leave empty to use the featured collection's image" },
+    { "type": "image_picker", "id": "hero_image_2", "label": "Top-right image" },
+    { "type": "image_picker", "id": "hero_image_3", "label": "Bottom-right image" },
+    { "type": "collection", "id": "hero_collection", "label": "Featured collection (card over image)" },
+    { "type": "text", "id": "hero_card_label", "label": "Card label", "default": "New in" },
+    { "type": "text", "id": "hero_card_title", "label": "Card title", "default": "Rose & Hubble Cotton Poplins" },
+    { "type": "header", "content": "Reassurance strip" },
+    { "type": "text", "id": "trust_1_title", "label": "Item 1 title", "default": "Free UK delivery over £65" },
+    { "type": "text", "id": "trust_1_text", "label": "Item 1 text", "default": "2-day tracked, UK mainland" },
+    { "type": "text", "id": "trust_2_title", "label": "Item 2 title", "default": "Same-day dispatch" },
+    { "type": "text", "id": "trust_2_text", "label": "Item 2 text", "default": "Order before 10pm, Mon–Fri" },
+    { "type": "text", "id": "trust_3_title", "label": "Item 3 title", "default": "Wholesale & trade" },
+    { "type": "text", "id": "trust_3_text", "label": "Item 3 text", "default": "Rolls and job lots for business" },
+    { "type": "text", "id": "trust_4_title", "label": "Item 4 title", "default": "Secure checkout" },
+    { "type": "text", "id": "trust_4_text", "label": "Item 4 text", "default": "PayPal, Apple Pay, cards" },
+    { "type": "header", "content": "Halloween" },
+    { "type": "checkbox", "id": "show_halloween", "label": "Show Halloween section", "default": true },
+    { "type": "text", "id": "halloween_end", "label": "Hide automatically after", "info": "Date as YYYY-MM-DD. Leave empty to keep showing.", "default": "2026-10-31" },
+    { "type": "collection", "id": "halloween_collection", "label": "Collection", "info": "Defaults to Halloween" },
+    { "type": "text", "id": "halloween_keywords", "label": "Show these first", "info": "Products whose title contains any of these words are picked first", "default": "halloween, skull, spider, pumpkin, ghost, witch, skeleton, cobweb, goth" },
+    { "type": "text", "id": "halloween_eyebrow", "label": "Small label", "default": "Spooky season" },
+    { "type": "text", "id": "halloween_heading", "label": "Heading", "default": "Fabrics to die for" },
+    { "type": "textarea", "id": "halloween_text", "label": "Text", "default": "Sugar skulls, gothic velvets, glittering tulle and spooky prints for costumes, décor and trick-or-treat bags." },
+    { "type": "header", "content": "Shop by fabric", "info": "Add 'Fabric tile' blocks to choose your own collections. With no blocks, eight best-sellers are shown." },
+    { "type": "text", "id": "fabrics_heading", "label": "Heading", "default": "Our most-loved fabrics" },
+    { "type": "header", "content": "Shop by project" },
+    { "type": "text", "id": "project_1_title", "label": "Card 1 title", "default": "Dressmaking" },
+    { "type": "text", "id": "project_1_text", "label": "Card 1 text", "default": "Poplins, satins, crepe, chiffon, lace and lycra." },
+    { "type": "collection", "id": "project_1_collection", "label": "Card 1 collection" },
+    { "type": "image_picker", "id": "project_1_image", "label": "Card 1 image" },
+    { "type": "text", "id": "project_2_title", "label": "Card 2 title", "default": "Crafts & quilting" },
+    { "type": "text", "id": "project_2_text", "label": "Card 2 text", "default": "Craft cotton, felt, fleece, faux fur and polycotton." },
+    { "type": "collection", "id": "project_2_collection", "label": "Card 2 collection" },
+    { "type": "image_picker", "id": "project_2_image", "label": "Card 2 image" },
+    { "type": "text", "id": "project_3_title", "label": "Card 3 title", "default": "Upholstery & curtains" },
+    { "type": "text", "id": "project_3_text", "label": "Card 3 text", "default": "Plush velvet, tapestry, faux leather and suede." },
+    { "type": "collection", "id": "project_3_collection", "label": "Card 3 collection" },
+    { "type": "image_picker", "id": "project_3_image", "label": "Card 3 image" },
+    { "type": "header", "content": "Featured products" },
+    { "type": "collection", "id": "featured_collection", "label": "Collection", "info": "Defaults to Christmas" },
+    { "type": "text", "id": "featured_exclude", "label": "Hide products whose title contains", "info": "Comma-separated, e.g. gift, job lot", "default": "gift, job lot, wholesale, 20m, 10m" },
+    { "type": "text", "id": "featured_eyebrow", "label": "Small label", "default": "Seasonal" },
+    { "type": "text", "id": "featured_heading", "label": "Heading", "default": "Christmas fabrics have landed" },
+    { "type": "select", "id": "featured_count", "label": "Products shown", "options": [ { "value": "4", "label": "4" }, { "value": "8", "label": "8" } ], "default": "4" },
+    { "type": "header", "content": "Visit the outlet" },
+    { "type": "checkbox", "id": "show_outlet", "label": "Show outlet section", "default": true },
+    { "type": "image_picker", "id": "outlet_image", "label": "Shop photo" },
+    { "type": "text", "id": "outlet_heading", "label": "Heading", "default": "Our Birmingham outlet" },
+    { "type": "textarea", "id": "outlet_text", "label": "Text", "default": "Prefer to see and feel the fabric before you buy? Get in touch to arrange a visit to our Birmingham outlet." },
+    { "type": "textarea", "id": "outlet_address", "label": "Address", "info": "Hidden when empty" },
+    { "type": "textarea", "id": "outlet_hours", "label": "Opening hours", "info": "Hidden when empty" },
+    { "type": "url", "id": "outlet_link", "label": "Link" },
+    { "type": "text", "id": "outlet_link_label", "label": "Link label", "default": "Contact & directions" },
+    { "type": "header", "content": "Blog" },
+    { "type": "blog", "id": "blog", "label": "Blog", "info": "Defaults to News" }
+  ],
+  "blocks": [
+    {
+      "type": "fabric",
+      "name": "Fabric tile",
+      "settings": [
+        { "type": "collection", "id": "collection", "label": "Collection" },
+        { "type": "text", "id": "label", "label": "Short name", "info": "E.g. 'Satin' — leave empty to use the collection title" },
+        { "type": "image_picker", "id": "image", "label": "Image", "info": "Leave empty to use the collection image" }
+      ]
+    }
+  ]
+}
+{% endschema %}
