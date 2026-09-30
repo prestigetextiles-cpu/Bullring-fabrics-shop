@@ -1,0 +1,541 @@
+{%- comment -%}
+  Bull Ring Fabrics — v3 sitewide upgrades
+  1. "Lights off" smart search: dark translucent overlay, predictive results, offers panel with a hidden 10% code
+  2. Product page: delivery hover card, red countdown under 3 hours, gallery arrows, stock-capped quantity
+  3. Fluid edge fades on anything that scrolls off-screen
+  4. Cart page: discount code field, quantity capped at available stock
+{%- endcomment -%}
+
+{%- liquid
+  assign s_sale = collections['sale']
+  assign s_clear = collections['pound-fabrics']
+  assign s_menu = linklists['main-menu-2026']
+  if s_menu.links.size == 0
+    assign s_menu = linklists['main-menu']
+  endif
+  assign sale_img = nil
+  for p in s_sale.products limit: 20
+    if p.available and p.featured_image
+      assign sale_img = p.featured_image
+      break
+    endif
+  endfor
+  assign clear_from = nil
+  for p in s_clear.products limit: 50
+    if p.available
+      if clear_from == nil or p.price < clear_from
+        assign clear_from = p.price
+      endif
+    endif
+  endfor
+  assign clear_img = nil
+  for p in s_clear.products limit: 20
+    if p.available and p.featured_image
+      assign clear_img = p.featured_image
+      break
+    endif
+  endfor
+-%}
+
+<template id="brf-sp-idle">
+  <div class="brf-sp__cols">
+    <div class="brf-sp__main">
+      <div class="brf-sp__block" data-brf-recent hidden>
+        <div class="brf-sp__h"><span>Recent searches</span><button type="button" class="brf-sp__clear" data-brf-recent-clear>Clear</button></div>
+        <div class="brf-sp__chips" data-brf-recent-list></div>
+      </div>
+      <div class="brf-sp__block">
+        <div class="brf-sp__h"><span>Trending now</span></div>
+        <div class="brf-sp__chips">
+          {%- assign trend = 'Velvet,Cotton poplin,Upholstery,Blackout lining,Christmas,Satin,Linen,Faux fur,Felt,Curtain fabric' | split: ',' -%}
+          {%- for t in trend -%}
+            <a class="brf-sp__chip" href="{{ routes.search_url }}?q={{ t | url_encode }}&type=product&options%5Bprefix%5D=last" data-brf-term="{{ t | escape }}"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true"><path d="M2 11l4-4 3 3 5-5M10 5h4v4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>{{ t }}</a>
+          {%- endfor -%}
+        </div>
+      </div>
+      <div class="brf-sp__block">
+        <div class="brf-sp__h"><span>Shop by category</span></div>
+        <div class="brf-sp__cats">
+          {%- assign n = 0 -%}
+          {%- for link in s_menu.links -%}
+            {%- liquid
+              assign key = link.title | handleize
+              if key contains 'sale' or key contains 'halloween' or key contains 'wholesale' or key contains 'christmas'
+                continue
+              endif
+              assign thumb = nil
+              if link.links.size > 0
+                for sub in link.links
+                  if sub.object.image
+                    assign thumb = sub.object.image
+                    break
+                  endif
+                endfor
+                if thumb == nil
+                  assign thumb = link.links.first.object.products.first.featured_image
+                endif
+              else
+                assign thumb = link.object.image | default: link.object.products.first.featured_image
+              endif
+              assign n = n | plus: 1
+              if n > 6
+                break
+              endif
+            -%}
+            <a class="brf-sp__cat" href="{{ link.url }}">
+              <span class="brf-sp__cat-img">{%- if thumb -%}<img src="{{ thumb | image_url: width: 200, height: 200, crop: 'center' }}" alt="" loading="lazy" width="100" height="100">{%- endif -%}</span>
+              <span class="brf-sp__cat-t">{{ link.title | escape }}</span>
+            </a>
+          {%- endfor -%}
+        </div>
+      </div>
+    </div>
+
+    <aside class="brf-sp__side">
+      {%- if s_sale.products_count > 0 -%}
+        <a class="brf-sp__promo brf-sp__promo--sale" href="{{ s_sale.url }}">
+          {%- if sale_img -%}<img src="{{ sale_img | image_url: width: 480, height: 300, crop: 'center' }}" alt="" loading="lazy" width="240" height="150">{%- endif -%}
+          <span class="brf-sp__promo-in"><small>Sale</small><b>{{ s_sale.products_count }} fabrics reduced</b><em>Shop the sale →</em></span>
+        </a>
+      {%- endif -%}
+      {%- if s_clear.products_count > 0 -%}
+        <a class="brf-sp__promo brf-sp__promo--clear" href="{{ s_clear.url }}">
+          {%- if clear_img -%}<img src="{{ clear_img | image_url: width: 480, height: 300, crop: 'center' }}" alt="" loading="lazy" width="240" height="150">{%- endif -%}
+          <span class="brf-sp__promo-in"><small>Clearance</small><b>{% if clear_from %}Fabrics from {{ clear_from | money_without_trailing_zeros }}{% else %}Pound fabrics{% endif %}</b><em>Grab a bargain →</em></span>
+        </a>
+      {%- endif -%}
+      <div class="brf-sp__secret" data-brf-secret>
+        <span class="brf-sp__secret-emoji" aria-hidden="true">🤫</span>
+        <div class="brf-sp__secret-txt">
+          <b>Psst… you found our secret stash</b>
+          <span data-brf-secret-hint>Tap to reveal 10% off your order</span>
+        </div>
+        <button type="button" class="brf-sp__secret-btn" data-brf-secret-btn>Reveal code</button>
+      </div>
+      <div class="brf-sp__perks">
+        <span><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 7h11v9H3z"/><path d="M14 10h4l3 3v3h-7"/><circle cx="7" cy="17.5" r="1.8"/><circle cx="17.5" cy="17.5" r="1.8"/></svg>Next Day Delivery before 9pm</span>
+        <span><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/></svg>Same-day dispatch Mon–Fri</span>
+        <span><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5L20 7"/></svg>Free tracked UK delivery over £65</span>
+      </div>
+    </aside>
+  </div>
+</template>
+
+{%- if request.page_type == 'product' and product -%}
+  <script type="application/json" id="brf-v3-stock">{
+    {%- for v in product.variants -%}
+      "{{ v.id }}": {% if v.inventory_management == 'shopify' and v.inventory_policy == 'deny' %}{{ v.inventory_quantity | at_least: 0 }}{% else %}null{% endif %}{% unless forloop.last %},{% endunless %}
+    {%- endfor -%}
+  }</script>
+{%- endif -%}
+
+{%- if request.page_type == 'cart' and cart.item_count > 0 -%}
+  <template id="brf-dc-tpl">
+    <div class="brf-dc" data-brf-dc>
+      <label class="brf-dc__label" for="brf-dc-input">Discount or voucher code</label>
+      <div class="brf-dc__row">
+        <input id="brf-dc-input" class="brf-dc__input" type="text" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="Enter your code" data-brf-dc-input>
+        <button type="button" class="brf-dc__apply" data-brf-dc-apply>Apply</button>
+      </div>
+      <div class="brf-dc__codes" data-brf-dc-codes hidden></div>
+      <p class="brf-dc__msg" data-brf-dc-msg hidden></p>
+      <p class="brf-dc__hint" data-brf-dc-hint>New here? Try <button type="button" data-brf-dc-try="NEWLOOK10">NEWLOOK10</button> for 10% off.</p>
+    </div>
+  </template>
+  <script type="application/json" id="brf-v3-cartmax">{
+    {%- for li in cart.items -%}"{{ li.key }}": {% if li.variant.inventory_management and li.variant.inventory_policy == 'deny' %}{{ li.variant.inventory_quantity | at_least: 0 }}{% else %}null{% endif %}{% unless forloop.last %},{% endunless %}{%- endfor -%}
+  }</script>
+{%- endif -%}
+<script>
+(function(){
+  if (window.__brfV3) return; window.__brfV3 = true;
+  var root = document.documentElement;
+  var CODE = 'NEWLOOK10';
+  function esc(s){ return String(s == null ? '' : s).replace(/[&<>"]/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]; }); }
+  function store(k, v){ try { if (v === undefined) return JSON.parse(localStorage.getItem(k) || 'null'); localStorage.setItem(k, JSON.stringify(v)); } catch (e) { return null; } }
+  var cur = (window.Shopify && Shopify.currency && Shopify.currency.active) || 'GBP';
+  var nf; try { nf = new Intl.NumberFormat('en-GB', {style:'currency', currency: cur}); } catch (e) {}
+  function money(x){ var n = parseFloat(x); if (isNaN(n)) return ''; return nf ? nf.format(n).replace(/\.00$/, '') : '£' + n.toFixed(2); }
+
+  /* =====================================================================
+     1. LIGHTS-OFF SMART SEARCH
+     ===================================================================== */
+  var form = document.querySelector('#shopify-section-header form.search-bar');
+  var input = form && form.querySelector('.search-bar__input');
+  if (form && input) {
+    var hdr = document.getElementById('shopify-section-header');
+    var idleTpl = document.getElementById('brf-sp-idle');
+    var shade = document.createElement('div'); shade.className = 'brf-so'; shade.setAttribute('aria-hidden', 'true');
+    var panel = document.createElement('div'); panel.className = 'brf-sp'; panel.id = 'brf-sp'; panel.setAttribute('role', 'dialog'); panel.setAttribute('aria-label', 'Search suggestions');
+    panel.innerHTML = '<button type="button" class="brf-sp__x" data-brf-sp-close aria-label="Close search">×</button><div class="brf-sp__body" data-brf-sp-body></div>';
+    document.body.appendChild(shade); document.body.appendChild(panel);
+    var body = panel.querySelector('[data-brf-sp-body]');
+    input.setAttribute('aria-controls', 'brf-sp'); input.setAttribute('aria-autocomplete', 'list');
+
+    /* Rotating placeholder */
+    var ph = ['Search fabrics, colours & projects…', 'Try “green velvet”', 'Try “blackout lining”', 'Try “cotton poplin”', 'Try “upholstery fabric”'], phi = 0;
+    input.placeholder = ph[0];
+    setInterval(function(){ if (document.activeElement !== input && !input.value) { phi = (phi + 1) % ph.length; input.placeholder = ph[phi]; } }, 3200);
+
+    var isOpen = false, lastQ = null, ctrl = null, t = null;
+    function place(){
+      var r = form.getBoundingClientRect(), vw = window.innerWidth, top = Math.round(r.bottom + 10);
+      if (vw < 750) { panel.style.left = '0px'; panel.style.width = vw + 'px'; top = Math.round(r.bottom + 6); }
+      else {
+        var w = Math.min(vw - 32, Math.max(r.width, 900)), left = r.left + r.width / 2 - w / 2;
+        left = Math.max(16, Math.min(left, vw - 16 - w));
+        panel.style.left = Math.round(left) + 'px'; panel.style.width = Math.round(w) + 'px';
+      }
+      panel.style.top = top + 'px';
+      panel.style.maxHeight = Math.max(260, window.innerHeight - top - 16) + 'px';
+    }
+    function open(){
+      if (isOpen) return; isOpen = true;
+      if (getComputedStyle(hdr).position === 'static') hdr.style.position = 'relative';
+      root.classList.add('brf-so-open');
+      place(); render(input.value.trim());
+      requestAnimationFrame(function(){ shade.classList.add('is-on'); panel.classList.add('is-on'); });
+    }
+    function close(){
+      if (!isOpen) return; isOpen = false;
+      shade.classList.remove('is-on'); panel.classList.remove('is-on');
+      root.classList.remove('brf-so-open');
+      if (document.activeElement === input) input.blur();
+    }
+    window.brfSearchClose = close;
+    input.addEventListener('focus', open);
+    document.addEventListener('click', function(e){
+      if (!e.target.closest('[data-action="toggle-search"]')) return;
+      setTimeout(function(){
+        var w = form.closest('.header__search-bar-wrapper');
+        if (w && !w.classList.contains('is-visible') && !w.classList.contains('is-fixed')) return;
+        try { input.focus({preventScroll:true}); } catch (err) { input.focus(); } open();
+      }, 260);
+    });
+    input.addEventListener('click', open);
+    shade.addEventListener('click', close);
+    panel.querySelector('[data-brf-sp-close]').addEventListener('click', close);
+    document.addEventListener('keydown', function(e){
+      if (!isOpen) return;
+      if (e.key === 'Escape') { close(); return; }
+      if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+        var links = [].slice.call(panel.querySelectorAll('a[href]:not([hidden])')); if (!links.length) return;
+        e.preventDefault();
+        var i = links.indexOf(document.activeElement);
+        if (i === -1) i = e.key === 'ArrowDown' ? 0 : links.length - 1; else i = (i + (e.key === 'ArrowDown' ? 1 : -1) + links.length) % links.length;
+        if (document.activeElement === input && e.key === 'ArrowUp') { input.focus(); return; }
+        links[i].focus();
+      }
+    });
+    document.addEventListener('focusin', function(e){ if (isOpen && !panel.contains(e.target) && !form.contains(e.target)) close(); });
+    window.addEventListener('resize', function(){ if (isOpen) place(); });
+    window.addEventListener('scroll', function(){ if (isOpen) place(); }, {passive:true});
+    /* Theme's own dropdown & the type filter never show */
+    form.addEventListener('submit', function(){ remember(input.value.trim()); });
+
+    function remember(q){
+      if (!q) return;
+      var list = (store('brfRecent') || []).filter(function(x){ return x.toLowerCase() !== q.toLowerCase(); });
+      list.unshift(q); store('brfRecent', list.slice(0, 6));
+    }
+    function searchUrl(q){ return '{{ routes.search_url }}?q=' + encodeURIComponent(q) + '&type=product&options%5Bprefix%5D=last'; }
+
+    function renderIdle(){
+      body.innerHTML = ''; body.appendChild(idleTpl.content.cloneNode(true));
+      var rec = store('brfRecent') || [], box = body.querySelector('[data-brf-recent]');
+      if (rec.length && box) {
+        box.hidden = false;
+        box.querySelector('[data-brf-recent-list]').innerHTML = rec.map(function(q){ return '<a class="brf-sp__chip brf-sp__chip--recent" href="' + searchUrl(q) + '" data-brf-term="' + esc(q) + '"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true"><circle cx="8" cy="8" r="6" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M8 5v3l2 1.5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>' + esc(q) + '</a>'; }).join('');
+        box.querySelector('[data-brf-recent-clear]').addEventListener('click', function(){ store('brfRecent', []); box.hidden = true; });
+      }
+      var sec = body.querySelector('[data-brf-secret]');
+      if (sec) {
+        var btn = sec.querySelector('[data-brf-secret-btn]');
+        var reveal = function(){
+          sec.classList.add('is-revealed');
+          sec.querySelector('b').textContent = 'Here’s 10% off – just for finding it';
+          sec.querySelector('[data-brf-secret-hint]').innerHTML = 'Use code <strong>' + CODE + '</strong> at checkout';
+          btn.textContent = 'Copy code';
+        };
+        if (store('brfSecret')) reveal();
+        btn.addEventListener('click', function(){
+          if (!sec.classList.contains('is-revealed')) { reveal(); store('brfSecret', 1); return; }
+          try { navigator.clipboard.writeText(CODE); } catch (e) {}
+          btn.textContent = 'Copied ✓'; setTimeout(function(){ btn.textContent = 'Copy code'; }, 2000);
+        });
+      }
+      fades();
+    }
+
+    function hl(text, q){
+      var t = esc(text); if (!q) return t;
+      q.split(/\s+/).filter(Boolean).forEach(function(w){
+        var re = new RegExp('(' + w.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + ')', 'ig'); t = t.replace(re, '<mark>$1</mark>');
+      });
+      return t;
+    }
+    function img(u, w){ if (!u) return ''; return u + (u.indexOf('?') > -1 ? '&' : '?') + 'width=' + w; }
+
+    function render(q){
+      if (q === lastQ) return; lastQ = q;
+      if (!q) { renderIdle(); return; }
+      clearTimeout(t);
+      panel.classList.add('is-loading');
+      t = setTimeout(function(){ fetchSuggest(q); }, 160);
+    }
+    // Relevance filter (same rule as the search page): whole-word matches on title/type/tags/vendor first,
+    // then last-word prefix matches, otherwise Shopify's own list. Stops "fur" showing "furnishing" etc.
+    function brfNorm(t){ t = String(t || '').toLowerCase(); try { t = t.normalize('NFD').replace(/[\u0300-\u036f]/g, ''); } catch (e) {} return ' ' + t.replace(/[^a-z0-9]+/g, ' ') + ' '; }
+    function brfRefine(list, q){
+      var words = brfNorm(q).trim().split(' ').filter(function(w){ return w.length > 1 && ['and','the','for','of'].indexOf(w) < 0; });
+      if (!words.length || !list.length) return list;
+      function score(p){
+        var h = brfNorm([p.title, p.product_type, p.vendor, (p.tags || []).join(' ')].join(' ')), whole = true, pre = true;
+        words.forEach(function(w, i){
+          var hit = h.indexOf(' ' + w + ' ') > -1 || h.indexOf(' ' + w + 's ') > -1 || h.indexOf(' ' + w + 'es ') > -1
+            || (w.length > 3 && w.slice(-1) === 's' && h.indexOf(' ' + w.slice(0, -1) + ' ') > -1);
+          if (!hit) { whole = false; if (!(i === words.length - 1 && h.indexOf(' ' + w) > -1)) pre = false; }
+        });
+        return whole ? 2 : (pre ? 1 : 0);
+      }
+      var s2 = [], s1 = [];
+      list.forEach(function(p){ var sc = score(p); if (sc === 2) s2.push(p); else if (sc === 1) s1.push(p); });
+      return s2.length ? s2 : (s1.length ? s1 : list);
+    }
+    function fetchSuggest(q){
+      if (ctrl && ctrl.abort) ctrl.abort();
+      ctrl = window.AbortController ? new AbortController() : null;
+      var url = '{{ routes.predictive_search_url }}.json?q=' + encodeURIComponent(q)
+        + '&resources[type]=product,collection,query&resources[limit]=10&resources[limit_scope]=each'
+        + '&resources[options][unavailable_products]=last&resources[options][fields]=title,product_type,variants.title,tag,vendor';
+      fetch(url, {credentials:'same-origin', signal: ctrl ? ctrl.signal : undefined}).then(function(r){ return r.json(); }).then(function(d){
+        if (q !== input.value.trim()) return;
+        panel.classList.remove('is-loading');
+        var res = (d.resources && d.resources.results) || {}, P = res.products || [], C = res.collections || [], Q = res.queries || []; P = brfRefine(P, q);
+        if (!P.length && !C.length) {
+          body.innerHTML = '<div class="brf-sp__none"><b>No matches for “' + esc(q) + '”</b><span>Check the spelling or try one of these:</span><div class="brf-sp__chips">'
+            + ['Velvet','Cotton','Upholstery','Lining','Satin','Linen'].map(function(x){ return '<a class="brf-sp__chip" href="' + searchUrl(x) + '" data-brf-term="' + x + '">' + x + '</a>'; }).join('') + '</div></div>';
+          return;
+        }
+        var left = '';
+        if (!Q.length && !C.length) left += '<div class="brf-sp__block"><div class="brf-sp__h"><span>Popular searches</span></div><ul class="brf-sp__list">'
+          + ['Velvet','Cotton poplin','Upholstery','Blackout lining','Satin','Linen'].map(function(x){ return '<li><a href="' + searchUrl(x) + '" data-brf-term="' + x + '"><svg viewBox="0 0 16 16" width="13" height="13" aria-hidden="true"><path d="M2 11l4-4 3 3 5-5M10 5h4v4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>' + x + '</a></li>'; }).join('') + '</ul></div>';
+        if (Q.length) left += '<div class="brf-sp__block"><div class="brf-sp__h"><span>Suggestions</span></div><ul class="brf-sp__list">'
+          + Q.slice(0, 6).map(function(x){ return '<li><a href="' + searchUrl(x.text) + '" data-brf-term="' + esc(x.text) + '"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>' + (x.styled_text || esc(x.text)) + '</a></li>'; }).join('') + '</ul></div>';
+        if (C.length) left += '<div class="brf-sp__block"><div class="brf-sp__h"><span>Categories</span></div><ul class="brf-sp__list brf-sp__list--cats">'
+          + C.slice(0, 5).map(function(c){ var im = c.image && (c.image.url || c.image); return '<li><a href="' + c.url + '"><span class="brf-sp__mini">' + (im ? '<img src="' + img(im, 80) + '" alt="">' : '') + '</span>' + hl(c.title, q) + '</a></li>'; }).join('') + '</ul></div>';
+        var prods = P.slice(0, 8).map(function(p){
+          var im = p.featured_image && p.featured_image.url || p.image;
+          var sale = p.compare_at_price_max && parseFloat(p.compare_at_price_max) > parseFloat(p.price);
+          return '<a class="brf-sp__prod' + (p.available ? '' : ' is-out') + '" href="' + p.url + '"><span class="brf-sp__prod-img">' + (im ? '<img src="' + img(im, 300) + '" alt="" loading="lazy">' : '') + (sale ? '<i class="brf-sp__tag">Sale</i>' : '') + (p.available ? '' : '<i class="brf-sp__tag brf-sp__tag--out">Sold out</i>') + '</span>'
+            + '<span class="brf-sp__prod-t">' + hl(p.title, q) + '</span>'
+            + '<span class="brf-sp__prod-p">' + (sale ? '<em>' + money(p.price) + '</em> <s>' + money(p.compare_at_price_max) + '</s>' : money(p.price)) + '</span></a>';
+        }).join('');
+        body.innerHTML = '<div class="brf-sp__cols brf-sp__cols--res"><div class="brf-sp__main brf-sp__main--narrow">' + left
+          + '<a class="brf-sp__all" href="' + searchUrl(q) + '" data-brf-term="' + esc(q) + '">See all results for “' + esc(q) + '” <span aria-hidden="true">→</span></a></div>'
+          + '<div class="brf-sp__side brf-sp__side--wide"><div class="brf-sp__h"><span>Products</span></div><div class="brf-sp__grid">' + prods + '</div></div></div>';
+        fades();
+      }).catch(function(){ panel.classList.remove('is-loading'); });
+    }
+    input.addEventListener('input', function(){ open(); render(input.value.trim()); });
+    panel.addEventListener('click', function(e){
+      var a = e.target.closest('[data-brf-term]'); if (a) remember(a.getAttribute('data-brf-term'));
+      else if (e.target.closest('.brf-sp__prod')) remember(input.value.trim());
+    });
+  }
+
+  /* =====================================================================
+     2. PRODUCT PAGE
+     ===================================================================== */
+  var info = document.querySelector('.template-product .product-block-list__item--info');
+  if (info) {
+    /* 2a. Delivery hover card instead of a link to another page */
+    var shipLink = info.querySelector('.product-form__price-info a[href*="shipping"]');
+    if (shipLink) {
+      var wrap = document.createElement('span'); wrap.className = 'brf-ship';
+      shipLink.parentNode.insertBefore(wrap, shipLink); wrap.appendChild(shipLink);
+      shipLink.setAttribute('role', 'button'); shipLink.setAttribute('aria-haspopup', 'dialog'); shipLink.setAttribute('aria-expanded', 'false');
+      var card = document.createElement('span'); card.className = 'brf-ship__card'; card.setAttribute('role', 'dialog'); card.setAttribute('aria-label', 'Delivery options');
+      card.innerHTML = '<span class="brf-ship__h">Delivery options</span>'
+        + '<span class="brf-ship__row"><b>UK Tracked · 2–3 days</b><i>£3.99 · <strong>FREE</strong> over £65</i></span>'
+        + '<span class="brf-ship__row"><b>UK Next Day · order by 9pm</b><i>£6.99 · <strong>FREE</strong> over £150</i></span>'
+        + '<span class="brf-ship__row"><b>Europe Express</b><i>£13.95 · <strong>FREE</strong> over £400</i></span>'
+        + '<span class="brf-ship__row"><b>Rest of world Express</b><i>£20–£24.95 · <strong>FREE</strong> over £400</i></span>'
+        + '<span class="brf-ship__note" data-brf-ship-cart>Same-day dispatch Mon–Fri on orders before 10pm.</span>'
+        + '<a class="brf-ship__more" href="' + shipLink.getAttribute('href') + '">Full delivery policy →</a>';
+      wrap.appendChild(card);
+      var hideT = null;
+      function show(){ clearTimeout(hideT); wrap.classList.add('is-open'); shipLink.setAttribute('aria-expanded', 'true'); cartNote(); }
+      function hide(){ hideT = setTimeout(function(){ wrap.classList.remove('is-open'); shipLink.setAttribute('aria-expanded', 'false'); }, 160); }
+      wrap.addEventListener('mouseenter', show); wrap.addEventListener('mouseleave', hide);
+      shipLink.addEventListener('focus', show); wrap.addEventListener('focusout', function(e){ if (!wrap.contains(e.relatedTarget)) hide(); });
+      shipLink.addEventListener('click', function(e){ e.preventDefault(); wrap.classList.contains('is-open') ? hide() : show(); });
+      document.addEventListener('click', function(e){ if (!wrap.contains(e.target)) { wrap.classList.remove('is-open'); } });
+      function cartNote(){
+        if (cur !== 'GBP') return;
+        fetch('/cart.js', {credentials:'same-origin'}).then(function(r){ return r.json(); }).then(function(c){
+          var n = card.querySelector('[data-brf-ship-cart]'), left = 6500 - (c.total_price || 0);
+          n.innerHTML = left > 0 ? (c.total_price ? 'Your cart is <strong>' + money(left / 100) + '</strong> away from free UK delivery.' : 'Same-day dispatch Mon–Fri on orders before 10pm.') : '<strong>Your cart qualifies for free UK delivery ✓</strong>';
+        }).catch(function(){});
+      }
+    }
+
+    /* 2b. Countdown turns red in the last 3 hours */
+    setInterval(function(){
+      var box = document.querySelector('[data-brf-dispatch]'); if (!box) return;
+      var h = box.querySelector('[data-h]'), live = box.classList.contains('is-live');
+      box.classList.toggle('is-urgent', live && h && parseInt(h.textContent, 10) < 3);
+    }, 1000);
+
+    /* 2c. Stock-capped quantity */
+    var stock = {}; try { stock = JSON.parse((document.getElementById('brf-v3-stock') || {}).textContent || '{}'); } catch (e) {}
+    var qSel = info.querySelector('select.product-form__quantity');
+    var idEl = info.querySelector('form.product-form [name="id"]');
+    var lastId = null, note = null;
+    function capNote(msg){
+      if (!note) { note = document.createElement('p'); note.className = 'brf-qty-note'; var host = info.querySelector('.product-form__info-item--quantity .product-form__info-content'); if (host) host.appendChild(note); }
+      note.textContent = msg || ''; note.hidden = !msg;
+    }
+    function applyCap(force){
+      if (!idEl) return;
+      var id = idEl.value; if (!force && id === lastId) return; lastId = id;
+      var max = stock[id];
+      var qIn = info.querySelector('input[name="quantity"]:not([type="hidden"])');
+      if (qSel) {
+        var val = parseInt(qSel.value, 10) || 1, top = (max == null) ? 10 : Math.max(1, Math.min(max, 10)), html = '';
+        for (var i = 1; i <= top; i++) html += '<option value="' + i + '">' + (i === 10 && (max == null || max > 10) ? '10+' : i) + '</option>';
+        qSel.innerHTML = html; qSel.value = String(Math.min(val, top));
+      }
+      if (qIn) { if (max != null) qIn.max = max; else qIn.removeAttribute('max'); }
+      capNote(max != null && max > 0 && max <= 10 ? 'Only ' + max + ' in stock – you can order up to ' + max + '.' : '');
+    }
+    if (idEl) { applyCap(true); setInterval(applyCap, 400); }
+    document.addEventListener('input', function(e){
+      var el = e.target; if (!el.matches || !el.matches('.product-block-list__item--info input[name="quantity"]')) return;
+      var max = stock[idEl && idEl.value]; if (max == null) return;
+      var v = parseInt(el.value, 10);
+      if (v > max) { el.value = max; capNote('Sorry, we only have ' + max + ' in stock – we’ve set the maximum for you.'); }
+    }, true);
+  }
+
+  /* 2d. Frosted arrows on the main product image */
+  function galleryArrows(){
+    document.querySelectorAll('.template-product .product-gallery__carousel-wrapper').forEach(function(w){
+      if (w.querySelector('.brf-garrow')) return;
+      var gal = w.closest('.product-gallery'); if (!gal) return;
+      function thumbs(){ return [].slice.call(gal.querySelectorAll('.product-gallery__thumbnail')).filter(function(t){ return t.offsetParent !== null; }); }
+      if (thumbs().length < 2) return;
+      ['prev','next'].forEach(function(dir){
+        var b = document.createElement('button'); b.type = 'button'; b.className = 'brf-garrow brf-garrow--' + dir;
+        b.setAttribute('aria-label', dir === 'prev' ? 'Previous image' : 'Next image');
+        b.innerHTML = '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="' + (dir === 'prev' ? 'M15 5l-7 7 7 7' : 'M9 5l7 7-7 7') + '"/></svg>';
+        b.addEventListener('click', function(e){
+          e.preventDefault(); e.stopPropagation();
+          var ts = thumbs(); if (!ts.length) return;
+          var i = ts.findIndex(function(t){ return t.classList.contains('is-nav-selected'); }); if (i < 0) i = 0;
+          var n = ts[(i + (dir === 'prev' ? -1 : 1) + ts.length) % ts.length];
+          n.click(); if (window.matchMedia('(min-width:768px)').matches) { try { n.scrollIntoView({block:'nearest', inline:'center', behavior:'smooth'}); } catch (err) {} }
+        });
+        w.appendChild(b);
+      });
+    });
+  }
+  galleryArrows(); setTimeout(galleryArrows, 1200);
+
+  /* =====================================================================
+     3. FLUID EDGE FADES on anything that scrolls off-screen
+     ===================================================================== */
+  var FADE_SEL = '.brf-vp__strip,.brf-vps__chips,.brf-fbar__pills,.product-gallery .scroller__inner,.scroller__inner,.brf-sp__chips,.brf-srch__chips,.brf-vps__body,.brf-sp__body,.mini-cart__line-item-list,.brf-mc__items,.brf-panel__grid,.brf-panel__list';
+  function upd(el){
+    var h = el.scrollWidth - el.clientWidth > 2, v = el.scrollHeight - el.clientHeight > 2 && !h;
+    var s = h ? el.scrollLeft > 2 : v ? el.scrollTop > 2 : false;
+    var e = h ? el.scrollLeft < el.scrollWidth - el.clientWidth - 2 : v ? el.scrollTop < el.scrollHeight - el.clientHeight - 2 : false;
+    el.classList.toggle('brf-fx', h || v); el.classList.toggle('brf-fx--v', v);
+    el.classList.toggle('brf-fx--s', s); el.classList.toggle('brf-fx--e', e);
+  }
+  function fades(){
+    document.querySelectorAll(FADE_SEL).forEach(function(el){
+      if (!el.__brfFx) { el.__brfFx = 1; el.addEventListener('scroll', function(){ upd(el); }, {passive:true}); }
+      upd(el);
+    });
+  }
+  window.brfFades = fades;
+  fades(); window.addEventListener('resize', fades); window.addEventListener('load', fades);
+  setInterval(fades, 1500);
+
+  /* =====================================================================
+     4. CART PAGE — discount code field + quantity never exceeds stock
+     ===================================================================== */
+  var cartMax = {}; try { cartMax = JSON.parse((document.getElementById('brf-v3-cartmax') || {}).textContent || '{}'); } catch (e) {}
+  function markMax(){
+    document.querySelectorAll('.quantity-selector__value[data-line-id]').forEach(function(el){
+      var m = cartMax[el.getAttribute('data-line-id')]; if (m != null) el.setAttribute('data-brf-max', m);
+    });
+  }
+  markMax(); setInterval(markMax, 1500);
+  document.addEventListener('change', function(e){
+    var el = e.target; if (!el.matches || !el.matches('.quantity-selector__value[data-brf-max]')) return;
+    var max = parseInt(el.getAttribute('data-brf-max'), 10), v = parseInt(el.value, 10);
+    if (!isNaN(max) && v > max) {
+      el.value = max;
+      var qs = el.closest('.quantity-selector'), tip = qs && qs.parentNode.querySelector('.brf-qty-note');
+      if (!tip && qs) { tip = document.createElement('p'); tip.className = 'brf-qty-note'; qs.insertAdjacentElement('afterend', tip); }
+      if (tip) tip.textContent = 'Only ' + max + ' in stock – quantity set to the maximum.';
+    }
+  }, true);
+
+  /* Applying or removing a code updates the cart in place (no page reload). The theme re-renders the
+     whole cart section afterwards, so the code box is put back each time with the result message. */
+  var dcTpl = document.getElementById('brf-dc-tpl'), dcNote = null, dcFocus = false;
+  function mountDc(){
+    var recap = document.querySelector('.cart-recap .card__section');
+    if (!dcTpl || !recap || recap.querySelector('[data-brf-dc]')) return;
+    var anchor = recap.querySelector('.cart-recap__note') || recap.querySelector('.cart-recap__notices');
+    recap.insertBefore(dcTpl.content.cloneNode(true), anchor);
+    var box = recap.querySelector('[data-brf-dc]');
+    var dIn = box.querySelector('[data-brf-dc-input]'), dBtn = box.querySelector('[data-brf-dc-apply]'), dMsg = box.querySelector('[data-brf-dc-msg]');
+    var codes = [], chipBox = box.querySelector('[data-brf-dc-codes]'), hint = box.querySelector('[data-brf-dc-hint]');
+    var say = function(t, cls){ dMsg.hidden = !t; dMsg.textContent = t || ''; dMsg.className = 'brf-dc__msg' + (cls ? ' ' + cls : ''); };
+    var paint = function(list){
+      codes = list.map(function(d){ return d.code; });
+      hint.hidden = !!list.length; chipBox.hidden = !list.length;
+      chipBox.innerHTML = list.map(function(d){ return '<span class="brf-dc__code' + (d.applicable ? '' : ' is-bad') + '">' + esc(d.code) + (d.applicable ? '' : ' · not valid for this cart') + '<button type="button" aria-label="Remove code ' + esc(d.code) + '" data-brf-dc-remove="' + esc(d.code) + '">×</button></span>'; }).join('');
+    };
+    fetch('/cart.js', {credentials:'same-origin'}).then(function(r){ return r.json(); }).then(function(c){ paint(c.discount_codes || []); }).catch(function(){});
+    var send = function(list, done){
+      dBtn.disabled = true;
+      fetch('/cart/update.js', {method:'POST', credentials:'same-origin', headers:{'Content-Type':'application/json','Accept':'application/json'}, body: JSON.stringify({discount: list.join(',')})})
+        .then(function(r){ if (!r.ok) throw r; return r.json(); }).then(done)
+        .catch(function(){ dBtn.disabled = false; say('Sorry, we couldn’t apply that code just now. Please try again, or add it at checkout.', 'is-bad'); });
+    };
+    /* redraw prices and totals in place; the box comes back via cart:rerendered */
+    var rerender = function(note){
+      dcNote = note; dcFocus = box.contains(document.activeElement);
+      document.documentElement.dispatchEvent(new CustomEvent('cart:refresh', {bubbles: true, detail: {scrollToTop: false}}));
+    };
+    var apply = function(code){
+      code = (code || dIn.value).trim().toUpperCase(); if (!code) { dIn.focus(); return; }
+      if (codes.map(function(x){ return x.toUpperCase(); }).indexOf(code) > -1) { say(code + ' is already applied.'); return; }
+      say('Checking ' + code + '…');
+      send(codes.concat([code]), function(c){
+        var hit = (c.discount_codes || []).filter(function(d){ return d.code.toUpperCase() === code; })[0];
+        var ok = !!(hit && hit.applicable);
+        paint(c.discount_codes || []); dBtn.disabled = false; if (ok) dIn.value = '';
+        var note = ok ? ['✓ ' + code + ' applied – your saving is shown above.', 'is-good'] : [code + ' isn’t valid for the items in your cart.', 'is-bad'];
+        say(note[0], note[1]); rerender(note);
+      });
+    };
+    dBtn.addEventListener('click', function(){ apply(); });
+    dIn.addEventListener('keydown', function(e){ if (e.key === 'Enter') { e.preventDefault(); apply(); } });
+    box.addEventListener('click', function(e){
+      var r = e.target.closest('[data-brf-dc-remove]');
+      if (r) { var c = r.getAttribute('data-brf-dc-remove'); send(codes.filter(function(x){ return x !== c; }), function(cart){ paint(cart.discount_codes || []); dBtn.disabled = false; say(''); rerender(null); }); return; }
+      var tr = e.target.closest('[data-brf-dc-try]'); if (tr) { dIn.value = tr.getAttribute('data-brf-dc-try'); apply(); }
+    });
+    if (dcNote) { say(dcNote[0], dcNote[1]); dcNote = null; }
+    if (dcFocus) { dIn.focus({preventScroll: true}); dcFocus = false; }
+  }
+  mountDc();
+  document.addEventListener('cart:rerendered', mountDc);
+})();
+</script>

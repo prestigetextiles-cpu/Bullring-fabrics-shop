@@ -1,0 +1,122 @@
+{%- comment -%}
+  Prominent email sign-up band shown above the footer on every page.
+  Sign-ups are saved as Shopify customers with email marketing consent and the tag "newsletter"
+  (Omnisend syncs these automatically). Edit the wording below.
+{%- endcomment -%}
+<section class="brf-signup" id="brf-signup" aria-labelledby="brf-signup-title">
+  <div class="container brf-signup__inner">
+    <div class="brf-signup__copy">
+      <p class="brf-signup__eyebrow">Bullring Fabrics club</p>
+      <h2 id="brf-signup-title" class="brf-signup__title">Get 10% off your first order</h2>
+      <p class="brf-signup__text">Join the club for your welcome code, plus first news of new arrivals, flash sales and our latest fabric guides. No spam – unsubscribe any time.</p>
+      <a class="brf-signup__fb" href="https://www.facebook.com/bullringfabrics" target="_blank" rel="noopener"><svg aria-hidden="true" viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M13.5 21v-7.5h2.5l.4-3h-2.9V8.6c0-.9.3-1.5 1.5-1.5h1.5V4.4c-.3 0-1.2-.1-2.2-.1-2.2 0-3.7 1.3-3.7 3.8v2.4H8v3h2.6V21h2.9z"/></svg>Follow us on Facebook</a>
+    </div>
+    {%- form 'customer', id: 'brf-signup-form', class: 'brf-signup__form' -%}
+      {%- if form.posted_successfully? -%}
+        <div class="brf-signup__ok" role="status" tabindex="-1" data-brf-signup-ok>
+          <span class="brf-signup__tick" aria-hidden="true">&#10003;</span>
+          <span><strong>You're signed up!</strong> Here's your welcome code for 10% off your first order: <span class="brf-signup__code">WELCOME10</span></span>
+        </div>
+      {%- else -%}
+        {%- if form.errors -%}<p class="brf-signup__err" role="alert">{{ form.errors | default_errors }}</p>{%- endif -%}
+        <input type="hidden" name="contact[tags]" value="newsletter, brf-signup-band">
+        <input type="hidden" name="contact[accepts_marketing]" value="true">
+        <label for="brf-signup-email" class="brf-signup__label">Email address</label>
+        <div class="brf-signup__row">
+          <input id="brf-signup-email" type="email" name="contact[email]" placeholder="Your email address" autocomplete="email" autocapitalize="off" required class="brf-signup__input">
+          <button type="submit" class="brf-signup__btn">Sign up</button>
+        </div>
+        <p class="brf-signup__small">By signing up you agree to receive marketing emails. See our <a href="/policies/privacy-policy">privacy policy</a>. 10% off applies once per customer; excludes Pound Fabrics, wholesale &amp; trade and Home &amp; Lifestyle.</p>
+      {%- endif -%}
+    {%- endform -%}
+  </div>
+</section>
+<style>
+  /* Mobile layout fixes: stop hidden elements (search "close" label, sort menu, footer
+     language/currency lists) from making the page scroll sideways or past the footer on iPhone */
+  @supports (overflow:clip){html,body{overflow-x:clip}}
+  .value-picker[aria-hidden="true"]{display:none !important}
+  /* iPhone: stop the elastic "bounce" past the footer, and if it still happens (older iOS)
+     show the dark footer colour below the page instead of the cream background */
+  html:root{background:#0A0A0B !important;overscroll-behavior-y:none}
+  html:root body{background:#F6F3EE !important;overscroll-behavior-y:none}
+  /* Judge.me: hide the star badge until a product has at least one review */
+  .jdgm-prev-badge[data-number-of-reviews="0"]{display:none !important}
+  .brf-signup{background:#1F4D3A;color:#fff;padding:36px 0}
+  .brf-signup__inner{display:grid;grid-template-columns:1.1fr 1fr;gap:20px 40px;align-items:center}
+  .brf-signup__eyebrow{margin:0 0 6px;font-size:12px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#E7C98F}
+  .brf-signup__title{margin:0;font-size:24px;line-height:1.25;color:#fff}
+  .brf-signup__text{margin:8px 0 0;font-size:15px;line-height:1.5;color:#DCE7E0}
+  .brf-signup__label{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+  .brf-signup__row{display:flex;gap:8px}
+  .brf-signup__input{flex:1;min-width:0;height:48px;padding:0 16px;border:0;border-radius:999px;font-size:15px;color:#1C1B19;background:#fff}
+  .brf-signup__btn{height:48px;padding:0 24px;border:0;border-radius:999px;background:#E7C98F;color:#1C1B19;font-weight:700;font-size:15px;cursor:pointer;white-space:nowrap}
+  .brf-signup__btn:hover,.brf-signup__btn:focus-visible{background:#F2DDB0}
+  .brf-signup__small{margin:8px 0 0;font-size:12px;color:#BFD3C7}
+  .brf-signup__small a{color:#fff;text-decoration:underline}
+  .brf-signup__fb{display:inline-flex;align-items:center;gap:8px;margin-top:14px;padding:8px 14px;border:1px solid rgba(255,255,255,.35);border-radius:999px;color:#fff !important;font-size:14px;font-weight:600;text-decoration:none}
+  .brf-signup__fb:hover,.brf-signup__fb:focus-visible{background:rgba(255,255,255,.1)}
+  .brf-signup,#brf-signup-form{scroll-margin-top:140px}
+  .brf-signup__ok{display:flex;align-items:center;gap:12px;margin:0;padding:16px 18px;border-radius:12px;background:#fff;color:#1C1B19;font-size:15px;line-height:1.4;outline:none}
+  .brf-signup__ok strong{color:#1F4D3A}
+  .brf-signup__code{display:inline-block;margin-left:4px;padding:2px 10px;border:2px dashed #1F4D3A;border-radius:6px;font-weight:800;letter-spacing:.08em;color:#1F4D3A;user-select:all}
+  /* Smile.io rewards launcher: sit above the Shopify Inbox "Live chat" button instead of on top of it */
+  #smile-ui-lite-launcher-frame-container{bottom:84px !important}
+  .brf-signup__tick{flex:0 0 34px;height:34px;border-radius:50%;background:#1F4D3A;color:#fff;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:700}
+  .brf-signup__err{margin:0 0 8px;color:#FFD2CC;font-size:14px}
+  @media (max-width:799px){.brf-signup{padding:28px 0}.brf-signup__inner{grid-template-columns:1fr}.brf-signup__title{font-size:20px}}
+  @media (max-width:420px){.brf-signup__row{flex-direction:column}.brf-signup__btn{width:100%}}
+</style>
+<script>
+  (function(){
+    var ok = document.querySelector('[data-brf-signup-ok]');
+    if (!ok) return;
+    function show(){
+      var band = document.getElementById('brf-signup'); if (!band) return;
+      var header = document.querySelector('.header, #shopify-section-header');
+      var offset = (header ? header.getBoundingClientRect().height : 0) + 16;
+      window.scrollTo(0, band.getBoundingClientRect().top + window.pageYOffset - offset);
+      try { ok.focus({preventScroll:true}); } catch(e) {}
+    }
+    if (document.readyState === 'complete') { setTimeout(show, 50); } else { window.addEventListener('load', function(){ setTimeout(show, 50); }); }
+  })();
+</script>
+<script>
+  /* Newsletter sign-ups (this band, the footer and the pop-ups) send in the background and show the
+     result in place, instead of reloading the page. Shopify re-renders the page after a sign-up, so the
+     form is swapped for its own freshly rendered version: same success message and errors as before.
+     If Shopify asks for a spam check, the form falls back to a normal submit so that check can show. */
+  (function(){
+    if (window.__brfSignupAjax || !window.fetch || !window.DOMParser) return;
+    window.__brfSignupAjax = true;
+    document.addEventListener('submit', function(e){
+      var f = e.target;
+      if (e.defaultPrevented || !f.matches || !f.matches('form') || !f.id || f.__brfNative) return;
+      var type = f.querySelector('input[name="form_type"]');
+      if (!type || type.value !== 'customer' || !f.querySelector('[name="contact[email]"]')) return;
+      e.preventDefault();
+      if (f.__brfBusy) return;
+      f.__brfBusy = true;
+      var btn = f.querySelector('[type="submit"]');
+      if (btn) { btn.disabled = true; btn.setAttribute('aria-busy', 'true'); }
+      function native(){ f.__brfNative = true; f.__brfBusy = false; if (btn) { btn.disabled = false; btn.removeAttribute('aria-busy'); } HTMLFormElement.prototype.submit.call(f); }
+      fetch(f.getAttribute('action') || '/contact', {method: 'POST', body: new FormData(f), credentials: 'same-origin', headers: {'Accept': 'text/html'}})
+        .then(function(r){
+          if (!r.ok || /\/challenge/.test(r.url)) throw 0;
+          return r.text();
+        })
+        .then(function(html){
+          var fresh = new DOMParser().parseFromString(html, 'text/html').getElementById(f.id);
+          if (!fresh) throw 0;
+          f.innerHTML = fresh.innerHTML;
+          f.__brfBusy = false;
+          var msg = f.querySelector('[data-brf-signup-ok], [role="status"], [role="alert"], .alert, .form__success, .form__errors') || f;
+          if (!msg.hasAttribute('tabindex')) msg.setAttribute('tabindex', '-1');
+          try { msg.focus({preventScroll: true}); } catch (err) {}
+          var r = msg.getBoundingClientRect();
+          if (r.top < 0 || r.bottom > window.innerHeight) msg.scrollIntoView({block: 'center', behavior: 'smooth'});
+        })
+        .catch(native);
+    }, true);
+  })();
+</script>

@@ -1,0 +1,936 @@
+{%- comment -%}
+  Bull Ring Fabrics — v3 polish (cart, quick view, swatches, filters, tabs)
+  1  Every add-to-cart form opens the cart drawer instead of the cart page
+  2  Quick view: translucent glass, no thumbnail strip, bigger image, glass arrows
+     + product cards: browse every image with arrows, without opening the product
+  3  Clearer glass on image arrows, breadcrumbs and the "more items" pill
+  4  Cart drawer "more items" pill sits on the list on desktop too
+  5  Undo after removing an item from the cart drawer / cart page
+  6  Free-delivery celebration (drawer + cart page), once per unlock
+  7  "Next ›" pagination pill
+  8  Filters keep your place on the page after they reload it
+  9  Colour swatches for names the browser can't read (Cerise, Duck Egg, Flo Pink…)
+  10 "View more" on descriptions that live inside tabs
+  11 Filter row: fade + glass arrow shows there are more filters to the right
+  12 Gentle spring when tabs / collapsibles open
+  Rendered once from layout/theme.liquid, after brf-v2-fixes.
+{%- endcomment -%}
+<style>
+  :root{
+    --v3-spring:cubic-bezier(.34,1.56,.64,1);
+    --v3-soft:cubic-bezier(.22,1.2,.36,1);
+    --v3-ease:cubic-bezier(.4,0,.2,1);
+    --v3-glass:rgba(255,255,255,.34);
+    --v3-glass-hover:rgba(255,255,255,.52);
+    --v3-blur:saturate(180%) blur(14px);
+    --v3-edge:inset 0 1px 0 rgba(255,255,255,.8),inset 0 0 0 .5px rgba(255,255,255,.55),0 0 0 .5px rgba(0,0,0,.06),0 8px 24px -10px rgba(29,29,31,.32);
+  }
+
+  /* ---------- 3. Clear glass pills ---------- */
+  html body .brf-garrow,.brf-qv__arrow,.brf-ci__arrow,.brf-prow__btn{
+    background:var(--v3-glass)!important;-webkit-backdrop-filter:var(--v3-blur)!important;backdrop-filter:var(--v3-blur)!important;
+    box-shadow:var(--v3-edge)!important;border:0!important;color:#1D1D1F!important;
+    transition:background-color .25s var(--v3-ease),transform .35s var(--v3-spring),opacity .25s var(--v3-ease)!important}
+  html body .brf-garrow:hover,.brf-qv__arrow:hover,.brf-ci__arrow:hover,.brf-prow__btn:hover{background:var(--v3-glass-hover)!important;transform:scale(1.06)}
+  html body .brf-garrow:active,.brf-qv__arrow:active,.brf-ci__arrow:active,.brf-prow__btn:active{transform:scale(.94)}
+  html body .brf-garrow__count{background:transparent!important;-webkit-backdrop-filter:none!important;backdrop-filter:none!important;box-shadow:none!important;border:0!important;color:#1D1D1F!important}
+  html body .breadcrumb{background:rgba(255,255,255,.4)!important;-webkit-backdrop-filter:var(--v3-blur)!important;backdrop-filter:var(--v3-blur)!important;box-shadow:var(--v3-edge)!important;border:0!important}
+  html body .brf-mc__more{background:rgba(255,255,255,.42)!important;-webkit-backdrop-filter:var(--v3-blur)!important;backdrop-filter:var(--v3-blur)!important;box-shadow:var(--v3-edge)!important;border:0!important;color:#1D1D1F!important}
+
+  /* ---------- 4. Drawer pill anchors to the list on every screen size ---------- */
+  .brf-mc .mini-cart__content{position:relative}
+
+  /* ---------- 7. Pagination pills ---------- */
+  .pagination__next,.pagination__prev{display:inline-flex!important;align-items:center;justify-content:center;gap:6px;white-space:nowrap;height:40px;line-height:1!important;padding:0 16px!important}
+  .pagination__next svg,.pagination__prev svg{position:static!important;margin:0!important;width:8px;height:12px;flex:none}
+
+  /* ---------- 2. Quick view ---------- */
+  .modal#modal-quick-view-collection-template,.modal[id^="modal-quick-view"]{background:rgba(29,29,31,.28)!important;-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px)}
+  .modal[id^="modal-quick-view"]{z-index:2147483600!important}
+  .modal[id^="modal-quick-view"] .modal__dialog{max-height:calc(100vh - 48px);max-height:calc(100dvh - 48px)}
+  .modal[id^="modal-quick-view"] .modal__inner{max-height:inherit;overflow-y:auto;overscroll-behavior:contain;scrollbar-width:thin}
+  .modal[id^="modal-quick-view"] .product-meta,.modal[id^="modal-quick-view"] .product-form{color:#1D1D1F}
+  .modal[id^="modal-quick-view"] .product-form__info-item .text--xsmall,.modal[id^="modal-quick-view"] .product-form__price-info .text--subdued,.modal[id^="modal-quick-view"] .text--subdued{color:#515154!important}
+  html.brf-hw-page .modal[id^="modal-quick-view"] .modal__dialog{background:rgba(251,251,253,.93)!important}
+  .modal[id^="modal-quick-view"] .modal__dialog{background:rgba(251,251,253,.84)!important;-webkit-backdrop-filter:saturate(180%) blur(40px);backdrop-filter:saturate(180%) blur(40px);
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.85),inset 0 0 0 .5px rgba(255,255,255,.6),0 30px 80px -20px rgba(29,29,31,.35)!important;border-radius:22px;overflow:hidden}
+  .modal[id^="modal-quick-view"] .card,.modal[id^="modal-quick-view"] .featured-product,.modal[id^="modal-quick-view"] .modal__inner{background:transparent!important;border:0!important;box-shadow:none!important}
+  .modal[id^="modal-quick-view"] .product-gallery .scroller,.modal[id^="modal-quick-view"] .product-gallery__thumbnail-list{display:none!important}
+  .modal[id^="modal-quick-view"] .product-gallery{display:block!important;position:relative}
+  .modal[id^="modal-quick-view"] .product-gallery__carousel-wrapper{width:100%!important;max-width:none!important;margin:0!important}
+  @media (min-width:1000px){
+    .modal[id^="modal-quick-view"] .featured-product>.card:first-child{width:56%}
+  }
+  .brf-qv__arrow{position:absolute;top:50%;z-index:5;width:44px;height:44px;margin-top:-22px;border-radius:50%;display:grid;place-items:center;cursor:pointer;padding:0}
+  .brf-qv__arrow--prev{left:14px}.brf-qv__arrow--next{right:14px}
+  .brf-qv__arrow svg{width:16px;height:16px}
+  .brf-qv__count{position:absolute;left:50%;bottom:14px;transform:translateX(-50%);z-index:5;padding:5px 11px;border-radius:980px;font-size:12px;font-weight:600;letter-spacing:.02em;color:#1D1D1F;
+    background:rgba(255,255,255,.34);-webkit-backdrop-filter:var(--v3-blur);backdrop-filter:var(--v3-blur);box-shadow:var(--v3-edge);pointer-events:none;font-variant-numeric:tabular-nums}
+
+  /* ---------- 2b. Product-card image browsing ---------- */
+  .product-item__image-wrapper.brf-ci{position:relative;display:block}
+  .brf-ci__img{position:absolute;inset:0;width:100%;height:100%;z-index:2;opacity:0;transition:opacity .35s var(--v3-ease);pointer-events:none;background:#fff}
+  .brf-ci__img.is-on{opacity:1}
+  .brf-ci__arrow{position:absolute!important;top:50%;z-index:4;box-sizing:border-box;min-width:34px;height:34px;margin:-17px 0 0!important;padding:0!important;border-radius:980px!important;
+    display:inline-flex!important;align-items:center;justify-content:center;gap:6px;cursor:pointer;opacity:0;line-height:1!important;font:600 12px/1 -apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,sans-serif!important;letter-spacing:.02em;font-variant-numeric:tabular-nums}
+  .brf-ci__arrow svg{position:static!important;display:block;width:12px!important;height:12px!important;margin:0!important;flex:none;transform:none!important}
+  .brf-ci__arrow--prev{left:8px}.brf-ci__arrow--next{right:8px}
+  .brf-ci__arrow--prev.has-count{padding:0 12px 0 10px!important}
+  .brf-ci__count{display:none;white-space:nowrap}
+  .brf-ci__arrow--prev.has-count .brf-ci__count{display:inline}
+  .brf-ci__count i{font-style:normal;opacity:.45;margin:0 4px}
+  html.brf-hw-page .brf-ci__arrow{background:rgba(255,255,255,.62)!important}
+  .brf-ci:hover .brf-ci__arrow,.brf-ci:focus-within .brf-ci__arrow{opacity:1}
+  .brf-ci__dots{position:absolute;left:50%;bottom:8px;transform:translateX(-50%);z-index:4;display:flex;gap:4px;padding:4px 6px;border-radius:980px;opacity:0;transition:opacity .25s var(--v3-ease);
+    background:rgba(255,255,255,.34);-webkit-backdrop-filter:var(--v3-blur);backdrop-filter:var(--v3-blur);box-shadow:var(--v3-edge);pointer-events:none}
+  .brf-ci__dots i{width:5px;height:5px;border-radius:50%;background:rgba(29,29,31,.28);transition:background-color .25s,transform .35s var(--v3-spring)}
+  .brf-ci__dots i.is-on{background:#1D1D1F;transform:scale(1.25)}
+  .brf-ci.is-browsing .brf-ci__dots{opacity:1}
+  @media (hover:none){
+    .brf-ci__arrow{opacity:1;min-width:28px;height:28px;margin-top:-14px!important;background:rgba(255,255,255,.62)!important;font-size:11px!important}
+    .brf-ci__arrow svg{width:10px!important;height:10px!important}
+    .brf-ci__arrow--prev.has-count{padding:0 9px 0 7px!important}
+    .brf-ci__arrow--prev{left:5px}.brf-ci__arrow--next{right:5px}
+  }
+  .brf-ci.is-browsing .product-item__secondary-image{opacity:0!important}
+
+  /* ---------- 5. Undo toast ---------- */
+  .brf-undo{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom));z-index:2147483647;display:flex;align-items:center;gap:14px;max-width:min(92vw,440px);
+    padding:10px 10px 10px 18px;border-radius:980px;color:#1D1D1F;font-size:14px;line-height:1.3;
+    background:rgba(255,255,255,.72);-webkit-backdrop-filter:saturate(180%) blur(24px);backdrop-filter:saturate(180%) blur(24px);
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.85),inset 0 0 0 .5px rgba(255,255,255,.6),0 0 0 .5px rgba(0,0,0,.08),0 18px 40px -14px rgba(29,29,31,.4);
+    transform:translate(-50%,24px) scale(.96);opacity:0;transition:transform .5s var(--v3-spring),opacity .25s var(--v3-ease)}
+  @media (max-width:749px){.brf-undo{bottom:calc(84px + env(safe-area-inset-bottom));max-width:calc(100vw - 32px)}}
+  .brf-undo.is-in{transform:translate(-50%,0) scale(1);opacity:1}
+  .brf-undo__t{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .brf-undo__t b{font-weight:600}
+  .brf-undo__btn{flex:none;border:0;border-radius:980px;padding:8px 16px;font:inherit;font-weight:600;color:#fff;background:#1D1D1F;cursor:pointer;transition:transform .3s var(--v3-spring)}
+  .brf-undo__btn:active{transform:scale(.94)}
+  .brf-undo__bar{position:absolute;left:18px;right:18px;bottom:4px;height:2px;border-radius:2px;background:rgba(29,29,31,.12);overflow:hidden}
+  .brf-undo__bar::after{content:"";position:absolute;inset:0;background:rgba(29,29,31,.45);transform-origin:left;animation:brfUndoBar var(--brf-undo-ms,8000ms) linear forwards}
+  @keyframes brfUndoBar{to{transform:scaleX(0)}}
+  .brf-undo.is-err .brf-undo__btn{display:none}
+  /* cart page: drop in at the top, just under the header, where the eye already is (the page scrolls up after a removal) */
+  .brf-undo--top,.brf-undo--top.brf-undo{top:var(--brf-undo-top,16px);bottom:auto;transform:translate(-50%,-24px) scale(.96);font-size:15px;padding:12px 12px 12px 20px}
+  .brf-undo--top.is-in{transform:translate(-50%,0) scale(1)}
+
+  /* ---------- 5b. Undo row inside the drawer ---------- */
+  .brf-mc__undo{position:relative;display:flex;align-items:center;gap:10px;margin:8px 0 10px;padding:10px 10px 12px 12px;border-radius:14px;overflow:hidden;
+    background:rgba(255,255,255,.6);-webkit-backdrop-filter:var(--v3-blur);backdrop-filter:var(--v3-blur);box-shadow:var(--v3-edge);font-size:13px;line-height:1.3;color:#1D1D1F;
+    animation:brfUndoIn .45s var(--v3-spring) both}
+  @keyframes brfUndoIn{from{opacity:0;transform:translateY(-6px) scale(.97)}to{opacity:1;transform:none}}
+  .brf-mc__undo img{width:40px;height:40px;border-radius:8px;object-fit:cover;flex:none;opacity:.55;filter:grayscale(.4)}
+  .brf-mc__undo-t{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .brf-mc__undo-t b{font-weight:600}
+  .brf-mc__undo-btn{flex:none;border:0;border-radius:980px;padding:8px 16px;font:inherit;font-weight:600;color:#fff;background:#1D1D1F;cursor:pointer;transition:transform .3s var(--v3-spring)}
+  .brf-mc__undo-btn:active{transform:scale(.94)}
+  .brf-mc__undo-bar{position:absolute;left:12px;right:12px;bottom:4px;height:2px;border-radius:2px;background:rgba(29,29,31,.4);transform-origin:left;animation:brfUndoBar 10s linear forwards}
+  /* ---------- 6. Free-delivery celebration ---------- */
+  .brf-mc__free{position:relative}
+  .brf-mc__free.brf-yay{animation:brfYayCard 1.1s var(--v3-soft) both}
+  @keyframes brfYayCard{0%{transform:scale(.98)}35%{transform:scale(1.015)}100%{transform:none}}
+  .brf-mc__free.brf-yay .brf-mc__tick{display:inline-grid;place-items:center;animation:brfYayTick .8s var(--v3-spring) both}
+  @keyframes brfYayTick{0%{transform:scale(0) rotate(-45deg);opacity:0}60%{opacity:1}100%{transform:none;opacity:1}}
+  .brf-mc__free.brf-yay strong{background:linear-gradient(100deg,currentColor 0%,currentColor 40%,#C9A227 50%,currentColor 60%,currentColor 100%);background-size:250% 100%;
+    -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;animation:brfYaySheen 1.6s var(--v3-ease) .25s both}
+  @keyframes brfYaySheen{from{background-position:100% 0}to{background-position:0 0}}
+  .brf-mc__free.brf-yay .brf-mc__bar{position:relative;overflow:hidden}
+  .brf-mc__free.brf-yay .brf-mc__bar::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,transparent,rgba(255,255,255,.85),transparent);transform:translateX(-100%);animation:brfYayBar 1.2s var(--v3-ease) .15s 2}
+  @keyframes brfYayBar{to{transform:translateX(100%)}}
+  .brf-yay__p{position:absolute;left:var(--x);top:var(--y);width:var(--s);height:var(--s);border-radius:var(--r);background:var(--c);pointer-events:none;z-index:3;opacity:0;
+    animation:brfYayP var(--d) cubic-bezier(.15,.7,.3,1) var(--delay) forwards}
+  @keyframes brfYayP{0%{opacity:0;transform:translate(0,0) scale(.4) rotate(0)}12%{opacity:1}100%{opacity:0;transform:translate(var(--dx),var(--dy)) scale(1) rotate(var(--rot))}}
+  .brf-yay__glow{position:absolute;inset:-6px;border-radius:16px;pointer-events:none;z-index:0;box-shadow:0 0 0 0 rgba(201,162,39,.45);animation:brfYayGlow 1.4s var(--v3-ease) forwards}
+  @keyframes brfYayGlow{0%{box-shadow:0 0 0 0 rgba(201,162,39,.4)}100%{box-shadow:0 0 0 14px rgba(201,162,39,0)}}
+
+  /* ---------- 9. Swatches ---------- */
+  .color-swatch__item.brf-sw--img{background-size:cover!important;background-position:center!important}
+  #shopify-section-product-recommendations .product-item__swatch-list,
+  .product-recommendations .product-item__swatch-list{position:static!important;margin:8px 0 6px!important;min-height:22px;height:auto!important;transform:none!important}
+  #shopify-section-product-recommendations .color-swatch-list,.product-recommendations .color-swatch-list{justify-content:flex-start!important;flex-wrap:wrap}
+  #shopify-section-product-recommendations .product-item__price-list,.product-recommendations .product-item__price-list{position:relative;z-index:1;margin-top:4px}
+
+  /* ---------- 10. View more always reachable ---------- */
+  .expandable-content>.expandable-content__toggle{z-index:3}
+  .expandable-content.brf-ec--short{max-height:none!important}
+  .expandable-content.brf-ec--short>.expandable-content__toggle{display:none!important}
+
+  /* ---------- 11. Filter row: more-to-the-right cue ---------- */
+  .brf-fbar__pills.brf-prow{scroll-behavior:smooth;-webkit-mask-image:var(--brf-prow-mask);mask-image:var(--brf-prow-mask);transition:-webkit-mask-image .3s}
+  .brf-fbar__pills.brf-prow.can-r{--brf-prow-mask:linear-gradient(90deg,#000 0,#000 calc(100% - 64px),transparent 100%)}
+  .brf-fbar__pills.brf-prow.can-l{--brf-prow-mask:linear-gradient(90deg,transparent 0,#000 48px,#000 100%)}
+  .brf-fbar__pills.brf-prow.can-l.can-r{--brf-prow-mask:linear-gradient(90deg,transparent 0,#000 48px,#000 calc(100% - 64px),transparent 100%)}
+  .brf-prow__btn{position:absolute;top:50%;z-index:6;width:32px;height:32px;margin-top:-16px;border-radius:50%;display:grid;place-items:center;cursor:pointer;padding:0;
+    opacity:0;pointer-events:none;transform:scale(.8)}
+  .brf-prow__btn svg{width:12px;height:12px}
+  .brf-prow__btn.is-on{opacity:1;pointer-events:auto;transform:none}
+  .brf-prow__btn--r.is-on{animation:brfProwHint 2.4s var(--v3-ease) .6s 2}
+  @keyframes brfProwHint{0%,70%,100%{translate:0}80%{translate:4px}90%{translate:0}}
+  html.brf-hw-page .brf-prow__btn{background:rgba(40,32,48,.5)!important;color:#fff!important}
+
+  /* ---------- 12. Spring open for tabs ---------- */
+  .card__collapsible{transition:height .55s cubic-bezier(.3,1.25,.5,1)!important}
+  .card__collapsible-button svg,.card__collapsible-button .plus-button,.brf-tab-toggle svg{transition:transform .5s var(--v3-spring)!important}
+
+
+  /* ---------- 13. Dispatch countdown urgency ---------- */
+  .brf-dispatch.brf-urgent .brf-dispatch__unit b{color:#D70015!important;transition:color .4s}
+  [data-brf-mc-dispatch].brf-urgent [data-brf-mc-dispatch-text] strong:first-of-type{color:#D70015!important}
+  html.brf-hw-page .brf-dispatch.brf-urgent .brf-dispatch__unit b,html.brf-hw-page [data-brf-mc-dispatch].brf-urgent [data-brf-mc-dispatch-text] strong:first-of-type{color:#FF453A!important}
+
+  /* ---------- 14. Low stock in the cart drawer ---------- */
+  .brf-mc__low{display:inline-flex;align-items:center;gap:6px;margin:4px 0 0;font-size:12px;font-weight:600;line-height:1.3;color:#D70015}
+  .brf-mc__low i{position:relative;width:7px;height:7px;border-radius:50%;background:currentColor;flex:none}
+  .brf-mc__low i::after{content:"";position:absolute;inset:0;border-radius:50%;background:currentColor;animation:brfLowPing 1.6s cubic-bezier(0,0,.2,1) infinite}
+  @keyframes brfLowPing{0%{transform:scale(1);opacity:.6}80%,100%{transform:scale(2.4);opacity:0}}
+
+  /* instant quantity: gentle hint while it saves */
+  .brf-qty-pending .mini-cart__price-list .price,.brf-qty-pending .price{transition:opacity .2s;opacity:.7}
+  .quantity-selector__button{touch-action:manipulation}
+  /* filtering in place: soften the grid while new results load */
+  html.brf-filtering .collection__dynamic-part{opacity:.45;transition:opacity .2s;pointer-events:none}
+  @media (prefers-reduced-motion:reduce){
+    .brf-undo,.brf-ci__img,.brf-prow__btn,.card__collapsible,.brf-qv__arrow,.brf-ci__arrow{transition:none!important;animation:none!important}
+    .brf-mc__free.brf-yay,.brf-mc__free.brf-yay *,.brf-yay__p,.brf-mc__low i::after,.brf-yay__glow,.brf-prow__btn--r.is-on{animation:none!important}
+    .brf-mc__free.brf-yay strong{-webkit-text-fill-color:currentColor}
+  }
+</style>
+
+<script>
+(function(){
+  var doc = document, root = doc.documentElement;
+  var reduce = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var ARROW_L = '<svg viewBox="0 0 12 12" aria-hidden="true"><path d="M7.5 2 3.5 6l4 4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+  var ARROW_R = '<svg viewBox="0 0 12 12" aria-hidden="true"><path d="M4.5 2l4 4-4 4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+  function ss(k, v){ try { if (v === undefined) return sessionStorage.getItem(k); if (v === null) sessionStorage.removeItem(k); else sessionStorage.setItem(k, v); } catch (e) { return null; } }
+  function esc(s){ return String(s).replace(/[&<>"]/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]; }); }
+
+  /* ================= shared: cart helpers ================= */
+  function refreshCart(){ root.dispatchEvent(new CustomEvent('cart:refresh', {bubbles: true, detail: {}})); }
+  function openDrawer(){
+    if (!(window.theme && theme.cartType === 'drawer')) { location.href = '/cart'; return; }
+    setTimeout(function(){
+      if (root.classList.contains('brf-cart-open')) return;
+      var t = doc.querySelector('.header__cart-toggle'); if (t) t.click();
+    }, 350);
+  }
+
+  /* ================= 1. Add to cart opens the drawer ================= */
+  doc.addEventListener('submit', function(e){
+    var f = e.target;
+    if (e.defaultPrevented || !f.matches || !f.matches('form[action*="/cart/add"]')) return;
+    if (!(window.theme && theme.cartType === 'drawer')) return;
+    var btn = e.submitter || f.querySelector('[type="submit"]');
+    if (btn && btn.getAttribute('data-action') === 'add-to-cart') return;
+    e.preventDefault();
+    var fd = new FormData(f);
+    if (btn && btn.name && !fd.has(btn.name)) fd.append(btn.name, btn.value);
+    if (btn) { btn.setAttribute('aria-busy', 'true'); btn.classList.add('is-loading'); }
+    fetch('/cart/add.js', {method: 'POST', body: fd, headers: {'Accept': 'application/json', 'X-Requested-With': 'XMLHttpRequest'}})
+      .then(function(r){ return r.json().then(function(j){ return {ok: r.ok, j: j}; }); })
+      .then(function(res){
+        if (!res.ok) throw new Error(res.j.description || res.j.message || 'Could not add to basket');
+        refreshCart(); openDrawer();
+      })
+      .catch(function(err){ toast(esc(err.message), null, true); })
+      .then(function(){ if (btn) { btn.removeAttribute('aria-busy'); btn.classList.remove('is-loading'); } });
+  });
+
+  /* ================= 5. Undo removal ================= */
+  var cartCache = null, cacheT = 0;
+  function loadCart(){
+    var t = ++cacheT;
+    return fetch('/cart.js', {headers: {'Accept': 'application/json'}}).then(function(r){ return r.json(); })
+      .then(function(c){ if (t === cacheT) cartCache = c; return c; }).catch(function(){});
+  }
+  var toastEl = null, toastTimer = 0;
+  function undoTop(){
+    var h = doc.getElementById('shopify-section-header'), t = 16;
+    if (h) { var r = h.getBoundingClientRect(); if (r.bottom > 0) t = Math.round(r.bottom) + 12; }
+    return t;
+  }
+  function toast(html, onUndo, isErr, atTop){
+    if (toastEl) toastEl.remove();
+    clearTimeout(toastTimer);
+    var ms = isErr ? 4000 : (atTop ? 10000 : 8000);
+    var el = doc.createElement('div');
+    el.className = 'brf-undo' + (isErr ? ' is-err' : '') + (atTop ? ' brf-undo--top' : '');
+    if (atTop) el.style.setProperty('--brf-undo-top', undoTop() + 'px');
+    el.setAttribute('role', 'status'); el.setAttribute('aria-live', 'polite');
+    el.style.setProperty('--brf-undo-ms', ms + 'ms');
+    el.innerHTML = '<span class="brf-undo__t">' + html + '</span>' + (onUndo ? '<button type="button" class="brf-undo__btn">Undo</button>' : '') + '<span class="brf-undo__bar"></span>';
+    doc.body.appendChild(el);
+    toastEl = el;
+    requestAnimationFrame(function(){ requestAnimationFrame(function(){ el.classList.add('is-in'); }); });
+    function hide(){ el.classList.remove('is-in'); setTimeout(function(){ el.remove(); if (toastEl === el) toastEl = null; }, 400); }
+    if (onUndo) el.querySelector('.brf-undo__btn').addEventListener('click', function(){ clearTimeout(toastTimer); onUndo(el, hide); });
+    toastTimer = setTimeout(hide, ms);
+    return el;
+  }
+  var pendingUndo = null, undoTimer = 0;
+  function restoreItem(item){
+    var line = {id: item.variant_id, quantity: item.quantity};
+    if (item.properties && Object.keys(item.properties).length) line.properties = item.properties;
+    if (item.selling_plan_allocation) line.selling_plan = item.selling_plan_allocation.selling_plan.id;
+    return fetch('/cart/add.js', {method: 'POST', headers: {'Content-Type': 'application/json', 'Accept': 'application/json'}, body: JSON.stringify({items: [line]})})
+      .then(function(r){ if (!r.ok) throw 0; return r.json(); });
+  }
+  function paintUndo(){
+    var mc = doc.querySelector('.mini-cart');
+    if (!mc || !pendingUndo || Date.now() > pendingUndo.until || mc.querySelector('.brf-mc__undo')) return;
+    var host = mc.querySelector('.mini-cart__line-item-list') || mc.querySelector('.brf-mc__empty');
+    if (!host) return;
+    var it = pendingUndo.item;
+    var row = doc.createElement('div');
+    row.className = 'brf-mc__undo'; row.setAttribute('role', 'status');
+    row.innerHTML = (it.image ? '<img src="' + esc(it.image) + (it.image.indexOf('?') > -1 ? '&' : '?') + 'width=96" alt="" width="40" height="40">' : '') +
+      '<span class="brf-mc__undo-t">Removed <b>' + esc(it.product_title) + '</b></span><button type="button" class="brf-mc__undo-btn">Undo</button><span class="brf-mc__undo-bar" style="animation-duration:' + Math.max(0, pendingUndo.until - Date.now()) + 'ms"></span>';
+    host.insertBefore(row, host.firstChild);
+    row.querySelector('button').addEventListener('click', function(e){
+      e.preventDefault(); e.stopPropagation();
+      var item = pendingUndo && pendingUndo.item; if (!item) return;
+      this.textContent = 'Restoring…'; this.disabled = true;
+      pendingUndo = null; clearTimeout(undoTimer);
+      restoreItem(item).then(function(){ refreshCart(); }).catch(function(){ row.remove(); toast('Sorry, that item could not be restored', null, true); });
+    });
+  }
+  doc.addEventListener('click', function(e){
+    var a = e.target.closest && e.target.closest('[data-action="decrease-quantity"][data-quantity="0"], .mini-cart__quantity-remove, .line-item__quantity-remove');
+    if (!a || !cartCache) return;
+    var key = a.getAttribute('data-line-id');
+    if (!key) { var m = (a.getAttribute('href') || '').match(/id=([^&]+)/); key = m && decodeURIComponent(m[1]); }
+    if (!key) return;
+    var item = null;
+    cartCache.items.forEach(function(it){ if (it.key === key || String(it.variant_id) === key || String(it.id) === key) item = item || it; });
+    if (!item) return;
+    var onCartPage = !a.closest('.mini-cart');
+    if (!onCartPage) {
+      /* drawer (desktop and mobile): Undo row right where the item was */
+      pendingUndo = {item: item, until: Date.now() + 10000};
+      clearTimeout(undoTimer);
+      undoTimer = setTimeout(function(){ pendingUndo = null; var r = doc.querySelector('.brf-mc__undo'); if (r) r.remove(); }, 10000);
+      setTimeout(paintUndo, 150); setTimeout(paintUndo, 900);
+      return;
+    }
+    setTimeout(function(){
+      toast('Removed <b>' + esc(item.product_title) + '</b>', function(el, hide){
+        el.querySelector('.brf-undo__btn').textContent = 'Restoring…';
+        restoreItem(item).then(function(){ hide(); refreshCart(); })
+          .catch(function(){ hide(); toast('Sorry, that item could not be restored', null, true, true); });
+      }, false, true);
+    }, 150);
+  }, true);
+  /* keep a copy of the cart so we know what was removed */
+  function watchCart(){
+    loadCart();
+    var t = 0;
+    var mc = doc.querySelector('.mini-cart');
+    if (mc && !mc.__brfV3) {
+      mc.__brfV3 = true;
+      new MutationObserver(function(list){
+        for (var i = 0; i < list.length; i++) {
+          var n = list[i].target;
+          if (n.nodeType === 1 && (n.closest('[data-brf-mc-dispatch]') || n.classList.contains('brf-yay__p') || n.classList.contains('brf-mc__free'))) continue;
+          clearTimeout(t); t = setTimeout(function(){ loadCart(); celebrate(); paintUndo(); }, 120); return;
+        }
+      }).observe(mc, {childList: true, subtree: true});
+    }
+  }
+
+  /* ================= 6. Free-delivery celebration ================= */
+  var COLS = ['#C9A227', '#E8C766', '#1D1D1F', '#0A7F4F', '#F2E3B3', '#B8860B'];
+  function celebrate(){
+    var nodes = doc.querySelectorAll('.brf-mc__free');
+    if (!nodes.length) return;
+    var done = null, visibleDone = null;
+    nodes.forEach(function(n){
+      var isDone = n.classList.contains('is-done');
+      if (done === null) done = isDone;
+      if (isDone && n.getClientRects().length && n.offsetParent !== null) {
+        var inDrawer = !!n.closest('.mini-cart');
+        if (!inDrawer || root.classList.contains('brf-cart-open')) visibleDone = visibleDone || n;
+      }
+    });
+    if (!done) { ss('brfFreeDone', '0'); return; }
+    if (ss('brfFreeDone') === '1' || !visibleDone) return;
+    ss('brfFreeDone', '1');
+    if (reduce) return;
+    burst(visibleDone);
+  }
+  function burst(n){
+    n.classList.remove('brf-yay'); void n.offsetWidth; n.classList.add('brf-yay');
+    var glow = doc.createElement('span'); glow.className = 'brf-yay__glow'; n.appendChild(glow);
+    var tick = n.querySelector('.brf-mc__tick');
+    var nr = n.getBoundingClientRect(), tr = tick ? tick.getBoundingClientRect() : nr;
+    var ox = tr.left - nr.left + tr.width / 2, oy = tr.top - nr.top + tr.height / 2;
+    var frag = doc.createDocumentFragment();
+    for (var i = 0; i < 26; i++) {
+      var p = doc.createElement('span'); p.className = 'brf-yay__p';
+      var ang = (-160 + Math.random() * 140) * Math.PI / 180, dist = 40 + Math.random() * 90;
+      var s = 3 + Math.random() * 4;
+      p.style.cssText = '--x:' + ox + 'px;--y:' + oy + 'px;--s:' + s + 'px;--r:' + (Math.random() < .5 ? '50%' : '1px') +
+        ';--c:' + COLS[i % COLS.length] + ';--dx:' + (Math.cos(ang) * dist + nr.width * .25 * Math.random()).toFixed(1) + 'px;--dy:' + (Math.sin(ang) * dist * .6 + 30).toFixed(1) +
+        'px;--rot:' + Math.round(Math.random() * 360) + 'deg;--d:' + (900 + Math.random() * 700) + 'ms;--delay:' + Math.round(Math.random() * 180) + 'ms';
+      frag.appendChild(p);
+    }
+    n.appendChild(frag);
+    setTimeout(function(){ n.querySelectorAll('.brf-yay__p,.brf-yay__glow').forEach(function(x){ x.remove(); }); }, 2200);
+    setTimeout(function(){ n.classList.remove('brf-yay'); }, 3200);
+  }
+  /* drawer open state lives on <html>; watch it without writing to it */
+  new MutationObserver(function(){ if (root.classList.contains('brf-cart-open')) setTimeout(celebrate, 450); })
+    .observe(root, {attributes: true, attributeFilter: ['class']});
+
+  /* ================= 2. Quick view ================= */
+  function initQuickView(modal){
+    var g = modal.querySelector('.product-gallery');
+    if (!g || g.__brfQv) return;
+    var thumbs = g.querySelectorAll('.product-gallery__thumbnail');
+    var wrap = g.querySelector('.product-gallery__carousel-wrapper') || g;
+    g.__brfQv = true;
+    setTimeout(function(){ window.dispatchEvent(new Event('resize')); }, 60);
+    if (thumbs.length < 2) return;
+    var count = doc.createElement('span'); count.className = 'brf-qv__count';
+    function cur(){ for (var i = 0; i < thumbs.length; i++) if (thumbs[i].classList.contains('is-nav-selected')) return i; return 0; }
+    function paint(){ count.textContent = (cur() + 1) + ' / ' + thumbs.length; }
+    function go(d){ var i = (cur() + d + thumbs.length) % thumbs.length; thumbs[i].click(); setTimeout(paint, 30); }
+    ['prev', 'next'].forEach(function(dir){
+      var b = doc.createElement('button');
+      b.type = 'button'; b.className = 'brf-qv__arrow brf-qv__arrow--' + dir;
+      b.setAttribute('aria-label', dir === 'prev' ? 'Previous image' : 'Next image');
+      b.innerHTML = dir === 'prev' ? ARROW_L : ARROW_R;
+      b.addEventListener('click', function(e){ e.preventDefault(); e.stopPropagation(); go(dir === 'prev' ? -1 : 1); });
+      wrap.appendChild(b);
+    });
+    wrap.appendChild(count); paint();
+    modal.addEventListener('keydown', function(e){
+      if (e.target.closest('input,select,textarea')) return;
+      if (e.key === 'ArrowLeft') go(-1); else if (e.key === 'ArrowRight') go(1);
+    });
+    /* swatch / variant changes move the gallery too */
+    new MutationObserver(paint).observe(thumbs[0].parentNode, {attributes: true, subtree: true, attributeFilter: ['class']});
+  }
+
+  /* ================= 2c. Quick view: quantity never exceeds stock ================= */
+  function capQuickView(){
+    doc.querySelectorAll('.modal[id^="modal-quick-view"]').forEach(function(m){
+      var data = m.querySelector('[data-brf-qv-stock]');
+      if (!data) return;
+      if (!data.__stock) { try { data.__stock = JSON.parse(data.textContent || '{}'); } catch (e) { data.__stock = {}; } }
+      var idEl = m.querySelector('form[action*="/cart/add"] [name="id"]');
+      var sel = m.querySelector('select[name="quantity"]');
+      var inp = m.querySelector('input[name="quantity"]:not([type="hidden"])');
+      if (!idEl || (!sel && !inp)) return;
+      var id = idEl.value, key = id + '|' + (sel ? sel.options.length : '');
+      if (data.__last === key) return;
+      var max = data.__stock[id];
+      if (sel) {
+        var val = parseInt(sel.value, 10) || 1, top = (max == null) ? 10 : Math.max(1, Math.min(max, 10)), html = '';
+        for (var i = 1; i <= top; i++) html += '<option value="' + i + '">' + (i === 10 && (max == null || max > 10) ? '10+' : i) + '</option>';
+        sel.innerHTML = html; sel.value = String(Math.min(val, top));
+      }
+      if (inp) { if (max != null) inp.max = max; else inp.removeAttribute('max'); }
+      var note = m.querySelector('.brf-qty-note');
+      var msg = max != null && max > 0 && max <= 10 ? 'Only ' + max + ' in stock – you can order up to ' + max + '.' : '';
+      if (!note && msg) {
+        note = doc.createElement('p'); note.className = 'brf-qty-note';
+        var host = m.querySelector('.product-form__info-item--quantity .product-form__info-content') || (sel || inp).parentNode;
+        host.appendChild(note);
+      }
+      if (note) { note.textContent = msg; note.hidden = !msg; }
+      data.__last = id + '|' + (sel ? sel.options.length : '');
+    });
+  }
+  setInterval(capQuickView, 400);
+  doc.addEventListener('input', function(e){
+    var el = e.target;
+    if (!el.matches || !el.matches('.modal[id^="modal-quick-view"] input[name="quantity"]') || !el.max) return;
+    if (parseInt(el.value, 10) > parseInt(el.max, 10)) el.value = el.max;
+  }, true);
+
+  /* ================= 2b. Product-card image browsing ================= */
+  var prodCache = {};
+  function productImages(handle){
+    if (!prodCache[handle]) prodCache[handle] = fetch('/products/' + handle + '.js').then(function(r){ return r.json(); })
+      .then(function(p){ return (p.images || []).map(function(u){ return (u.indexOf('//') === 0 ? 'https:' + u : u); }); })
+      .catch(function(){ delete prodCache[handle]; return []; });
+    return prodCache[handle];
+  }
+  var cardIO = window.IntersectionObserver ? new IntersectionObserver(function(es){
+    es.forEach(function(e){ if (e.isIntersecting) { cardIO.unobserve(e.target); if (e.target.__brfWarm) e.target.__brfWarm(); } });
+  }, {rootMargin: '200px 0px'}) : null;
+  function sized(u, w){ return u + (u.indexOf('?') > -1 ? '&' : '?') + 'width=' + w; }
+  function initCard(a){
+    a.setAttribute('data-brf-ci', '1');
+    var m = (a.getAttribute('href') || '').match(/\/products\/([^/?#]+)/);
+    var ratio = a.querySelector('.aspect-ratio');
+    if (!m || !ratio) return;
+    var handle = m[1], idx = 0, imgs = null, layer = null, prevBtn = null;
+    a.classList.add('brf-ci');
+    var prim = a.querySelector('.product-item__primary-image');
+    function show(i){
+      idx = i;
+      if (!layer) {
+        layer = doc.createElement('img'); layer.className = 'brf-ci__img'; layer.alt = '';
+        if (prim) layer.style.objectFit = getComputedStyle(prim).objectFit || 'contain';
+        ratio.appendChild(layer);
+      }
+      a.classList.toggle('is-browsing', i > 0);
+      if (i === 0) { layer.classList.remove('is-on'); return; }
+      var w = Math.min(1000, Math.round(ratio.offsetWidth * (window.devicePixelRatio || 1) / 100) * 100 || 600);
+      var src = sized(imgs[i], w);
+      var pre = new Image();
+      pre.onload = function(){ if (idx !== i) return; layer.src = src; layer.classList.add('is-on'); };
+      pre.src = src;
+      /* warm the next one */
+      if (imgs[i + 1]) (new Image()).src = sized(imgs[i + 1], w);
+    }
+    function step(d){
+      productImages(handle).then(function(list){
+        if (!list.length) return;
+        imgs = list;
+        show((idx + d + imgs.length) % imgs.length);
+        paintCount();
+      });
+    }
+    ['prev', 'next'].forEach(function(dir){
+      var b = doc.createElement('button');
+      b.type = 'button'; b.className = 'brf-ci__arrow brf-ci__arrow--' + dir;
+      b.setAttribute('aria-label', dir === 'prev' ? 'Previous image' : 'Next image');
+      b.innerHTML = dir === 'prev' ? ARROW_L : ARROW_R;
+      if (dir === 'prev') { b.insertAdjacentHTML('beforeend', '<span class="brf-ci__count"></span>'); prevBtn = b; }
+      b.addEventListener('click', function(e){ e.preventDefault(); e.stopPropagation(); step(dir === 'prev' ? -1 : 1); });
+      ratio.appendChild(b);
+    });
+    function paintCount(){
+      if (!imgs || imgs.length < 2) return;
+      prevBtn.querySelector('.brf-ci__count').innerHTML = (idx + 1) + '<i>|</i>' + imgs.length;
+      prevBtn.classList.add('has-count');
+      prevBtn.setAttribute('aria-label', 'Previous image (' + (idx + 1) + ' of ' + imgs.length + ')');
+    }
+    function warm(){ productImages(handle).then(function(list){ if (!imgs && list.length) { imgs = list; paintCount(); } }); }
+    if (cardIO) { a.__brfWarm = warm; cardIO.observe(a); } else warm();
+    a.addEventListener('mouseenter', warm, {once: true});
+    /* a colour swatch swaps the main photo: step back to it */
+    var card = a.closest('.product-item');
+    if (card) card.addEventListener('change', function(e){ if (e.target.classList.contains('color-swatch__radio') && layer) show(0); });
+  }
+
+  /* ================= 9. Swatch colours ================= */
+  var NAMED = {
+    'cerise':'#DE3163','rose':'#E8A0B4','rose pink':'#F4A6B8','emerald':'#50A874','bottle':'#0B4D2C','bottle green':'#0B4D2C','baby blue':'#9ACDEB','baby pink':'#F6C6D0',
+    'candy pink':'#F7A1C4','candy':'#F7A1C4','wine':'#722F37','cream':'#F8F0D8','royal':'#2B4FBF','royal blue':'#2B4FBF','mustard':'#D9A21B','sky':'#87CEEB',
+    'delph':'#2F5DA8','delft':'#2F5DA8','dresden':'#3F74A8','yellow cream':'#F6E7A1','taupe':'#8B7D6B','latte':'#C5A582','dark brown':'#5C4033',
+    'coffee brown':'#6F4E37','coffee':'#6F4E37','tan brown':'#A87A3D','tan gold':'#C8A165','pastel green':'#B7E4C7','pastel pink':'#F8C8DC','pastel blue':'#BFD9F2',
+    'pastel yellow':'#FDF3A7','pastel purple':'#D8C8EC','terracotta':'#C9653B','brick red':'#A63A2B','brick':'#A63A2B','honey':'#E0A526',
+    'flo green':'#39FF14','flo pink':'#FF3EA5','flo orange':'#FF6A13','flo yellow':'#F2FF1F','flo lime':'#BFFF00','flo red':'#FF2D2D','flo blue':'#1F9BFF',
+    'neon green':'#39FF14','neon pink':'#FF3EA5','neon orange':'#FF6A13','neon yellow':'#F2FF1F','hi vis green':'#AEEA00','hi vis yellow':'#E6FF00','hi vis orange':'#FF7A00',
+    'butter cream':'#F5E6B8','butter':'#F8E7A0','pale blue':'#BFD9F2','pale pink':'#F9D6DC','pale green':'#C8E6C0','antique gold':'#B89A4E','deep purple':'#4B1A7A',
+    'cadbury purple':'#4F2170','cadbury':'#4F2170','lilac':'#C8A2C8','dusky pink':'#D4A5A5','dusty pink':'#D4A5A5','dusky':'#D4A5A5','mint':'#A8E6CF','mint green':'#A8E6CF',
+    'champagne':'#F1E4C3','peach':'#FFCBA4','ocean':'#1B6CA8','ocean blue':'#1B6CA8','lemon':'#FFF44F','hyacinth':'#7B68B5','duck egg':'#BFD8D2','duck egg blue':'#BFD8D2',
+    'aubergine':'#3D0C2E','sage':'#9CAF88','sage green':'#9CAF88','petrol':'#005F6A','petrol blue':'#005F6A','burgundy':'#800020','cobalt':'#0047AB','cobalt blue':'#0047AB',
+    'jade':'#00A86B','stone':'#C8BCA8','mocha':'#967969','charcoal':'#36454F','nude':'#E3BC9A','blush':'#F4C2C2','blush pink':'#F4C2C2','rust':'#B7410E',
+    'ochre':'#CC7722','denim':'#1560BD','denim blue':'#1560BD','pewter':'#8E9196','copper':'#B87333','bronze':'#CD7F32','oyster':'#DDD6C8','natural':'#EDE3D1',
+    'ecru':'#F3EFE0','oatmeal':'#D9CBB0','sand':'#D8C3A5','camel':'#C19A6B','mauve':'#B784A7','grape':'#6F2DA8','kingfisher':'#0077BE','sapphire':'#0F52BA',
+    'racing green':'#004225','moss':'#8A9A5B','moss green':'#8A9A5B','forest':'#228B22','forest green':'#228B22','apple':'#8DB600','apple green':'#8DB600',
+    'pistachio':'#93C572','bubblegum':'#FFC1CC','bubblegum pink':'#FFC1CC','raspberry':'#E30B5C','cherry':'#D2042D','cherry red':'#D2042D','scarlet':'#FF2400',
+    'pillar box':'#D20A11','pillar box red':'#D20A11','flame':'#E25822','tangerine':'#F28500','apricot':'#FBCEB1','primrose':'#F2E78B','buttercup':'#F9D71C',
+    'saffron':'#F4C430','amber':'#FFBF00','caramel':'#AF6E4D','mink':'#8A7F80','dove':'#B7B3AE','dove grey':'#B7B3AE','slate':'#6D7B8D','ash':'#B2BEB5',
+    'smoke':'#848884','graphite':'#383838','jet':'#111111','jet black':'#111111','midnight':'#191970','midnight blue':'#191970','ink':'#1B1F3B','oxford':'#002147',
+    'oxford blue':'#002147','french navy':'#1D2951','airforce':'#5D8AA8','air force':'#5D8AA8','air force blue':'#5D8AA8','powder':'#B0E0E6','ice':'#DDEEF5',
+    'ice blue':'#DDEEF5','emerald green':'#50A874','bottle green ':'#0B4D2C','wine red':'#722F37','claret':'#7F1734','plum':'#8E4585','fuschia':'#FF00A0',
+    'fuchsia':'#FF00A0','cyan':'#00B7EB','aqua':'#6FD6D6','teal':'#00808A','turquoise':'#30C5C0','navy':'#1F2A44','royal purple':'#6A2C91','purple':'#6A2C91',
+    'mid blue':'#3E7CC4','mid grey':'#9A9A9A','mid gray':'#9A9A9A','light grey':'#D3D3D3','silver grey':'#B9B9B9','silver':'#C0C0C0','gold':'#D4AF37',
+    'dark green':'#1F5130','dark grey':'#555555','dark gray':'#555555','dark navy':'#141B2D','dark red':'#8B1A1A','dark purple':'#3C1361','dark blue':'#1C3A70',
+    'light blue':'#ADD8E6','light pink':'#FFC7D1','light green':'#B8E0A8','light brown':'#B08968','light grey ':'#D3D3D3','light purple':'#CDB4DB',
+    'hot pink':'#FF4FA3','baby':'#BFE0F5','red':'#D22B2B','ivory':'#FFFBEA','white':'#FFFFFF','off white':'#F7F4EA','black':'#111111','brown':'#7B4B2A',
+    'beige':'#E4D5B7','khaki':'#C3B091','olive':'#7C7C32','lime':'#9ACD32','green':'#2E8B57','blue':'#2F6FD0','pink':'#F28CB1','orange':'#F57C1F',
+    'yellow':'#F7D23E','grey':'#9E9E9E','gray':'#9E9E9E','coral':'#FF7F66','maroon':'#7A1F2B','magenta':'#E0218A','violet':'#8F5BD8','lavender':'#C9B8E8',
+    'tan':'#C8A06B','chocolate':'#5A3A22','cappuccino':'#A6816B','biscuit':'#D8B98A','mushroom':'#A89A8A','heather':'#B7A1C1','lagoon':'#2BA3B3',
+    'navy blue':'#1F2A44','sky blue':'#87CEEB','bright red':'#E3242B','bright pink':'#FF4FA3','bright blue':'#1F75FE','bright green':'#2ECC40','bright yellow':'#FFE11A'
+  };
+  var MULTI = /\b(multi|multicolou?r|rainbow|assorted|mixed|bright|brights|pastel|pastels|mix|various)\b/i;
+  function cssOk(c){ return window.CSS && CSS.supports && CSS.supports('color', c); }
+  function norm(s){ return s.toLowerCase().replace(/\(.*?\)/g, ' ').replace(/[^a-z\s]/g, ' ').replace(/\s+/g, ' ').trim(); }
+  function colourOf(name){
+    var n = norm(name);
+    if (!n) return null;
+    if (NAMED[n]) return NAMED[n];
+    if (cssOk(n.replace(/ /g, ''))) return n.replace(/ /g, '');
+    var words = n.split(' ');
+    for (var len = Math.min(3, words.length); len >= 1; len--) {
+      for (var i = words.length - len; i >= 0; i--) {
+        var ph = words.slice(i, i + len).join(' ');
+        if (NAMED[ph]) return NAMED[ph];
+        if (len === 1 && ph.length > 2 && cssOk(ph) && !/^(transparent|currentcolor|inherit|initial|unset)$/.test(ph)) return ph;
+      }
+    }
+    return null;
+  }
+  function paintSwatch(label, all){
+    var name = label.getAttribute('title') || label.getAttribute('data-tooltip') || '';
+    if (!name) { var inp0 = label.previousElementSibling; name = inp0 && inp0.value || ''; }
+    if (!name) return;
+    var raw = name.trim(), bg = null;
+    var shot = raw.match(/^(.+?)\s+shot\s+(.+)$/i);
+    var parts = raw.split(/\s*(?:\/|&|\+|\band\b|\bwith\b|,)\s*/i).filter(Boolean);
+    var tail = raw.split(/\s+-\s+/).pop();
+    var inp = label.previousElementSibling && label.previousElementSibling.matches('input') ? label.previousElementSibling : doc.getElementById(label.getAttribute('for'));
+    var imgUrl = inp && inp.getAttribute('data-image-url');
+    var uniqueImg = imgUrl && all.filter(function(u){ return u === imgUrl; }).length === 1;
+    if (shot) {
+      var a = colourOf(shot[1]), b = colourOf(shot[2]);
+      if (a && b) bg = 'linear-gradient(135deg,' + a + ' 0 45%,' + b + ' 55% 100%)';
+    }
+    if (!bg && /\s-\s/.test(raw) && uniqueImg) bg = 'img';
+    if (!bg && parts.length > 1) {
+      var cs = parts.map(colourOf).filter(Boolean);
+      if (cs.length > 1) bg = cs.length === 2 ? 'linear-gradient(135deg,' + cs[0] + ' 0 50%,' + cs[1] + ' 50% 100%)'
+        : 'conic-gradient(' + cs.map(function(c, i){ return c + ' ' + Math.round(i * 360 / cs.length) + 'deg ' + Math.round((i + 1) * 360 / cs.length) + 'deg'; }).join(',') + ')';
+    }
+    if (!bg) { var c1 = colourOf(tail) || colourOf(raw); if (c1) bg = c1; }
+    if (!bg && uniqueImg) bg = 'img';
+    if (!bg && MULTI.test(raw)) bg = /pastel/i.test(raw)
+      ? 'conic-gradient(#F8C8DC,#FDF3A7,#C8E6C0,#BFD9F2,#D8C8EC,#F8C8DC)'
+      : 'conic-gradient(#E3242B,#F7D23E,#2ECC40,#1F75FE,#8F5BD8,#E3242B)';
+    if (!bg && imgUrl) bg = 'img';
+    if (!bg) bg = 'linear-gradient(135deg,#E9E4DA,#CFC6B8)';
+    if (bg === 'img') {
+      label.classList.add('brf-sw--img');
+      label.style.backgroundImage = 'url("' + imgUrl.replace('{width}', '80') + '")';
+      label.style.backgroundColor = '#EEE';
+    } else if (/gradient/.test(bg)) {
+      label.style.backgroundImage = bg; label.style.backgroundColor = 'transparent';
+    } else {
+      label.style.backgroundColor = bg;
+    }
+  }
+  function fixSwatches(scope){
+    var labels = (scope || doc).querySelectorAll('label.color-swatch__item:not([data-brf-sw])');
+    if (!labels.length) return;
+    labels.forEach(function(label){
+      label.setAttribute('data-brf-sw', '1');
+      if (label.style.backgroundColor || label.style.backgroundImage) return;
+      var list = label.closest('.color-swatch-list') || label.parentNode.parentNode;
+      var all = Array.prototype.map.call(list.querySelectorAll('input[data-image-url]'), function(i){ return i.getAttribute('data-image-url'); });
+      paintSwatch(label, all);
+    });
+  }
+
+  /* ================= 10. View more inside tabs ================= */
+  function initExpandable(){
+    doc.querySelectorAll('.expandable-content').forEach(function(ec){
+      var tg = ec.querySelector('.expandable-content__toggle');
+      if (tg && tg.parentElement !== ec) ec.appendChild(tg);
+      if (ec.__brfEc) return; ec.__brfEc = true;
+      function check(){
+        if (ec.getAttribute('aria-expanded') === 'true') { ec.classList.remove('brf-ec--short'); return; }
+        var limit = parseFloat(getComputedStyle(ec).maxHeight);
+        ec.classList.remove('brf-ec--short');
+        if (!isFinite(limit)) return;
+        var short = ec.scrollHeight <= limit + 24;
+        if (short !== ec.classList.contains('brf-ec--short')) ec.classList.toggle('brf-ec--short', short);
+      }
+      ec.addEventListener('click', function(e){ if (e.target.closest('.pt-tab-btn, [role="tab"], button:not(.expandable-content__toggle)')) setTimeout(check, 60); });
+      check(); setTimeout(check, 1200);
+    });
+  }
+
+  /* ================= 11. Filter row cue ================= */
+  function initPillRow(){
+    var row = doc.querySelector('.brf-fbar__pills');
+    if (!row || row.__brfProw) return;
+    row.__brfProw = true;
+    row.classList.add('brf-prow');
+    var host = row.parentElement;
+    if (getComputedStyle(host).position === 'static') host.style.position = 'relative';
+    function mk(dir){
+      var b = doc.createElement('button'); b.type = 'button';
+      b.className = 'brf-prow__btn brf-prow__btn--' + dir; b.tabIndex = -1;
+      b.setAttribute('aria-label', dir === 'r' ? 'More filters' : 'Previous filters');
+      b.innerHTML = dir === 'r' ? ARROW_R : ARROW_L;
+      b.addEventListener('click', function(e){ e.stopPropagation(); row.scrollBy({left: (dir === 'r' ? 1 : -1) * row.clientWidth * .7, behavior: 'smooth'}); });
+      host.appendChild(b); return b;
+    }
+    var bl = mk('l'), br = mk('r');
+    function place(){
+      bl.style.left = (row.offsetLeft - 2) + 'px';
+      br.style.left = (row.offsetLeft + row.clientWidth - 30) + 'px';
+      bl.style.top = br.style.top = (row.offsetTop + row.offsetHeight / 2) + 'px';
+      update();
+    }
+    function update(){
+      var max = row.scrollWidth - row.clientWidth;
+      var l = row.scrollLeft > 4, r = max > 4 && row.scrollLeft < max - 4;
+      if (row.classList.contains('can-l') !== l) row.classList.toggle('can-l', l);
+      if (row.classList.contains('can-r') !== r) row.classList.toggle('can-r', r);
+      bl.classList.toggle('is-on', l); br.classList.toggle('is-on', r);
+    }
+    row.addEventListener('scroll', update, {passive: true});
+    window.addEventListener('resize', place, {passive: true});
+    if (window.ResizeObserver) new ResizeObserver(place).observe(row);
+    place(); setTimeout(place, 400);
+  }
+
+  /* ================= 8. Filters keep your place ================= */
+  function barEl(){ return doc.querySelector('[data-brf-fbar]'); }
+  function remember(e){
+    var bar = barEl(); if (!bar) return;
+    var t = e.target;
+    if (e.type === 'click' && !(t.closest && t.closest('a[href]'))) return;
+    var open = bar.querySelector('.brf-panel:not([hidden])');
+    var panel = open && /^f\d+$/.test(open.getAttribute('data-brf-panel')) && t.closest && t.closest('.brf-opt') ? open.getAttribute('data-brf-panel') : '';
+    ss('brfFilterNav', JSON.stringify({p: location.pathname, y: Math.round(window.scrollY), panel: panel, t: Date.now()}));
+  }
+  function bindRemember(){
+    var bar = barEl();
+    if (!bar || bar.__brfRem) return;
+    bar.__brfRem = true;
+    bar.addEventListener('click', remember, true);
+    bar.addEventListener('change', remember, true);
+    bar.addEventListener('submit', remember, true);
+  }
+  function targetY(){
+    var bar = barEl(); if (!bar) return null;
+    var el = doc.querySelector('.brf-fstick__sentinel') || bar;
+    var hdr = doc.getElementById('shopify-section-header');
+    var off = 0;
+    if (hdr) { var ps = getComputedStyle(hdr).position; if (ps === 'sticky' || ps === 'fixed') off = hdr.offsetHeight; }
+    return Math.max(0, Math.round(el.getBoundingClientRect().top + window.scrollY - off));
+  }
+  var restoring = null;
+  function restoreFilterPos(final){
+    var raw = ss('brfFilterNav'); if (!raw) return;
+    var s; try { s = JSON.parse(raw); } catch (e) { ss('brfFilterNav', null); return; }
+    if (!s || s.p !== location.pathname || Date.now() - s.t > 60000) { ss('brfFilterNav', null); return; }
+    if (restoring !== null && Math.abs(window.scrollY - restoring) > 40) { ss('brfFilterNav', null); return; } /* the shopper scrolled: stop helping */
+    var ty = targetY(); if (ty === null) return;
+    var y = Math.min(s.y, ty);
+    if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
+    window.scrollTo(0, y); restoring = y;
+    if (final) {
+      ss('brfFilterNav', null);
+      if (s.panel && window.matchMedia('(min-width: 750px)').matches) {
+        var op = doc.querySelector('[data-brf-open="' + s.panel + '"]');
+        if (op && op.getAttribute('aria-expanded') !== 'true') setTimeout(function(){ op.click(); }, 120);
+      }
+    }
+  }
+  /* smooth cross-fade between filter results where the browser supports it */
+  window.addEventListener('pageswap', function(e){
+    if (e.viewTransition && !ss('brfFilterNav')) e.viewTransition.skipTransition();
+  });
+  window.addEventListener('pagereveal', function(e){
+    if (e.viewTransition && !ss('brfFilterNav')) e.viewTransition.skipTransition();
+  });
+
+  /* ================= 12. Spring open for tabs ================= */
+  function springOpen(target){
+    if (reduce || !target || !target.animate) return;
+    var inner = target.querySelector('.card__collapsible-content') || target;
+    inner.animate([
+      {opacity: 0, transform: 'translateY(-10px) scale(.985)'},
+      {opacity: 1, transform: 'none'}
+    ], {duration: 560, easing: 'cubic-bezier(.34,1.45,.64,1)'});
+  }
+  doc.addEventListener('click', function(e){
+    var b = e.target.closest && e.target.closest('.card__collapsible-button, .brf-tab-toggle, .pt-tab-btn');
+    if (!b) return;
+    var was = b.getAttribute('aria-expanded');
+    setTimeout(function(){
+      if (b.classList.contains('pt-tab-btn')) {
+        var box = b.closest('.pt-tabs-container');
+        var p = box && box.querySelector('.pt-panel.active, .pt-panel.is-active, .pt-panel[aria-hidden="false"], .pt-panel:not([hidden])');
+        if (p) springOpen(p);
+        return;
+      }
+      if (was !== 'true' && b.getAttribute('aria-expanded') === 'true') {
+        var id = b.getAttribute('aria-controls');
+        springOpen(id && doc.getElementById(id));
+      }
+    }, 0);
+  });
+
+  /* ================= 13. Dispatch countdown turns red in the last 4 hours ================= */
+  function urgency(){
+    doc.querySelectorAll('[data-brf-dispatch]').forEach(function(box){
+      var h = box.querySelector('[data-h]');
+      var on = box.classList.contains('is-live') && h && parseInt(h.textContent, 10) < 4;
+      if (box.classList.contains('brf-urgent') !== on) box.classList.toggle('brf-urgent', on);
+    });
+    doc.querySelectorAll('[data-brf-mc-dispatch]').forEach(function(el){
+      var st = el.querySelector('[data-brf-mc-dispatch-text] strong');
+      var on = false;
+      if (st && /\d+\s*[hms]/.test(st.textContent)) { var mh = st.textContent.match(/(\d+)\s*h/); on = !mh || parseInt(mh[1], 10) < 4; }
+      if (el.classList.contains('brf-urgent') !== on) el.classList.toggle('brf-urgent', on);
+    });
+  }
+  setInterval(urgency, 1000);
+
+  /* ================= 8b. Filters update in place (no page reload) ================= */
+  var filtering = false;
+  function sameOrigin(u){ try { var x = new URL(u, location.href); return x.origin === location.origin ? x : null; } catch (e) { return null; } }
+  function canAjax(){ return !!(barEl() && doc.querySelector('.collection__dynamic-part') && barEl().closest('.brf-fstick') && !doc.querySelector('.brf-fstick .collection__dynamic-part')); }
+  function ajaxFilter(url, opts){
+    opts = opts || {};
+    if (filtering) return;
+    filtering = true;
+    root.classList.add('brf-filtering');
+    var bar = barEl();
+    var openP = bar && bar.querySelector('.brf-panel:not([hidden])');
+    var reopen = opts.keepPanel && openP && /^f\d+$/.test(openP.getAttribute('data-brf-panel')) && window.matchMedia('(min-width: 750px)').matches ? openP.getAttribute('data-brf-panel') : '';
+    fetch(url, {credentials: 'same-origin', headers: {'X-Requested-With': 'XMLHttpRequest'}})
+      .then(function(r){ if (!r.ok) throw 0; return r.text(); })
+      .then(function(html){
+        var nd = new DOMParser().parseFromString(html, 'text/html');
+        var nBar = nd.querySelector('[data-brf-fbar]'), nDyn = nd.querySelector('.collection__dynamic-part');
+        var oBar = barEl(), oDyn = doc.querySelector('.collection__dynamic-part');
+        if (!nBar || !nDyn || !oBar || !oDyn) throw 0;
+        /* the bar's own script: find it in the new page so its buttons work again */
+        var code = '';
+        nd.querySelectorAll('script').forEach(function(s){ if (!code && /data-brf-fbar/.test(s.textContent) && /brfOpen/.test(s.textContent)) code = s.textContent; });
+        root.classList.remove('brf-sheet-open');
+        var nb = doc.importNode(nBar, true);
+        oBar.replaceWith(nb);
+        oDyn.innerHTML = nDyn.innerHTML; /* the theme listens on the section, so its buttons keep working */
+        if (code) { var sc = doc.createElement('script'); sc.textContent = code; doc.body.appendChild(sc); sc.remove(); }
+        if (nd.title) doc.title = nd.title;
+        if (opts.push !== false) history.pushState({brfFilter: 1}, '', url);
+        initPillRow(); bindRemember(); scan();
+        if (window.lazySizes && lazySizes.loader) lazySizes.loader.checkElems();
+        /* bring the top of the new results into view only if you were already past it */
+        var ty = targetY();
+        if (ty !== null && window.scrollY > ty + 2) window.scrollTo({top: ty, behavior: reduce ? 'auto' : 'smooth'});
+        if (reopen) { var op = doc.querySelector('[data-brf-open="' + reopen + '"]'); if (op) setTimeout(function(){ op.click(); }, 30); }
+        doc.dispatchEvent(new CustomEvent('brf:filtered'));
+      })
+      .catch(function(){ location.href = url; })
+      .then(function(){ filtering = false; root.classList.remove('brf-filtering'); });
+  }
+  doc.addEventListener('click', function(e){
+    if (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+    var a = e.target.closest && e.target.closest('[data-brf-fbar] a[href]');
+    if (!a || !canAjax()) return;
+    var u = sameOrigin(a.href);
+    if (!u || u.pathname.indexOf('/collections/') !== 0) return;
+    e.preventDefault();
+    ss('brfFilterNav', null);
+    ajaxFilter(u.href, {keepPanel: !!a.closest('.brf-panel')});
+  });
+  doc.addEventListener('change', function(e){
+    var sw = e.target.closest && e.target.closest('[data-brf-stock]');
+    if (!sw || !canAjax()) return;
+    e.stopImmediatePropagation();
+    try { sw.checked ? sessionStorage.removeItem('brfShowSoldOut') : sessionStorage.setItem('brfShowSoldOut', '1'); } catch (x) {}
+    ajaxFilter(sw.checked ? sw.dataset.on : sw.dataset.off);
+  }, true);
+  doc.addEventListener('submit', function(e){
+    var pf = e.target.closest && e.target.closest('[data-brf-price]');
+    if (!pf || !canAjax()) return;
+    e.preventDefault(); e.stopImmediatePropagation();
+    var q = new URLSearchParams(location.search); q.delete('page');
+    var mn = pf.elements.min.value.trim(), mx = pf.elements.max.value.trim();
+    mn === '' ? q.delete(pf.dataset.minParam) : q.set(pf.dataset.minParam, mn);
+    mx === '' ? q.delete(pf.dataset.maxParam) : q.set(pf.dataset.maxParam, mx);
+    var s = q.toString();
+    ajaxFilter(location.pathname + (s ? '?' + s : ''));
+  }, true);
+  window.addEventListener('popstate', function(){ if (canAjax()) ajaxFilter(location.href, {push: false}); });
+
+  /* ================= 15. Instant +/- in the cart drawer and cart page ================= */
+  var qtyTimers = {}, qtyBusy = {};
+  function fmt(cents){
+    var cur = (cartCache && cartCache.currency) || 'GBP';
+    try { return new Intl.NumberFormat('en-GB', {style: 'currency', currency: cur}).format(cents / 100); } catch (e) { return '£' + (cents / 100).toFixed(2); }
+  }
+  function cartSectionRefresh(el){
+    var sec = el.closest('.shopify-section');
+    if (!sec || el.closest('.mini-cart')) { refreshCart(); return Promise.resolve(); }
+    var id = sec.id.replace('shopify-section-', '');
+    return fetch(location.pathname + '?section_id=' + encodeURIComponent(id), {credentials: 'same-origin'})
+      .then(function(r){ if (!r.ok) throw 0; return r.text(); })
+      .then(function(html){
+        var d = new DOMParser().parseFromString(html, 'text/html');
+        var n = d.getElementById(sec.id) || d.body.firstElementChild;
+        if (n) sec.innerHTML = n.innerHTML;
+        refreshCart();
+      })
+      .catch(function(){ location.reload(); });
+  }
+  doc.addEventListener('click', function(e){
+    var b = e.target.closest && e.target.closest('button[data-action="increase-quantity"], button[data-action="decrease-quantity"]');
+    if (!b || b.disabled || !cartCache) return;
+    var line = b.closest('.mini-cart__line-item, .line-item');
+    if (!line || !(b.closest('.mini-cart') || b.closest('[class*="cart"]'))) return;
+    var q = parseInt(b.getAttribute('data-quantity'), 10), key = b.getAttribute('data-line-id');
+    if (!key || isNaN(q) || q < 1) return; /* removals keep the normal path (and the Undo bar) */
+    var item = null;
+    cartCache.items.forEach(function(it){ if (it.key === key) item = it; });
+    if (!item) return;
+    e.preventDefault(); e.stopImmediatePropagation();
+
+    /* 1. show the change straight away */
+    var input = line.querySelector('.quantity-selector__value');
+    var prevQ = input ? parseInt(input.value, 10) || item.quantity : item.quantity;
+    if (input) { input.value = q; input.setAttribute('data-current-value', q); }
+    line.querySelectorAll('button[data-action="decrease-quantity"]').forEach(function(x){ x.setAttribute('data-quantity', q - 1); });
+    line.querySelectorAll('button[data-action="increase-quantity"]').forEach(function(x){ x.setAttribute('data-quantity', q + 1); });
+    var unit = item.final_line_price / item.quantity, unitWas = item.original_line_price / item.quantity;
+    var prices = line.querySelectorAll('.mini-cart__price-list .price, .line-item__price-list .price, .line-item__line-price .price');
+    if (prices[0]) prices[0].textContent = fmt(Math.round(unit * q));
+    if (prices[1] && prices[1].classList.contains('price--compare') && item.variant_id) {
+      var cmpUnit = unitWas; var lvl = prices[1].textContent; if (lvl) prices[1].textContent = fmt(Math.round(cmpUnit * q));
+    }
+    var delta = Math.round(unit * (q - prevQ));
+    doc.querySelectorAll('.brf-mc__total span:last-child, [data-brf-cart-total]').forEach(function(t){
+      var base = t.__brfBase != null ? t.__brfBase : cartCache.total_price;
+      t.__brfBase = base + delta; t.textContent = fmt(t.__brfBase);
+    });
+    line.classList.add('brf-qty-pending');
+    if (b.animate && !reduce) b.animate([{transform: 'scale(.86)'}, {transform: 'scale(1)'}], {duration: 260, easing: 'cubic-bezier(.34,1.56,.64,1)'});
+
+    /* 2. sync quietly: rapid taps become one request */
+    clearTimeout(qtyTimers[key]);
+    qtyTimers[key] = setTimeout(function(){
+      qtyBusy[key] = true;
+      fetch('/cart/change.js', {method: 'POST', credentials: 'same-origin', headers: {'Content-Type': 'application/json', 'Accept': 'application/json'}, body: JSON.stringify({id: key, quantity: q})})
+        .then(function(r){ return r.json().then(function(j){ return {ok: r.ok, j: j}; }); })
+        .then(function(res){
+          if (!res.ok) { toast(esc(res.j.description || res.j.message || 'Could not update quantity'), null, true); }
+          else cartCache = res.j;
+          doc.querySelectorAll('.brf-mc__total span:last-child, [data-brf-cart-total]').forEach(function(t){ t.__brfBase = null; });
+          return cartSectionRefresh(b.isConnected ? b : line);
+        })
+        .catch(function(){ cartSectionRefresh(line); })
+        .then(function(){ qtyBusy[key] = false; line.classList.remove('brf-qty-pending'); });
+    }, 350);
+  }, true);
+
+  /* ================= boot ================= */
+  function scan(){
+    fixSwatches();
+    doc.querySelectorAll('.product-item__image-wrapper--with-secondary:not([data-brf-ci])').forEach(initCard);
+    doc.querySelectorAll('.modal[id^="modal-quick-view"]').forEach(function(m){
+      if (m.parentNode !== doc.body) doc.body.appendChild(m);
+      if (m.querySelector('.product-gallery')) initQuickView(m);
+    });
+    initExpandable();
+  }
+  function boot(){
+    scan(); initPillRow(); bindRemember(); watchCart(); celebrate();
+  }
+  restoreFilterPos(false);
+  if (doc.readyState === 'loading') doc.addEventListener('DOMContentLoaded', function(){ boot(); restoreFilterPos(false); }); else boot();
+  window.addEventListener('load', function(){ boot(); restoreFilterPos(true); });
+  /* late content (quick view, recommendations, reviews): rescan, debounced; we never write to what we observe here */
+  var st = 0;
+  new MutationObserver(function(list){
+    for (var i = 0; i < list.length; i++) {
+      var n = list[i].target;
+      if (n.nodeType === 1 && (n.closest('[data-brf-mc-dispatch]') || n.closest('.brf-undo') || n.classList.contains('brf-mc__free'))) continue;
+      clearTimeout(st); st = setTimeout(scan, 200); return;
+    }
+  }).observe(doc.body, {childList: true, subtree: true});
+})();
+</script>
+<style>@view-transition{navigation:auto}::view-transition-old(root),::view-transition-new(root){animation-duration:.28s}</style>
