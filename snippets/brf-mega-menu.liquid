@@ -126,6 +126,11 @@
           if key == 'home-lifestyle' and collections['home-lifestyle'].url != blank
             assign url = collections['home-lifestyle'].url
             assign top_is_link = true
+          elsif has_kids and pages[key].url != blank
+            # A page with the department's handle (e.g. /pages/dress-fabric) is its landing page:
+            # hover opens the panel, click goes to the landing page.
+            assign url = pages[key].url
+            assign top_is_link = true
           endif
           assign panel_id = 'brf-mm-' | append: forloop.index
         -%}
@@ -430,10 +435,21 @@
               {%- endfor -%}
             </div>
           {%- endif -%}
-          {%- if key == 'home-lifestyle' and collections['home-lifestyle'].url != blank -%}
+          {%- liquid
+            assign feat_url = ''
+            assign feat_sub = ''
+            if key == 'home-lifestyle' and collections['home-lifestyle'].url != blank
+              assign feat_url = collections['home-lifestyle'].url
+              assign feat_sub = collections['home-lifestyle'].products_count | append: ' products across ' | append: link.links.size | append: ' categories'
+            elsif link.links.size > 0 and pages[key].url != blank
+              assign feat_url = pages[key].url
+              assign feat_sub = link.links.size | append: ' fabric types on one page'
+            endif
+          -%}
+          {%- if feat_url != '' -%}
             <style>.brf-md__row--feature{margin:4px 0 16px;padding:14px 16px;border-radius:16px;background:#F6F3EE}.brf-md__row--feature .brf-md__row-t{font-weight:600}</style>
-            <a class="brf-md__row brf-md__row--feature" href="{{ collections['home-lifestyle'].url }}">
-              <span class="brf-md__row-t">Explore all {{ link.title | strip }}<small>{{ collections['home-lifestyle'].products_count }} products across {{ link.links.size }} categories</small></span>
+            <a class="brf-md__row brf-md__row--feature" href="{{ feat_url }}">
+              <span class="brf-md__row-t">Explore all {{ link.title | strip }}<small>{{ feat_sub }}</small></span>
               <span class="brf-md__chev" aria-hidden="true">›</span>
             </a>
           {%- endif -%}

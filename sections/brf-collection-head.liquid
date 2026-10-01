@@ -1,0 +1,89 @@
+{%- comment -%}
+  Bull Ring Fabrics — Apple-style collection header + filter bar.
+  Sits above the theme's collection grid; the old sidebar, toolbar and heading are hidden in brf-sitewide.css.
+{%- endcomment -%}
+{%- assign brf_is_halloween = false -%}
+{%- if collection.template_suffix == 'halloween' -%}{%- assign brf_is_halloween = true -%}{%- endif -%}
+
+<div class="brf-chead{% if brf_is_halloween %} brf-chead--compact{% endif %}" data-section-id="{{ section.id }}">
+  <div class="container">
+    {%- unless brf_is_halloween -%}
+      {%- assign brf_eyebrow = '' -%}
+      {%- assign brf_dept_url = '' -%}
+      {%- assign brf_menu = linklists['main-menu-2026'] -%}
+      {%- if section.settings.menu != blank and section.settings.menu != 'main-menu' -%}{%- assign brf_menu = linklists[section.settings.menu] -%}{%- endif -%}
+      {%- if brf_menu.links.size == 0 -%}{%- assign brf_menu = linklists['main-menu'] -%}{%- endif -%}
+      {%- for l in brf_menu.links -%}
+        {%- for sub in l.links -%}
+          {%- if sub.type == 'collection_link' and sub.object.handle == collection.handle -%}
+            {%- assign brf_eyebrow = l.title -%}
+            {%- assign brf_dk = l.title | handleize -%}
+            {%- if brf_dk == 'home-lifestyle' -%}{%- assign brf_dept_url = collections['home-lifestyle'].url -%}{%- else -%}{%- assign brf_dept_url = pages[brf_dk].url -%}{%- endif -%}
+          {%- endif -%}
+        {%- endfor -%}
+      {%- endfor -%}
+
+      <nav class="brf-chead__crumbs" aria-label="Breadcrumb">
+        <a href="{{ routes.root_url }}">Home</a><span aria-hidden="true">›</span>
+        {%- if brf_dept_url != blank and collection.handle != 'home-lifestyle' -%}<a href="{{ brf_dept_url }}">{{ brf_eyebrow | strip | escape }}</a><span aria-hidden="true">›</span>{%- endif %}
+        {%- if current_tags -%}
+          <a href="{{ collection.url }}">{{ collection.title | escape }}</a><span aria-hidden="true">›</span><span aria-current="page">{{ current_tags.first | capitalize | escape }}</span>
+        {%- else -%}
+          <span aria-current="page">{{ collection.title | escape }}</span>
+        {%- endif -%}
+      </nav>
+
+      <p class="brf-chead__eyebrow">{{ brf_eyebrow | default: section.settings.eyebrow_fallback | escape }}</p>
+      <h1 class="brf-chead__title">
+        {%- if collection.handle == 'all' -%}{{ 'collection.general.all_products' | t }}{%- else -%}{{ collection.title | escape }}{%- endif -%}
+      </h1>
+
+      {%- if section.settings.show_description and collection.description != blank -%}
+        <div class="brf-chead__desc" data-brf-desc>
+          <div class="brf-chead__desc-inner rte">{{ collection.description }}</div>
+          <button type="button" class="brf-chead__more" data-brf-more hidden>Read more</button>
+        </div>
+      {%- endif -%}
+    {%- endunless -%}
+
+    {%- if section.settings.show_filter_bar and collection.all_products_count > 0 -%}
+      {%- render 'brf-filter-bar', collection: collection, current_tags: current_tags, hide_filters: section.settings.hide_filters, show_tags: section.settings.show_tags -%}
+    {%- endif -%}
+  </div>
+</div>
+
+<style>
+  /* Keep the filter bar under the sticky header and quick-view modal; lift it while a mobile sheet is open */
+  html .brf-fbar{z-index:4}
+  html.brf-sheet-open .brf-fbar{z-index:1002}
+  html .modal .select-wrapper{border-radius:12px;background:#fff;box-shadow:0 0 0 1px #D2D2D7;border:0}
+  @media (max-width:749px){
+    html .template-collection #shopify-section-collection-template .container{padding-left:16px;padding-right:16px}
+  }
+</style>
+
+<script>
+(function(){
+  var d = document.querySelector('[data-section-id="{{ section.id }}"] [data-brf-desc]'); if (!d) return;
+  var inner = d.querySelector('.brf-chead__desc-inner'), btn = d.querySelector('[data-brf-more]');
+  if (inner.scrollHeight > inner.clientHeight + 4) {
+    btn.hidden = false;
+    btn.addEventListener('click', function(){ var o = d.classList.toggle('is-open'); btn.textContent = o ? 'Show less' : 'Read more'; });
+  } else { d.classList.add('is-open'); }
+})();
+</script>
+
+{% schema %}
+{
+  "name": "Collection header",
+  "settings": [
+    { "type": "link_list", "id": "menu", "label": "Menu used for the category label", "default": "main-menu" },
+    { "type": "text", "id": "eyebrow_fallback", "label": "Label when not in the menu", "default": "Bull Ring Fabrics" },
+    { "type": "checkbox", "id": "show_description", "label": "Show collection description", "default": true },
+    { "type": "header", "content": "Filter bar" },
+    { "type": "checkbox", "id": "show_filter_bar", "label": "Show filter bar", "default": true },
+    { "type": "text", "id": "hide_filters", "label": "Filters to hide", "info": "Comma-separated filter names, e.g. Brand, Availability", "default": "Brand" },
+    { "type": "checkbox", "id": "show_tags", "label": "Show Style filter (product tags)", "default": true }
+  ]
+}
+{% endschema %}

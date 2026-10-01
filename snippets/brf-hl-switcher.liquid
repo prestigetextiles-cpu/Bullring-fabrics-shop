@@ -1,13 +1,15 @@
 {%- comment -%}
-  Bull Ring Fabrics — Home & Lifestyle category switcher.
-  A row of image chips for every Home & Lifestyle sub-category, so shoppers can hop between
-  categories without going back to the header menu. Categories come from the "Home & Lifestyle"
-  item in the main menu, so editing that menu updates this row.
-  Shown on the Home & Lifestyle landing page and on every one of its sub-category pages.
-  Params: current (handle of the collection being viewed)
+  Bull Ring Fabrics — category switcher.
+  A row of image chips for every sub-category of one main-menu item, so shoppers can hop between
+  categories without going back to the header menu. Categories come from that item in the main menu,
+  so editing the menu updates this row.
+  Used for Home & Lifestyle (landing page + sub-category pages) and for the fabric departments
+  (Dress Fabric, Craft Fabric, Upholstery & Curtains: /pages/<department> + their sub-categories).
+  Params: current (handle of the collection being viewed, or the department key on its landing page)
+          key (handleized menu item title, default 'home-lifestyle')
 {%- endcomment -%}
 {%- liquid
-  assign hl = collections['home-lifestyle']
+  assign sw_key = key | default: 'home-lifestyle'
   assign hl_menu = linklists['main-menu-2026']
   if hl_menu.links.size == 0
     assign hl_menu = linklists['main-menu']
@@ -15,19 +17,24 @@
   assign hl_link = nil
   for l in hl_menu.links
     assign k = l.title | handleize
-    if k == 'home-lifestyle'
+    if k == sw_key
       assign hl_link = l
       break
     endif
   endfor
+  if sw_key == 'home-lifestyle'
+    assign sw_all = collections['home-lifestyle'].url | default: '/collections/home-lifestyle'
+  else
+    assign sw_all = pages[sw_key].url | default: hl_link.url
+  endif
 -%}
 {%- if hl_link and hl_link.links.size > 0 -%}
-<nav class="hl-switch" aria-label="Home &amp; Lifestyle categories" data-hl-switch>
+<nav class="hl-switch{% if sw_key != 'home-lifestyle' %} hl-switch--photo{% endif %}" aria-label="{{ hl_link.title | strip | escape }} categories" data-hl-switch>
   <div class="container hl-switch__wrap">
     <button type="button" class="hl-switch__arrow hl-switch__arrow--prev" data-hl-dir="-1" aria-label="Scroll categories left" hidden>‹</button>
     <ul class="hl-switch__list" role="list" data-hl-track>
       <li>
-        <a class="hl-chip{% if current == 'home-lifestyle' %} is-on{% endif %}" href="{{ hl.url | default: '/collections/home-lifestyle' }}"{% if current == 'home-lifestyle' %} aria-current="page"{% endif %}>
+        <a class="hl-chip{% if current == sw_key %} is-on{% endif %}" href="{{ sw_all }}"{% if current == sw_key %} aria-current="page"{% endif %}>
           <span class="hl-chip__img hl-chip__img--all" aria-hidden="true">
             <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 4l9 6.5"/><path d="M5 9.5V20h14V9.5"/><path d="M10 20v-5h4v5"/></svg>
           </span>
@@ -65,6 +72,7 @@
   .hl-chip__img{flex:0 0 48px;width:48px;height:48px;border-radius:50%;overflow:hidden;background:#F6F3EE;display:grid;place-items:center}
   .hl-chip__img img{width:100%;height:100%;object-fit:cover;mix-blend-mode:multiply}
   .hl-chip__img--all{color:#1D1D1F}
+  .hl-switch--photo .hl-chip__img img{mix-blend-mode:normal}
   .hl-chip.is-on{background:#1D1D1F;color:#fff;box-shadow:none}
   .hl-chip.is-on .hl-chip__img{background:#fff}
   .hl-chip.is-on .hl-chip__img--all{background:#2C2C2E;color:#fff}

@@ -1,0 +1,555 @@
+{%- comment -%}
+  Bull Ring Fabrics — fabric department landing page (Dress Fabric, Craft Fabric, Upholstery & Curtains).
+  Rendered by templates/page.liquid when a page's handle matches a main-menu item that has sub-categories,
+  e.g. /pages/dress-fabric. Sub-categories come from that menu item, so editing the menu updates the page.
+  Wording and hero photo per department, and per-category tile photos, are editable in Customize (blocks).
+{%- endcomment -%}
+{%- liquid
+  assign dkey = page.handle
+  assign dmenu = linklists['main-menu-2026']
+  if dmenu.links.size == 0
+    assign dmenu = linklists['main-menu']
+  endif
+  assign dlink = nil
+  for l in dmenu.links
+    assign k = l.title | handleize
+    if k == dkey
+      assign dlink = l
+      break
+    endif
+  endfor
+
+  assign d_eyebrow = dlink.title | strip
+  assign d_heading = ''
+  assign d_text = ''
+  assign occ_title = ''
+  assign occ = ''
+  assign promo_line = 'Same-day dispatch on orders before 10pm, Monday to Friday.'
+  case dkey
+    when 'dress-fabric'
+      assign d_heading = 'Fabric for every occasion.'
+      assign d_text = 'From bridal lace and party sequins to everyday viscose and denim. [types] dress fabrics in one place, dispatched the same day.'
+      assign occ_title = 'Shop by occasion'
+      assign occ = 'Bridal & wedding|/collections/bridal-fabric;Prom & party|/collections/sequins;Evening & formal|/collections/satin;Summer dresses|/collections/cotton-fabric;Stretch & dancewear|/collections/stretch-fabric;Costume & cosplay|/collections/lame;Tartan & tailoring|/collections/tartan-check-fabric;All dressmaking fabric|/collections/dressmaking-fabric'
+    when 'craft-fabric'
+      assign d_heading = 'Make something wonderful.'
+      assign d_text = 'Felt, fleece, craft cottons, hessian and more for quilts, costumes, kids’ crafts and every project in between. [types] craft fabrics to choose from.'
+      assign occ_title = 'Shop by project'
+      assign occ = 'Quilting & patchwork|/collections/quilting-fabric;Kids’ prints|/collections/kids-novelty-fabric;Kids’ crafts & felt|/collections/felt;Blankets & soft toys|/collections/fleece;Costumes & dress-up|/collections/glitter-fabrics;Outdoor & waterproof|/collections/ripstop;Fabric under £5|/collections/cheap-fabric-under-5'
+    when 'upholstery-curtains'
+      assign d_heading = 'Fabrics that make a home.'
+      assign d_text = 'Plush velvets, brocades, tapestry, leather-look and wipe-clean PVC for sofas, cushions, curtains and kitchens. [types] fabric types, ready to go.'
+      assign occ_title = 'Shop by room'
+      assign occ = 'Sofas & armchairs|/collections/upholstery-fabric;Curtains & blinds|/collections/curtain-fabric;Linen & linen-look|/collections/linen-fabric;Cushions & throws|/collections/tapestry;Kitchen & dining|/collections/pvc;Car seats & interiors|/collections/car-upholstery-fabric'
+    else
+      assign d_heading = dlink.title | strip
+      assign d_text = '[types] fabric types in one place, dispatched the same day.'
+  endcase
+
+  assign d_image = nil
+  assign d_focal = 'object-position:center'
+  for b in section.blocks
+    if b.type == 'department'
+      assign bk = b.settings.menu_item | handleize
+      if bk == dkey
+        if b.settings.eyebrow != blank
+          assign d_eyebrow = b.settings.eyebrow
+        endif
+        if b.settings.heading != blank
+          assign d_heading = b.settings.heading
+        endif
+        if b.settings.text != blank
+          assign d_text = b.settings.text
+        endif
+        if b.settings.image
+          assign d_image = b.settings.image
+          assign d_focal = b.settings.focal | default: 'object-position:center'
+        endif
+      endif
+    endif
+  endfor
+
+  assign types = 0
+  if dlink
+    assign types = dlink.links.size
+  endif
+  assign types_s = types | append: ''
+  assign occ_list = occ | split: ';'
+  # The "Not sure which fabric?" tile fills whatever is left of the last bento row (4 / 3 / 2 columns).
+  assign hs_d = types | plus: 3 | modulo: 4
+  assign hs_d = 4 | minus: hs_d
+  assign hs_t = types | plus: 3 | modulo: 3
+  assign hs_t = 3 | minus: hs_t
+  assign hs_m = types | plus: 1 | modulo: 2
+  assign hs_m = 2 | minus: hs_m
+  assign tints = 'EFE6DA,E6ECEF,EDE7EF,E7EEE6,F3E9E3,E9E7E1' | split: ','
+-%}
+
+{%- if dlink -%}
+<div class="dl" data-dl>
+
+  {%- comment -%} ---------- HERO ---------- {%- endcomment -%}
+  <section class="dl-hero{% if d_image %} dl-hero--photo{% endif %}">
+    {%- if d_image -%}
+      <div class="dl-hero__photo">
+        {{ d_image | image_url: width: 2400 | image_tag: widths: '750, 1100, 1500, 2000, 2400', sizes: '100vw', loading: 'eager', fetchpriority: 'high', alt: d_image.alt, style: d_focal }}
+      </div>
+    {%- endif -%}
+    <div class="container dl-hero__in">
+      <div class="dl-hero__copy dl-reveal">
+        <nav class="dl-crumbs" aria-label="Breadcrumb"><a href="{{ routes.root_url }}">Home</a><span aria-hidden="true">›</span><span aria-current="page">{{ dlink.title | strip | escape }}</span></nav>
+        <p class="dl-hero__eyebrow">{{ d_eyebrow | escape }}</p>
+        <h1 class="dl-hero__title">{{ d_heading | escape }}</h1>
+        <p class="dl-hero__text">{{ d_text | escape | replace: '[types]', types_s }}</p>
+        <div class="dl-hero__ctas">
+          <a class="hl-btn hl-btn--dark" href="#dl-cats">Shop by fabric</a>
+          <a class="hl-btn hl-btn--ghost" href="#dl-explore">Explore the range</a>
+        </div>
+        <ul class="dl-hero__chips" role="list">
+          <li>Same-day dispatch before 10pm</li>
+          <li>Free next day delivery over £150</li>
+          <li>Trade &amp; wholesale welcome</li>
+        </ul>
+      </div>
+
+      {%- unless d_image -%}
+        {%- comment -%} A fanned "swatch book" of the first six categories; each swatch opens its category {%- endcomment -%}
+        <div class="dl-fan" data-dl-fan>
+          {%- assign shown = 0 -%}
+          {%- for sub in dlink.links -%}
+            {%- assign so = sub.object -%}
+            {%- assign simg = so.image | default: so.products.first.featured_image -%}
+            {%- unless simg -%}{%- continue -%}{%- endunless -%}
+            {%- assign shown = shown | plus: 1 -%}
+            <a class="dl-swatch dl-swatch--{{ shown }}" href="{{ sub.url }}" tabindex="-1" aria-hidden="true">
+              <img src="{{ simg | image_url: width: 560, height: 760, crop: 'center' }}" alt="" width="280" height="380" loading="eager">
+              <span class="dl-swatch__tag">{{ sub.title }}</span>
+            </a>
+            {%- if shown >= 6 -%}{%- break -%}{%- endif -%}
+          {%- endfor -%}
+        </div>
+      {%- endunless -%}
+    </div>
+  </section>
+
+  {%- render 'brf-hl-switcher', key: dkey, current: dkey -%}
+
+  {%- comment -%} ---------- SHOP BY FABRIC (bento of photo tiles) ---------- {%- endcomment -%}
+  <section class="dl-sec" id="dl-cats">
+    <div class="container">
+      <div class="dl-sec__head dl-reveal">
+        <h2 class="dl-sec__title">Shop by fabric</h2>
+        <p class="dl-sec__sub">{{ types }} fabric types, one place. Tap any to dive in.</p>
+      </div>
+      <div class="dl-bento">
+        {%- for sub in dlink.links -%}
+          {%- assign so = sub.object -%}
+          {%- assign timg = so.image | default: so.products.first.featured_image -%}
+          {%- for b in section.blocks -%}
+            {%- if b.type == 'tile' and b.settings.collection.handle == so.handle and b.settings.image -%}{%- assign timg = b.settings.image -%}{%- endif -%}
+          {%- endfor -%}
+          {%- assign i = forloop.index0 | modulo: 6 -%}
+          <a class="dl-tile{% if forloop.first %} dl-tile--lg{% endif %} dl-reveal" href="{{ sub.url }}" style="--tint:#{{ tints[i] }}">
+            {%- if timg -%}
+              <img class="dl-tile__img" src="{{ timg | image_url: width: 900 }}" srcset="{{ timg | image_url: width: 500 }} 500w, {{ timg | image_url: width: 900 }} 900w" sizes="(max-width:749px) 50vw, 25vw" alt="" loading="lazy" width="900" height="900">
+            {%- endif -%}
+            <span class="dl-tile__copy">
+              <span class="dl-tile__t">{{ sub.title }}</span>
+              {%- if so.products_count -%}<span class="dl-tile__n">{{ so.products_count }} {% if so.products_count == 1 %}fabric{% else %}fabrics{% endif %}</span>{%- endif -%}
+            </span>
+            <span class="dl-tile__go" aria-hidden="true">›</span>
+          </a>
+        {%- endfor -%}
+        <a class="dl-tile dl-tile--help{% if hs_d == 1 %} dl-tile--help-sm{% endif %} dl-reveal" href="/pages/how-to-buy-fabrics" style="--hs-d:{{ hs_d }};--hs-t:{{ hs_t }};--hs-m:{{ hs_m }}">
+          <span class="dl-tile__copy">
+            <span class="dl-tile__t">Not sure which fabric?</span>
+            <span class="dl-tile__n">How buying fabric online works, and how to pick the right one.</span>
+            <span class="dl-tile__cta">Read the guide <span aria-hidden="true">›</span></span>
+          </span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  {%- comment -%} ---------- SHOP BY OCCASION / PROJECT / ROOM ---------- {%- endcomment -%}
+  {%- if occ != '' -%}
+  <section class="dl-sec dl-sec--occ">
+    <div class="container">
+      <div class="dl-occ dl-reveal">
+        <h2 class="dl-occ__t">{{ occ_title }}</h2>
+        <ul class="dl-occ__list" role="list">
+          {%- for o in occ_list -%}
+            {%- assign bits = o | split: '|' -%}
+            <li><a class="dl-occ__pill" href="{{ bits[1] }}">{{ bits[0] }}</a></li>
+          {%- endfor -%}
+        </ul>
+      </div>
+    </div>
+  </section>
+  {%- endif -%}
+
+  {%- comment -%} ---------- EXPLORE: tabbed browsing across every fabric type ---------- {%- endcomment -%}
+  <section class="dl-sec" id="dl-explore" data-dl-explore>
+    <div class="container">
+      <div class="dl-sec__head dl-reveal">
+        <h2 class="dl-sec__title">Explore the range</h2>
+        <p class="dl-sec__sub">Switch between fabrics without leaving the page.</p>
+      </div>
+      <div class="hl-tabs" role="tablist" aria-label="Fabric types">
+        {%- assign first_done = false -%}
+        {%- for sub in dlink.links -%}
+          {%- if sub.object.products_count == 0 -%}{%- continue -%}{%- endif -%}
+          <button type="button" class="hl-tab" role="tab" id="dl-tab-{{ forloop.index }}" aria-controls="dl-panel-{{ forloop.index }}" aria-selected="{% if first_done %}false{% else %}true{% endif %}"{% if first_done %} tabindex="-1"{% endif %}>{{ sub.title }} <span>{{ sub.object.products_count }}</span></button>
+          {%- assign first_done = true -%}
+        {%- endfor -%}
+      </div>
+      {%- assign first_done = false -%}
+      {%- for sub in dlink.links -%}
+        {%- if sub.object.products_count == 0 -%}{%- continue -%}{%- endif -%}
+        <div class="hl-panel" role="tabpanel" id="dl-panel-{{ forloop.index }}" aria-labelledby="dl-tab-{{ forloop.index }}"{% if first_done %} hidden{% endif %}>
+          <ul class="hl-grid" role="list">
+            {%- assign n = 0 -%}
+            {%- for p in sub.object.products -%}
+              {%- unless p.available -%}{%- continue -%}{%- endunless -%}
+              {%- assign n = n | plus: 1 -%}
+              <li>{%- render 'brf-hl-card', p: p, cover: true -%}</li>
+              {%- if n >= section.settings.explore_limit -%}{%- break -%}{%- endif -%}
+            {%- endfor -%}
+          </ul>
+          <a class="hl-btn hl-btn--ghost hl-panel__all" href="{{ sub.url }}">View all {{ sub.object.products_count }} in {{ sub.title }} <span aria-hidden="true">›</span></a>
+        </div>
+        {%- assign first_done = true -%}
+      {%- endfor -%}
+    </div>
+  </section>
+
+  {%- comment -%} ---------- WHY SHOP WITH US ---------- {%- endcomment -%}
+  <section class="dl-sec dl-sec--promise">
+    <div class="container">
+      <ul class="dl-promise" role="list">
+        <li class="dl-reveal">
+          <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/></svg>
+          <strong>Same-day dispatch</strong><span>{{ promo_line }}</span>
+        </li>
+        <li class="dl-reveal">
+          <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 7h11v9H3z"/><path d="M14 10h4l3 3v3h-7"/><circle cx="7" cy="17.5" r="1.8"/><circle cx="17.5" cy="17.5" r="1.8"/></svg>
+          <strong>Free next day delivery</strong><span>On UK orders over £150 placed before 9pm.</span>
+        </li>
+        <li class="dl-reveal">
+          <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h16v12H4z"/><path d="M9 7V5h6v2"/><path d="M4 12h16"/></svg>
+          <strong>Trade &amp; wholesale</strong><span>Full rolls and bulk pricing for businesses. <a href="/pages/wholesale-trade-enquiries">Enquire</a></span>
+        </li>
+        <li class="dl-reveal">
+          <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-5.6-7-11a7 7 0 0 1 14 0c0 5.4-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/></svg>
+          <strong>Birmingham based</strong><span>A real team you can email or chat with.</span>
+        </li>
+      </ul>
+    </div>
+  </section>
+
+  {%- comment -%} ---------- GUIDES ---------- {%- endcomment -%}
+  <section class="dl-sec dl-sec--guides">
+    <div class="container">
+      <div class="dl-guides dl-reveal">
+        <div>
+          <h2 class="dl-guides__t">Buying fabric online, made simple.</h2>
+          <p class="dl-guides__s">Work out how much you need and how ordering by length works before you buy.</p>
+        </div>
+        <div class="dl-guides__ctas">
+          <a class="hl-btn hl-btn--light" href="/pages/how-much-fabric-do-i-need">How much fabric do I need?</a>
+          <a class="hl-btn hl-btn--line" href="/pages/how-to-buy-fabrics">How to buy fabric</a>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<style>
+  .dl{--ink:#1D1D1F;--sub:#6B665F;--line:#E4DDD1;--sand:#F6F3EE;--green:#149954;--deep:#1F4D3A;color:var(--ink)}
+  .dl a{color:inherit}
+  .template-page .dl{margin-bottom:24px}
+
+  /* Buttons (shared names with the Home & Lifestyle page) */
+  .hl-btn{display:inline-flex;align-items:center;gap:6px;height:48px;padding:0 24px;border-radius:980px;font-size:15px;font-weight:600;text-decoration:none;transition:transform .2s,background .2s,box-shadow .2s;white-space:nowrap}
+  .hl-btn--dark{background:var(--ink);color:#fff!important}
+  .hl-btn--dark:hover{background:#000;transform:translateY(-1px)}
+  .hl-btn--ghost{background:rgba(255,255,255,.7);box-shadow:inset 0 0 0 1px var(--ink);color:var(--ink)}
+  .hl-btn--ghost:hover{background:#fff;transform:translateY(-1px)}
+  .hl-btn--light{background:#fff;color:var(--ink)!important}
+  .hl-btn--light:hover{transform:translateY(-1px)}
+  .hl-btn--line{box-shadow:inset 0 0 0 1px rgba(255,255,255,.6);color:#fff!important}
+  .hl-btn--line:hover{background:rgba(255,255,255,.1);transform:translateY(-1px)}
+
+  /* Hero */
+  .dl-hero{position:relative;overflow:hidden;background:radial-gradient(900px 520px at 80% 40%,#EADFCF 0%,rgba(234,223,207,0) 62%),linear-gradient(180deg,#FBF9F5 0%,#F3EEE6 100%)}
+  .dl-hero__in{position:relative;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);align-items:center;gap:40px;min-height:540px;padding-top:40px;padding-bottom:56px}
+  .dl-crumbs{display:flex;gap:8px;margin:0 0 22px;font-size:13px;color:var(--sub)}
+  .dl-crumbs a{text-decoration:none}
+  .dl-crumbs a:hover{text-decoration:underline}
+  .dl-hero__eyebrow{margin:0 0 12px;font-size:13px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--green)}
+  .dl-hero__title{margin:0;font:600 clamp(36px,5.2vw,64px)/1.04 var(--heading-font-family);letter-spacing:-.02em;color:var(--ink)}
+  .dl-hero__text{max-width:520px;margin:18px 0 0;font-size:clamp(16px,1.5vw,19px);line-height:1.5;color:#4A463F}
+  .dl-hero__ctas{display:flex;flex-wrap:wrap;gap:12px;margin-top:28px}
+  .dl-hero__chips{display:flex;flex-wrap:wrap;gap:8px 18px;margin:26px 0 0;padding:0;list-style:none;font-size:13.5px;color:var(--sub)}
+  .dl-hero__chips li{display:flex;align-items:center;gap:7px}
+  .dl-hero__chips li::before{content:"";width:16px;height:16px;border-radius:50%;background:var(--green) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='m4.5 8.2 2.2 2.2 4.8-4.8' fill='none' stroke='%23fff' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center/16px no-repeat}
+
+  /* Swatch-book fan */
+  .dl-fan{position:relative;height:460px;perspective:1400px}
+  .dl-swatch{--r:0deg;--x:0px;position:absolute;left:50%;bottom:6%;width:230px;height:312px;margin-left:-115px;border-radius:18px;overflow:hidden;background:#E9E2D6;
+    box-shadow:0 1px 0 rgba(255,255,255,.6) inset,0 28px 50px -24px rgba(50,35,20,.45),0 2px 6px rgba(50,35,20,.12);
+    transform-origin:50% 120%;transform:translateX(var(--x)) rotate(var(--r));transition:transform .7s cubic-bezier(.2,.9,.25,1.15),box-shadow .4s;text-decoration:none}
+  .dl-swatch img{width:100%;height:100%;object-fit:cover;transition:transform .6s cubic-bezier(.2,.8,.2,1)}
+  .dl-swatch::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,0) 55%,rgba(0,0,0,.45) 100%);pointer-events:none}
+  .dl-swatch__tag{position:absolute;left:14px;right:14px;bottom:12px;z-index:1;font-size:14px;font-weight:600;color:#fff;letter-spacing:-.005em;text-shadow:0 1px 8px rgba(0,0,0,.3)}
+  .dl-swatch--1{--r:-21deg;--x:-34px;z-index:1}
+  .dl-swatch--2{--r:-13deg;--x:-20px;z-index:2}
+  .dl-swatch--3{--r:-5deg;--x:-6px;z-index:3}
+  .dl-swatch--4{--r:4deg;--x:6px;z-index:4}
+  .dl-swatch--5{--r:12deg;--x:20px;z-index:5}
+  .dl-swatch--6{--r:20deg;--x:34px;z-index:6}
+  .dl-fan.is-closed .dl-swatch{--r:0deg;--x:0px}
+  .dl-fan:hover .dl-swatch--1{--r:-30deg;--x:-70px}
+  .dl-fan:hover .dl-swatch--2{--r:-18deg;--x:-42px}
+  .dl-fan:hover .dl-swatch--3{--r:-6deg;--x:-14px}
+  .dl-fan:hover .dl-swatch--4{--r:6deg;--x:14px}
+  .dl-fan:hover .dl-swatch--5{--r:18deg;--x:42px}
+  .dl-fan:hover .dl-swatch--6{--r:30deg;--x:70px}
+  .dl-fan .dl-swatch:hover{z-index:9;box-shadow:0 40px 70px -26px rgba(50,35,20,.55)}
+  .dl-fan .dl-swatch:hover img{transform:scale(1.06)}
+
+  .dl-hero--photo{background:#1D1D1F}
+  .dl-hero__photo{position:absolute;inset:0}
+  .dl-hero__photo img{width:100%;height:100%;object-fit:cover}
+  .dl-hero--photo::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(18,16,13,.72) 0%,rgba(18,16,13,.45) 42%,rgba(18,16,13,0) 75%)}
+  .dl-hero--photo .dl-hero__in{z-index:1;grid-template-columns:minmax(0,1fr);min-height:min(78vh,640px)}
+  .dl-hero--photo .dl-hero__copy{max-width:600px}
+  .dl-hero--photo .dl-hero__eyebrow{color:#BFE6CF}
+  .dl-hero--photo .dl-hero__title{color:#fff}
+  .dl-hero--photo .dl-hero__text,.dl-hero--photo .dl-hero__chips,.dl-hero--photo .dl-crumbs{color:rgba(255,255,255,.88)}
+  .dl-hero--photo .hl-btn--dark{background:#fff;color:var(--ink)!important}
+  .dl-hero--photo .hl-btn--ghost{background:rgba(255,255,255,.12);box-shadow:inset 0 0 0 1px rgba(255,255,255,.7);color:#fff;-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px)}
+
+  /* Sections */
+  .dl-sec{padding:64px 0 8px}
+  .dl-sec__head{margin-bottom:26px}
+  .dl-sec__title{margin:0;font:600 clamp(28px,3.4vw,40px)/1.1 var(--heading-font-family);letter-spacing:-.015em;color:var(--ink)}
+  .dl-sec__sub{margin:8px 0 0;font-size:17px;line-height:1.45;color:var(--sub)}
+
+  /* Bento of photo tiles */
+  .dl-bento{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));grid-auto-rows:230px;grid-auto-flow:row dense;gap:16px}
+  .dl-tile{position:relative;display:flex;align-items:flex-end;overflow:hidden;border-radius:24px;background:var(--tint);text-decoration:none;isolation:isolate;transition:transform .35s cubic-bezier(.2,.8,.2,1),box-shadow .35s}
+  .dl-tile:hover{transform:translateY(-4px);box-shadow:0 24px 44px -26px rgba(40,30,15,.5)}
+  .dl-tile:focus-visible{outline:3px solid rgba(20,153,84,.45);outline-offset:3px}
+  .dl-tile--lg{grid-column:span 2;grid-row:span 2}
+  .dl-tile__img{position:absolute;inset:0;z-index:-2;width:100%;height:100%;object-fit:cover;transition:transform .7s cubic-bezier(.2,.8,.2,1)}
+  .dl-tile:hover .dl-tile__img{transform:scale(1.06)}
+  .dl-tile::after{content:"";position:absolute;inset:0;z-index:-1;background:linear-gradient(180deg,rgba(15,12,8,0) 40%,rgba(15,12,8,.62) 100%)}
+  .dl-tile__copy{display:flex;flex-direction:column;align-items:flex-start;padding:20px 22px;color:#fff}
+  .dl-tile--lg .dl-tile__copy{padding:30px}
+  .dl-tile__t{font-size:20px;font-weight:600;line-height:1.15;letter-spacing:-.01em;color:#fff;text-shadow:0 1px 10px rgba(0,0,0,.25)}
+  .dl-tile--lg .dl-tile__t{font-size:clamp(26px,2.6vw,36px)}
+  .dl-tile__n{margin-top:5px;font-size:13.5px;color:rgba(255,255,255,.85)}
+  .dl-tile__go{position:absolute;right:16px;top:16px;display:grid;place-items:center;width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,.28);-webkit-backdrop-filter:blur(12px) saturate(160%);backdrop-filter:blur(12px) saturate(160%);
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.5);color:#fff;font-size:20px;line-height:1;opacity:0;transform:scale(.8);transition:opacity .25s,transform .35s cubic-bezier(.34,1.56,.64,1)}
+  .dl-tile:hover .dl-tile__go{opacity:1;transform:none}
+  .dl-tile--help{grid-column:span var(--hs-d,2);align-items:center;background:var(--deep)}
+  .dl-tile--help-sm .dl-tile__copy{padding:22px}
+  .dl-tile--help-sm .dl-tile__t{font-size:20px}
+  .dl-tile--help-sm .dl-tile__n{font-size:13.5px}
+  .dl-tile--help::after{display:none}
+  .dl-tile--help .dl-tile__copy{padding:28px 30px}
+  .dl-tile--help .dl-tile__t{font-size:24px;text-shadow:none}
+  .dl-tile--help .dl-tile__n{max-width:420px;font-size:15px;line-height:1.45;color:rgba(255,255,255,.78)}
+  .dl-tile__cta{margin-top:14px;font-size:14.5px;font-weight:600}
+
+  /* Occasion pills */
+  .dl-sec--occ{padding-top:40px}
+  .dl-occ{display:flex;align-items:center;gap:18px 28px;flex-wrap:wrap;padding:24px 28px;border-radius:24px;background:var(--sand)}
+  .dl-occ__t{margin:0;font-size:17px;font-weight:600;white-space:nowrap}
+  .dl-occ__list{display:flex;flex-wrap:wrap;gap:8px;margin:0;padding:0;list-style:none}
+  .dl-occ__pill{display:inline-flex;align-items:center;height:38px;padding:0 16px;border-radius:980px;background:#fff;box-shadow:inset 0 0 0 1px var(--line);font-size:14px;font-weight:500;text-decoration:none;transition:background .2s,color .2s,box-shadow .2s}
+  .dl-occ__pill:hover{background:var(--ink);color:#fff!important;box-shadow:none}
+
+  /* Product cards (fabric photos fill the card) */
+  .hl-card{display:flex;flex-direction:column;height:100%;text-decoration:none;color:var(--ink)}
+  .hl-card__img{position:relative;display:block;aspect-ratio:1/1;border-radius:20px;background:#fff;box-shadow:inset 0 0 0 1px #EDE7DD;overflow:hidden}
+  .hl-card__img img{width:100%;height:100%;object-fit:contain;padding:8%;transition:transform .45s cubic-bezier(.2,.8,.2,1)}
+  .hl-card--cover .hl-card__img{background:var(--sand);box-shadow:none}
+  .hl-card--cover .hl-card__img img{object-fit:cover;padding:0}
+  .hl-card:hover .hl-card__img img{transform:scale(1.05)}
+  .hl-card__badge{position:absolute;left:10px;top:10px;padding:4px 10px;border-radius:980px;background:rgba(20,153,84,.1);color:#0E7A41;font-size:11.5px;font-weight:700;letter-spacing:.01em}
+  .hl-card__badge--out{background:#F1EEE9;color:var(--sub)}
+  .hl-card__t{display:-webkit-box;margin-top:12px;font-size:14.5px;font-weight:500;line-height:1.35;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+  .hl-card__p{margin-top:6px;font-size:15px;font-weight:600}
+  .hl-card__p em{font-style:normal;color:#B3261E}
+  .hl-card__p s{margin-left:4px;font-weight:400;color:var(--sub)}
+
+  /* Tabs */
+  .hl-tabs{display:flex;gap:8px;margin:0 0 24px;padding:4px 2px;overflow-x:auto;scrollbar-width:none}
+  .hl-tabs::-webkit-scrollbar{display:none}
+  .hl-tab{flex:0 0 auto;display:inline-flex;align-items:center;gap:8px;height:42px;padding:0 18px;border:0;border-radius:980px;background:var(--sand);font:inherit;font-size:14.5px;font-weight:500;color:var(--ink);cursor:pointer;transition:background .2s,color .2s}
+  .hl-tab span{font-size:12px;color:var(--sub)}
+  .hl-tab:hover{background:#ECE6DC}
+  .hl-tab[aria-selected="true"]{background:var(--ink);color:#fff}
+  .hl-tab[aria-selected="true"] span{color:rgba(255,255,255,.7)}
+  .hl-tab:focus-visible{outline:3px solid rgba(20,153,84,.45);outline-offset:2px}
+  .hl-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:28px 18px;margin:0;padding:0;list-style:none}
+  .hl-panel{animation:dl-in .35s ease}
+  .hl-panel__all{margin-top:28px}
+  @keyframes dl-in{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+
+  /* Promise band */
+  .dl-sec--promise{padding-top:72px}
+  .dl-promise{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px;margin:0;padding:0;list-style:none}
+  .dl-promise li{display:flex;flex-direction:column;gap:6px;padding:26px 24px;border-radius:22px;background:var(--sand)}
+  .dl-promise svg{margin-bottom:6px;color:var(--green)}
+  .dl-promise strong{font-size:17px;font-weight:600}
+  .dl-promise span{font-size:14.5px;line-height:1.45;color:var(--sub)}
+  .dl-promise span a{font-weight:600;color:var(--ink)}
+
+  /* Guides band */
+  .dl-sec--guides{padding-top:16px;padding-bottom:40px}
+  .dl-guides{display:flex;align-items:center;justify-content:space-between;gap:24px;padding:36px 40px;border-radius:28px;background:linear-gradient(120deg,#1F4D3A 0%,#2C6A50 100%);color:#fff}
+  .dl-guides__t{margin:0;font:600 clamp(22px,2.4vw,30px)/1.15 var(--heading-font-family);letter-spacing:-.01em;color:#fff}
+  .dl-guides__s{margin:8px 0 0;font-size:15.5px;color:rgba(255,255,255,.8)}
+  .dl-guides__ctas{display:flex;flex-wrap:wrap;gap:10px;flex:0 0 auto}
+
+  #dl-cats,#dl-explore{scroll-margin-top:80px}
+
+  /* Reveal on scroll */
+  .dl-js .dl-reveal{opacity:0;transform:translateY(18px);transition:opacity .6s ease,transform .6s cubic-bezier(.2,.8,.2,1)}
+  .dl-js .dl-reveal.is-in{opacity:1;transform:none}
+  @media (prefers-reduced-motion:reduce){
+    .dl-swatch,.dl-swatch img{transition:none}
+    .dl-js .dl-reveal{opacity:1;transform:none;transition:none}
+  }
+
+  @media (max-width:999px){
+    .dl-hero__in{grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:20px}
+    .dl-swatch{width:190px;height:258px;margin-left:-95px}
+    .dl-bento{grid-template-columns:repeat(3,minmax(0,1fr))}
+    .dl-tile--help{grid-column:span var(--hs-t,3)}
+    .hl-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
+    .dl-promise{grid-template-columns:repeat(2,minmax(0,1fr))}
+    .dl-guides{flex-direction:column;align-items:flex-start}
+  }
+  @media (max-width:749px){
+    .dl-hero__in{grid-template-columns:minmax(0,1fr);gap:0;min-height:0;padding-top:22px;padding-bottom:36px}
+    .dl-fan{order:-1;height:262px;margin:0 -8px 22px}
+    .dl-swatch{width:132px;height:180px;margin-left:-66px;border-radius:14px;bottom:2%}
+    .dl-swatch__tag{font-size:12px;left:10px;bottom:9px}
+    .dl-swatch--1{--x:-46px}.dl-swatch--2{--x:-28px}.dl-swatch--3{--x:-9px}.dl-swatch--4{--x:9px}.dl-swatch--5{--x:28px}.dl-swatch--6{--x:46px}
+    .dl-crumbs{margin-bottom:14px}
+    .dl-hero__ctas .hl-btn{flex:1 1 auto;justify-content:center}
+    .dl-hero--photo .dl-hero__in{min-height:560px;align-items:end}
+    .dl-hero--photo::after{background:linear-gradient(0deg,rgba(18,16,13,.82) 0%,rgba(18,16,13,.5) 45%,rgba(18,16,13,.05) 80%)}
+    .dl-sec{padding-top:44px}
+    .dl-sec__sub{font-size:15.5px}
+    .dl-bento{grid-template-columns:repeat(2,minmax(0,1fr));grid-auto-rows:160px;gap:12px}
+    .dl-tile--lg{grid-column:span 2;grid-row:span 1}
+    .dl-tile--help{grid-column:span var(--hs-m,2)}
+    .dl-tile--help .dl-tile__copy{padding:16px}
+    .dl-tile--help .dl-tile__t{font-size:17px}
+    .dl-tile--help .dl-tile__n{display:none}
+    .dl-tile{border-radius:20px}
+    .dl-tile__copy{padding:14px 16px}
+    .dl-tile__t{font-size:16.5px}
+    .dl-tile__go{display:none}
+    .dl-occ{padding:20px;gap:14px}
+    .dl-occ__list{flex-wrap:nowrap;overflow-x:auto;margin:0 -20px;padding:0 20px 2px;scrollbar-width:none}
+    .dl-occ__list::-webkit-scrollbar{display:none}
+    .dl-occ__pill{white-space:nowrap}
+    .hl-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:22px 12px}
+    .dl-promise{grid-template-columns:minmax(0,1fr);gap:10px}
+    .dl-promise li{flex-direction:row;flex-wrap:wrap;align-items:center;padding:18px}
+    .dl-promise svg{margin:0 6px 0 0}
+    .dl-promise span{flex-basis:100%}
+    .dl-guides{padding:26px 22px;border-radius:22px}
+    .dl-guides__ctas,.dl-guides__ctas .hl-btn{width:100%;justify-content:center}
+  }
+</style>
+
+<script>
+(function(){
+  var root = document.querySelector('[data-dl]'); if (!root || root.__dl) return; root.__dl = true;
+  var calm = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* Reveal sections as they scroll into view */
+  if ('IntersectionObserver' in window && !calm) {
+    root.classList.add('dl-js');
+    var io = new IntersectionObserver(function(es){ es.forEach(function(e){ if (e.isIntersecting) { e.target.classList.add('is-in'); io.unobserve(e.target); } }); }, {rootMargin: '0px 0px -8% 0px'});
+    [].forEach.call(root.querySelectorAll('.dl-reveal'), function(el, i){ el.style.transitionDelay = (i % 4) * 60 + 'ms'; io.observe(el); });
+  }
+
+  /* The swatch book opens like a fan when the page loads */
+  var fan = root.querySelector('[data-dl-fan]');
+  if (fan && !calm) {
+    fan.classList.add('is-closed');
+    requestAnimationFrame(function(){ setTimeout(function(){ fan.classList.remove('is-closed'); }, 250); });
+  }
+
+  /* Smooth in-page jumps */
+  [].forEach.call(root.querySelectorAll('a[href^="#dl-"]'), function(a){
+    a.addEventListener('click', function(e){
+      var t = document.querySelector(a.getAttribute('href')); if (!t) return;
+      e.preventDefault(); t.scrollIntoView({behavior: calm ? 'auto' : 'smooth', block: 'start'});
+    });
+  });
+
+  /* Fabric tabs */
+  var ex = root.querySelector('[data-dl-explore]');
+  if (ex) {
+    var tabs = [].slice.call(ex.querySelectorAll('[role="tab"]'));
+    function select(tab, focus){
+      tabs.forEach(function(t){
+        var on = t === tab;
+        t.setAttribute('aria-selected', on ? 'true' : 'false'); t.tabIndex = on ? 0 : -1;
+        document.getElementById(t.getAttribute('aria-controls')).hidden = !on;
+      });
+      if (focus) tab.focus();
+      tab.scrollIntoView({block: 'nearest', inline: 'nearest', behavior: 'smooth'});
+    }
+    tabs.forEach(function(t, i){
+      t.addEventListener('click', function(){ select(t); });
+      t.addEventListener('keydown', function(e){
+        var j = e.key === 'ArrowRight' ? i + 1 : e.key === 'ArrowLeft' ? i - 1 : e.key === 'Home' ? 0 : e.key === 'End' ? tabs.length - 1 : null;
+        if (j === null) return; e.preventDefault(); select(tabs[(j + tabs.length) % tabs.length], true);
+      });
+    });
+  }
+})();
+</script>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Fabric department page",
+  "settings": [
+    { "type": "paragraph", "content": "Used by the pages Dress Fabric, Craft Fabric and Upholstery & Curtains (page handle = the menu item name). Categories come from that item in the main menu." },
+    { "type": "range", "id": "explore_limit", "label": "Fabrics per category in \"Explore the range\"", "min": 4, "max": 12, "step": 4, "default": 8 }
+  ],
+  "blocks": [
+    {
+      "type": "department",
+      "name": "Department wording & photo",
+      "settings": [
+        { "type": "text", "id": "menu_item", "label": "Menu item", "info": "As it appears in the menu, e.g. Dress Fabric" },
+        { "type": "image_picker", "id": "image", "label": "Hero photo", "info": "Optional. Wide photo, at least 2000px wide. Without one, the hero shows a fan of fabric swatches." },
+        { "type": "text", "id": "focal", "label": "Hero photo position (CSS)", "default": "object-position:center" },
+        { "type": "text", "id": "eyebrow", "label": "Small heading", "info": "Leave empty to use the menu item name" },
+        { "type": "text", "id": "heading", "label": "Heading", "info": "Leave empty for the built-in heading" },
+        { "type": "textarea", "id": "text", "label": "Text", "info": "[types] is replaced with the number of fabric types. Leave empty for the built-in text." }
+      ]
+    },
+    {
+      "type": "tile",
+      "name": "Fabric tile photo",
+      "settings": [
+        { "type": "collection", "id": "collection", "label": "Category" },
+        { "type": "image_picker", "id": "image", "label": "Photo", "info": "Replaces the category photo on its tile." }
+      ]
+    }
+  ]
+}
+{% endschema %}

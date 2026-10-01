@@ -1,8 +1,8 @@
 {%- comment -%}
   Bull Ring Fabrics — compact product card for the Home & Lifestyle landing page.
-  Params: p (product)
+  Params: p (product), cover (true for fabric photos: image fills the card instead of sitting on white)
 {%- endcomment -%}
-<a class="hl-card" href="{{ p.url }}">
+<a class="hl-card{% if cover %} hl-card--cover{% endif %}" href="{{ p.url }}">
   <span class="hl-card__img">
     {%- if p.featured_image -%}
       <img src="{{ p.featured_image | image_url: width: 400 }}" srcset="{{ p.featured_image | image_url: width: 300 }} 300w, {{ p.featured_image | image_url: width: 500 }} 500w" sizes="(max-width:749px) 46vw, 240px" alt="{{ p.featured_image.alt | default: p.title | escape }}" width="400" height="400" loading="lazy">

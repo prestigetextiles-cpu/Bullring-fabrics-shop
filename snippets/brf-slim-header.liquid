@@ -1,0 +1,206 @@
+{%- comment -%}
+  Bull Ring Fabrics — slim scrolling header for desktop (1000px and wider).
+  As you scroll, the logo/search row slides away and the menu bar floats on as a slim glass capsule
+  with a mini logo, search and basket, a gliding hover highlight and a reading-progress line.
+  The full header slides back in whenever search, the basket or the account popover is opened,
+  or anything in it gets keyboard focus. Phones and tablets keep the existing header.
+  How: the sticky header gets a negative top equal to the logo row's height, so only the menu bar
+  stays pinned; nothing changes size, so the page below never jumps.
+{%- endcomment -%}
+<style>
+  @media (min-width:1000px){
+    html.brf-hc-on #shopify-section-header#shopify-section-header{top:var(--brf-hc-top,0px)!important}
+    html.brf-hc-anim #shopify-section-header#shopify-section-header{transition:top .42s cubic-bezier(.2,.8,.2,1),background-color .3s ease,border-color .3s ease}
+    html.brf-hc-reveal #shopify-section-header#shopify-section-header{top:0!important}
+
+    /* Capsule parts are hidden until the header condenses */
+    .brf-hc__logo,.brf-hc__acts,.brf-hc__glide,.brf-hc__prog{display:none}
+
+    /* ---------- Condensed state ---------- */
+    html.brf-hc #shopify-section-header#shopify-section-header{background:transparent!important;-webkit-backdrop-filter:none!important;backdrop-filter:none!important;border-bottom-color:transparent!important;box-shadow:none!important;pointer-events:none}
+    html.brf-hc #shopify-section-header [data-brf-mm]{border-top-color:transparent}
+    html.brf-hc [data-brf-mm]>.container{
+      position:relative;display:flex;align-items:center;gap:4px;height:42px;margin-top:4px;
+      max-width:min(1320px,calc(100% - 32px));padding:0 6px 0 8px;border-radius:980px;pointer-events:auto;
+      background:rgba(255,255,255,.74);-webkit-backdrop-filter:saturate(180%) blur(22px);backdrop-filter:saturate(180%) blur(22px);
+      box-shadow:inset 0 1px 0 rgba(255,255,255,.85),inset 0 0 0 .5px rgba(255,255,255,.6),0 0 0 .5px rgba(29,29,31,.08),0 12px 32px -14px rgba(29,29,31,.32);
+      animation:brf-hc-in .62s cubic-bezier(.2,.9,.25,1.12) both}
+    html.brf-hc.brf-mm-open [data-brf-mm]>.container{background:rgba(255,255,255,.94)}
+    @keyframes brf-hc-in{from{opacity:.4;transform:translateY(-12px) scaleX(.94)}to{opacity:1;transform:none}}
+
+    html.brf-hc .brf-mm__bar{flex:1 1 auto;min-width:0;position:static;z-index:1}
+    html.brf-hc .brf-mm__top{height:42px;padding:0 12px;font-size:13.5px}
+    html.brf-hc .brf-mm__top::after{display:none}
+    html.brf-hc .brf-mm__top:focus-visible{outline-offset:-6px;border-radius:980px}
+
+    /* Gliding highlight that follows the pointer between menu items */
+    html.brf-hc .brf-hc__glide{display:block;position:absolute;top:5px;left:0;height:32px;width:0;border-radius:980px;background:rgba(29,29,31,.07);opacity:0;pointer-events:none;z-index:0;
+      transition:transform .38s cubic-bezier(.3,1.3,.4,1),width .38s cubic-bezier(.3,1.3,.4,1),opacity .2s ease}
+    html.brf-hc .brf-hc__glide.is-on{opacity:1}
+
+    /* Mega menu panels drop down as a floating card the width of the capsule */
+    html.brf-hc .brf-mm__panel{top:calc(100% + 10px);border-top:0;border-radius:26px;
+      box-shadow:0 0 0 .5px rgba(29,29,31,.08),0 34px 80px -24px rgba(29,29,31,.4);transform:translateY(-8px) scale(.985);transform-origin:50% 0}
+    html.brf-hc .brf-mm__item.is-open .brf-mm__panel{transform:none}
+    html.brf-hc .brf-mm__panel>.container{max-width:none}
+
+    /* Mini logo + actions (wide screens only; 1000–1199px keeps just the menu) */
+    @media (min-width:1200px){
+      html.brf-hc .brf-hc__logo{display:flex;align-items:center;justify-content:center;flex:0 0 auto;width:34px;height:34px;margin-right:6px;border-radius:50%;background:#fff;
+        box-shadow:0 0 0 .5px rgba(29,29,31,.1),0 2px 6px -2px rgba(29,29,31,.2);animation:brf-hc-pop .7s cubic-bezier(.3,1.5,.4,1) .08s both}
+      html.brf-hc .brf-hc__logo img{width:26px;height:26px;object-fit:contain}
+      html.brf-hc .brf-hc__acts{display:flex;align-items:center;gap:2px;flex:0 0 auto;margin-left:4px;animation:brf-hc-pop .7s cubic-bezier(.3,1.5,.4,1) .14s both}
+    }
+    @keyframes brf-hc-pop{from{opacity:0;transform:scale(.4) rotate(-20deg)}to{opacity:1;transform:none}}
+    .brf-hc__btn{position:relative;display:grid;place-items:center;width:34px;height:34px;padding:0;border:0;border-radius:50%;background:transparent;color:#1D1D1F;cursor:pointer;text-decoration:none;transition:background .2s,transform .3s cubic-bezier(.3,1.5,.4,1)}
+    .brf-hc__btn:hover{background:rgba(29,29,31,.07)}
+    .brf-hc__btn:active{transform:scale(.9)}
+    .brf-hc__btn:focus-visible{outline:2px solid #149954;outline-offset:1px}
+    .brf-hc__btn--cart{width:auto;min-width:34px;padding:0 12px 0 10px;gap:6px;display:inline-flex;align-items:center;background:#1D1D1F;color:#fff!important;border-radius:980px;font-size:13px;font-weight:600}
+    .brf-hc__btn--cart:hover{background:#000}
+    .brf-hc__count{min-width:18px;height:18px;padding:0 5px;border-radius:980px;background:#149954;color:#fff;font-size:11px;line-height:18px;text-align:center}
+    .brf-hc__count[data-n="0"]{background:rgba(255,255,255,.2)}
+    .brf-hc__count.is-bump{animation:brf-hc-bump .5s cubic-bezier(.3,1.6,.4,1)}
+    @keyframes brf-hc-bump{0%{transform:scale(1)}40%{transform:scale(1.45)}100%{transform:scale(1)}}
+
+    /* Reading-progress line along the bottom of the capsule */
+    html.brf-hc .brf-hc__prog{display:block;position:absolute;left:22px;right:22px;bottom:0;height:2px;border-radius:2px;overflow:hidden;pointer-events:none}
+    html.brf-hc .brf-hc__prog i{display:block;height:100%;background:linear-gradient(90deg,#149954,#1F4D3A);transform-origin:0 50%;transform:scaleX(var(--brf-hc-p,0))}
+  }
+  @media (min-width:1000px) and (prefers-reduced-motion:reduce){
+    html.brf-hc [data-brf-mm]>.container,html.brf-hc .brf-hc__logo,html.brf-hc .brf-hc__acts{animation:none}
+    html.brf-hc-anim #shopify-section-header#shopify-section-header,html.brf-hc .brf-hc__glide{transition:none}
+  }
+</style>
+<script>
+(function(){
+  var doc = document, root = doc.documentElement;
+  var hdr = doc.getElementById('shopify-section-header');
+  var row = hdr && hdr.querySelector('[data-section-type="header"]');
+  var mm = hdr && hdr.querySelector('[data-brf-mm]');
+  var pill = mm && mm.querySelector(':scope > .container');
+  if (!hdr || !row || !pill || hdr.__brfHc) return;
+  hdr.__brfHc = true;
+  if ((getComputedStyle(hdr).position || '').indexOf('sticky') === -1) return;
+
+  var desk = window.matchMedia('(min-width: 1000px)');
+  var calm = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* ---------- Build the capsule extras ---------- */
+  var logoImg = row.querySelector('.header__logo-image');
+  var logo = doc.createElement('a');
+  logo.className = 'brf-hc__logo'; logo.href = '{{ routes.root_url }}'; logo.setAttribute('aria-label', {{ shop.name | json }} + ' home');
+  if (logoImg) { var li = doc.createElement('img'); li.src = logoImg.currentSrc || logoImg.src; li.alt = ''; li.width = 26; li.height = 26; logo.appendChild(li); }
+  else { logo.textContent = {{ shop.name | slice: 0 | json }}; }
+
+  var acts = doc.createElement('div');
+  acts.className = 'brf-hc__acts';
+  acts.innerHTML =
+    '<button type="button" class="brf-hc__btn" data-brf-hc-search aria-label="Search">' +
+      '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m20 20-4.6-4.6"/></svg></button>' +
+    '<a class="brf-hc__btn brf-hc__btn--cart" href="{{ routes.cart_url }}" data-brf-hc-cart>' +
+      '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 8h14l-1.2 11.2a1 1 0 0 1-1 .8H7.2a1 1 0 0 1-1-.8z"/><path d="M9 8V6.5a3 3 0 0 1 6 0V8"/></svg>' +
+      '<span>Basket</span><span class="brf-hc__count" data-brf-hc-count></span></a>';
+
+  var glide = doc.createElement('span'); glide.className = 'brf-hc__glide'; glide.setAttribute('aria-hidden', 'true');
+  var prog = doc.createElement('span'); prog.className = 'brf-hc__prog'; prog.setAttribute('aria-hidden', 'true'); prog.innerHTML = '<i></i>';
+  pill.insertBefore(glide, pill.firstChild);
+  pill.insertBefore(logo, glide.nextSibling);
+  pill.appendChild(acts);
+  pill.appendChild(prog);
+
+  /* Basket count mirrors the theme's own counter */
+  var srcCount = row.querySelector('.header__cart-count'), count = acts.querySelector('[data-brf-hc-count]');
+  function syncCount(bump){
+    var n = srcCount ? parseInt(srcCount.textContent, 10) || 0 : {{ cart.item_count | json }};
+    if (count.textContent !== String(n)) { count.textContent = n; count.setAttribute('data-n', n); count.parentNode.setAttribute('aria-label', 'Basket, ' + n + (n === 1 ? ' item' : ' items')); if (bump && !calm) { count.classList.remove('is-bump'); void count.offsetWidth; count.classList.add('is-bump'); } }
+  }
+  syncCount(false);
+  if (srcCount && window.MutationObserver) new MutationObserver(function(){ syncCount(true); }).observe(srcCount, {childList: true, characterData: true, subtree: true});
+
+  /* ---------- Geometry ---------- */
+  var rowH = 0, topVal = 0;
+  function measure(){
+    if (!desk.matches) { root.classList.remove('brf-hc-on', 'brf-hc', 'brf-hc-reveal'); root.style.removeProperty('--brf-hc-top'); return; }
+    var h = row.offsetHeight;
+    if (h !== rowH) {
+      rowH = h; topVal = -rowH;
+      root.style.setProperty('--brf-hc-top', topVal + 'px');
+      root.classList.add('brf-hc-on');
+      /* let the sticky filter bar and other header-aware scripts re-measure */
+      try { window.dispatchEvent(new Event('resize')); } catch (e) {}
+    }
+    update();
+  }
+
+  /* ---------- Reveal the full header for search, basket, account and keyboard focus ---------- */
+  var revealed = false, focusIn = false, holdUntil = 0;
+  function wantReveal(){
+    if (root.classList.contains('brf-so-open')) return true;
+    if (focusIn || Date.now() < holdUntil) return true;
+    return !!row.querySelector('[aria-expanded="true"]');
+  }
+  function setReveal(){
+    var on = desk.matches && wantReveal();
+    if (on === revealed) return;
+    revealed = on;
+    root.classList.toggle('brf-hc-reveal', on);
+    update();
+    setTimeout(update, 460); /* re-check once the header has finished sliding */
+  }
+  if (window.MutationObserver) {
+    new MutationObserver(setReveal).observe(row, {attributes: true, attributeFilter: ['aria-expanded'], subtree: true});
+    new MutationObserver(setReveal).observe(root, {attributes: true, attributeFilter: ['class']});
+  }
+  row.addEventListener('focusin', function(){ focusIn = true; setReveal(); });
+  row.addEventListener('focusout', function(e){ if (!row.contains(e.relatedTarget)) { focusIn = false; setTimeout(setReveal, 0); } });
+
+  /* Capsule buttons hand over to the real header controls */
+  acts.querySelector('[data-brf-hc-search]').addEventListener('click', function(){
+    var input = row.querySelector('.search-bar__input'); if (!input) { location.href = '{{ routes.search_url }}'; return; }
+    holdUntil = Date.now() + 1500; setReveal(); setTimeout(setReveal, 1550);
+    setTimeout(function(){ input.focus(); }, calm ? 0 : 380);
+  });
+  acts.querySelector('[data-brf-hc-cart]').addEventListener('click', function(e){
+    var t = row.querySelector('.header__cart-toggle');
+    if (t && t.getAttribute('aria-controls')) { e.preventDefault(); e.stopPropagation(); setTimeout(function(){ t.click(); }, 0); }
+  });
+
+  /* ---------- Scroll: condense, progress ---------- */
+  var ticking = false;
+  function update(){
+    ticking = false;
+    if (!desk.matches) return;
+    var stuck = hdr.getBoundingClientRect().top <= topVal + 0.5 && window.scrollY > 0;
+    root.classList.toggle('brf-hc', stuck && !revealed);
+    var max = doc.documentElement.scrollHeight - window.innerHeight;
+    pill.style.setProperty('--brf-hc-p', max > 0 ? Math.min(1, Math.max(0, window.scrollY / max)).toFixed(4) : 0);
+  }
+  hdr.addEventListener('transitionend', function(e){ if (e.target === hdr) update(); });
+  window.addEventListener('scroll', function(){ if (!ticking) { ticking = true; requestAnimationFrame(update); } }, {passive: true});
+  window.addEventListener('resize', function(){ if (row.offsetHeight !== rowH || !root.classList.contains('brf-hc-on') !== !desk.matches) measure(); }, {passive: true});
+  if (desk.addEventListener) desk.addEventListener('change', function(){ rowH = 0; measure(); });
+  if (window.ResizeObserver) new ResizeObserver(function(){ if (row.offsetHeight !== rowH) measure(); }).observe(row);
+
+  /* ---------- Gliding hover highlight ---------- */
+  var items = [].slice.call(mm.querySelectorAll('.brf-mm__top'));
+  function glideTo(el){
+    if (!el || !root.classList.contains('brf-hc')) { glide.classList.remove('is-on'); return; }
+    var p = pill.getBoundingClientRect(), r = el.getBoundingClientRect(), inset = 2;
+    glide.style.width = (r.width - inset * 2) + 'px';
+    glide.style.transform = 'translateX(' + (r.left - p.left + inset) + 'px)';
+    glide.classList.add('is-on');
+  }
+  function glideRest(){ var open = mm.querySelector('.brf-mm__item.is-open .brf-mm__top'); glideTo(open); }
+  items.forEach(function(t){
+    t.addEventListener('mouseenter', function(){ glideTo(t); });
+    t.addEventListener('focus', function(){ glideTo(t); });
+  });
+  mm.querySelector('.brf-mm__bar').addEventListener('mouseleave', function(){ setTimeout(glideRest, 200); });
+  if (window.MutationObserver) new MutationObserver(function(){ if (!mm.querySelector('.brf-mm__bar:hover')) glideRest(); }).observe(mm.querySelector('.brf-mm__bar'), {attributes: true, attributeFilter: ['class'], subtree: true});
+
+  measure();
+  /* Only animate the header sliding after the first paint, so a restored scroll position doesn't animate */
+  requestAnimationFrame(function(){ requestAnimationFrame(function(){ root.classList.add('brf-hc-anim'); }); });
+})();
+</script>

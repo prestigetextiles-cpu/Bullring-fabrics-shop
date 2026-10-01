@@ -159,7 +159,8 @@
     function headerOffset(){
       if (!hdr) return 0;
       var pos = getComputedStyle(hdr).position;
-      return (pos === 'sticky' || pos === 'fixed') ? hdr.offsetHeight : 0;
+      /* a negative sticky top (slim desktop header) means only part of the header stays on screen */
+      return (pos === 'sticky' || pos === 'fixed') ? hdr.offsetHeight + Math.min(0, parseFloat(getComputedStyle(hdr).top) || 0) : 0;
     }
     var top = 0;
     function measure(){

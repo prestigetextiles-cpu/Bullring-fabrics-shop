@@ -1,0 +1,29 @@
+{%- liquid
+  # Bull Ring: a page whose handle matches a main-menu department with sub-categories
+  # (dress-fabric, craft-fabric, upholstery-curtains) becomes that department's landing page.
+  assign brf_dept = false
+  assign brf_menu = linklists['main-menu-2026']
+  if brf_menu.links.size == 0
+    assign brf_menu = linklists['main-menu']
+  endif
+  for l in brf_menu.links
+    assign k = l.title | handleize
+    if k == page.handle and l.links.size > 0 and k != 'home-lifestyle'
+      assign brf_dept = true
+      break
+    endif
+  endfor
+-%}
+{%- if brf_dept -%}
+  {% section 'brf-dept-landing' %}
+{%- else -%}
+<div class="container container--narrow">
+  <header class="page__header page__header--centered">
+    <h1 class="page__title heading h1">{{ page.title }}</h1>
+  </header>
+
+  <div class="page__content rte">
+    {{ page.content }}
+  </div>
+</div>
+{%- endif -%}
