@@ -292,29 +292,8 @@
 
       {%- if c_sale.products_count > 0 -%}
         <li class="brf-mm__item" data-brf-item>
-          <a class="brf-mm__top brf-mm__top--sale" href="{{ c_sale.url }}" aria-expanded="false" aria-controls="brf-mm-sale">Sale</a>
-          <div class="brf-mm__panel" id="brf-mm-sale" data-brf-panel>
-            <div class="container">
-              <div class="brf-mm__grid brf-mm__grid--sale">
-                <div class="brf-mm__col brf-mm__col--promos3">
-                  {{ promo_sale }}{{ promo_clear }}{{ promo_hallo }}
-                </div>
-                <div class="brf-mm__col brf-mm__col--products">
-                  <p class="brf-mm__h">Top reduced fabrics</p>
-                  <div class="brf-mm__prods brf-mm__prods--2x2">
-                    {%- assign shown = 0 -%}
-                    {%- for p in c_sale.products -%}
-                      {%- unless p.available -%}{%- continue -%}{%- endunless -%}
-                      {%- if p.price > 3000 or p.title contains 'Roll' or p.title contains 'Wholesale' -%}{%- continue -%}{%- endif -%}
-                      {%- render 'brf-mm-product', p: p -%}
-                      {%- assign shown = shown | plus: 1 -%}
-                      {%- if shown >= 4 -%}{%- break -%}{%- endif -%}
-                    {%- endfor -%}
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
+          {%- comment -%} Sale is a straight link to the sale page, with no dropdown {%- endcomment -%}
+          <a class="brf-mm__top brf-mm__top--sale" href="{{ c_sale.url }}">Sale</a>
         </li>
       {%- endif -%}
     </ul>
@@ -505,8 +484,10 @@
 
     items.forEach(function(li){
       var top = li.querySelector('.brf-mm__top');
+      var hasPanel = !!li.querySelector('[data-brf-panel]');
       li.addEventListener('mouseenter', function(e){
         if (e.pointerType === 'touch') return;
+        if (!hasPanel) { clearTimeout(tOpen); clearTimeout(tClose); tClose = setTimeout(closeAll, 60); return; }
         clearTimeout(tClose); clearTimeout(tOpen);
         tOpen = setTimeout(function(){ open(li); }, openItem ? 0 : 110);
       });
@@ -515,11 +496,13 @@
         tClose = setTimeout(closeAll, 180);
       });
       top.addEventListener('click', function(e){
+        if (!hasPanel) return;
         if (top.tagName === 'BUTTON') { e.preventDefault(); openItem === li ? close(li) : open(li); return; }
         /* Link with a panel: first tap on touch opens the panel, second tap follows the link */
         if (window.matchMedia('(hover: none)').matches && openItem !== li) { e.preventDefault(); open(li); }
       });
       top.addEventListener('keydown', function(e){
+        if (!hasPanel) return;
         if (e.key === 'ArrowDown') { e.preventDefault(); open(li); var f = li.querySelector('[data-brf-panel] a'); if (f) f.focus(); }
       });
     });
