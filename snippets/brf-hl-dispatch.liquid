@@ -1,0 +1,123 @@
+{%- comment -%}
+  Bull Ring Fabrics — dispatch box for Home & Lifestyle items we don't hold in stock.
+  Replaces the same-day countdown (brf-pdp-dispatch) on products tagged home-lifestyle
+  that are NOT also tagged in-stock.
+
+  How the message is chosen (per selected variant):
+  - price £80+ or product tagged "dropship"  -> sent direct from our supplier, dispatched in 1–3 working days
+  - everything else                           -> we order it in, dispatched in 1–3 working days
+  Tag a product "in-stock" to switch it back to the fabric rule (same-day dispatch before 10pm).
+  Day ranges and the £80 threshold are the data attributes below.
+{%- endcomment -%}
+{%- if product.available -%}
+{%- assign brf_v = product.selected_or_first_available_variant -%}
+{%- assign brf_force_ds = false -%}
+{%- if product.tags contains 'dropship' -%}{%- assign brf_force_ds = true -%}{%- endif -%}
+<div class="brf-glass brf-dispatch brf-dispatch--hl" data-brf-hl-dispatch
+  data-ds-threshold="8000" data-force-ds="{{ brf_force_ds }}"
+  data-dispatch-min="1" data-dispatch-max="3" data-deliver-min="2" data-deliver-max="5"
+  data-free-threshold="6500">
+  <script type="application/json" data-brf-hl-prices>{
+    {%- for v in product.variants -%}"{{ v.id }}":{{ v.price }}{% unless forloop.last %},{% endunless %}{%- endfor -%}
+  }</script>
+  <div class="brf-dispatch__row">
+    <span class="brf-dispatch__icon" aria-hidden="true">
+      <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7h11v9H3z"/><path d="M14 10h4l3 3v3h-7"/><circle cx="7" cy="17.5" r="1.8"/><circle cx="17.5" cy="17.5" r="1.8"/></svg>
+    </span>
+    <div class="brf-dispatch__text">
+      {%- if brf_force_ds or brf_v.price >= 8000 -%}
+        <p class="brf-dispatch__title" data-brf-hl-title>Sent direct from our supplier</p>
+        <p class="brf-dispatch__sub" data-brf-hl-sub>Dispatched within 1–3 working days, fully tracked.</p>
+      {%- else -%}
+        <p class="brf-dispatch__title" data-brf-hl-title>Dispatched within 1–3 working days</p>
+        <p class="brf-dispatch__sub" data-brf-hl-sub>Tracked UK delivery from our Birmingham warehouse.</p>
+      {%- endif -%}
+      <p class="brf-dispatch__sub brf-dispatch__eta" data-brf-hl-eta hidden></p>
+    </div>
+  </div>
+
+  <div class="brf-dispatch__free" data-brf-free hidden>
+    <div class="brf-dispatch__free-text" data-brf-free-text></div>
+    <div class="brf-dispatch__bar"><span data-brf-free-bar style="width:0%"></span></div>
+  </div>
+</div>
+<style>
+  .brf-dispatch--hl .brf-dispatch__eta{margin-top:4px}
+  .brf-dispatch--hl .brf-dispatch__eta strong{color:#1D1D1F}
+</style>
+
+<script>
+(function(){
+  var box = document.querySelector('[data-brf-hl-dispatch]');
+  if (!box || box.dataset.ready) return; box.dataset.ready = '1';
+
+  var D = box.dataset;
+  var DS_AT = parseInt(D.dsThreshold, 10) || 8000, FORCE_DS = D.forceDs === 'true';
+  var DMIN = parseInt(D.deliverMin, 10) || 2, DMAX = parseInt(D.deliverMax, 10) || 5;
+  var FREE = parseInt(D.freeThreshold, 10) || 6500;
+  // England & Wales bank holidays (no dispatch or delivery)
+  var HOLIDAYS = ['2026-12-25','2026-12-28','2027-01-01','2027-03-26','2027-03-29','2027-05-03','2027-05-31','2027-08-30','2027-12-27','2027-12-28'];
+  var prices = {}; try { prices = JSON.parse(box.querySelector('[data-brf-hl-prices]').textContent); } catch (e) {}
+
+  var title = box.querySelector('[data-brf-hl-title]'), sub = box.querySelector('[data-brf-hl-sub]'), eta = box.querySelector('[data-brf-hl-eta]');
+
+  var fmt; try { fmt = new Intl.DateTimeFormat('en-GB', {timeZone:'Europe/London', year:'numeric', month:'2-digit', day:'2-digit', weekday:'short'}); } catch (e) {}
+  function london(d){
+    var p = {}; fmt.formatToParts(d).forEach(function(x){ p[x.type] = x.value; });
+    return { ymd: p.year + '-' + p.month + '-' + p.day, wd: ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'].indexOf(p.weekday), date: d };
+  }
+  function isWorkday(t){ return t.wd >= 1 && t.wd <= 5 && HOLIDAYS.indexOf(t.ymd) === -1; }
+  function addWorkdays(n){
+    var d = new Date(), c = 0;
+    for (var i = 1; i < 30; i++) {
+      var t = london(new Date(d.getTime() + i * 86400000));
+      if (isWorkday(t) && ++c === n) return t.date;
+    }
+    return null;
+  }
+  function label(d){
+    try { return new Intl.DateTimeFormat('en-GB', {timeZone:'Europe/London', weekday:'short', day:'numeric', month:'short'}).format(d); } catch (e) { return ''; }
+  }
+
+  function currentVariant(){
+    var f = box.closest('form') || document.querySelector('.product-block-list__item--info form.product-form');
+    var el = f && f.querySelector('[name="id"]');
+    return el ? el.value : null;
+  }
+  function render(){
+    var vid = currentVariant(), price = vid && prices[vid] != null ? prices[vid] : null;
+    var direct = FORCE_DS || (price !== null && price >= DS_AT);
+    if (price !== null) {
+      if (direct) { title.textContent = 'Sent direct from our supplier'; sub.textContent = 'Dispatched within 1–3 working days, fully tracked.'; }
+      else { title.textContent = 'Dispatched within 1–3 working days'; sub.textContent = 'Tracked UK delivery from our Birmingham warehouse.'; }
+    }
+    if (fmt) {
+      var a = addWorkdays(DMIN), b = addWorkdays(DMAX);
+      if (a && b) { eta.innerHTML = 'Estimated UK delivery: <strong>' + label(a) + ' – ' + label(b) + '</strong>'; eta.hidden = false; }
+    }
+  }
+  render();
+  document.addEventListener('change', function(e){ if (e.target.closest('.product-form')) setTimeout(render, 60); });
+
+  // Free delivery progress (GBP only)
+  var free = box.querySelector('[data-brf-free]'), freeText = box.querySelector('[data-brf-free-text]'), freeBar = box.querySelector('[data-brf-free-bar]');
+  function money(p){ return '£' + (p / 100).toFixed(2).replace(/\.00$/, ''); }
+  function refreshCart(){
+    if (window.Shopify && Shopify.currency && Shopify.currency.active && Shopify.currency.active !== 'GBP') return;
+    fetch('/cart.js', {credentials:'same-origin'}).then(function(r){ return r.json(); }).then(function(c){
+      var t = c.total_price || 0, pct = Math.min(100, Math.round(t / FREE * 100));
+      if (t >= FREE) freeText.innerHTML = '<strong>You’ve unlocked free tracked UK delivery</strong>';
+      else if (t > 0) freeText.innerHTML = 'Add <strong>' + money(FREE - t) + '</strong> more for <strong>free tracked UK delivery</strong>';
+      else freeText.innerHTML = '<strong>Free tracked UK delivery</strong> on orders over £65';
+      freeBar.style.width = (t > 0 ? Math.max(pct, 4) : 0) + '%';
+      free.hidden = false;
+    }).catch(function(){});
+  }
+  refreshCart();
+  document.addEventListener('click', function(e){
+    if (e.target.closest('[data-action="add-to-cart"]')) { setTimeout(refreshCart, 1500); setTimeout(refreshCart, 3500); }
+  });
+  document.documentElement.addEventListener('cart:refresh', function(){ setTimeout(refreshCart, 800); });
+})();
+</script>
+{%- endif -%}

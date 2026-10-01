@@ -1,0 +1,69 @@
+{%- comment -%}
+If the product contains the special __gift tag, we prevent it to be completely accessible by redirecting to the home page
+{%- endcomment -%}
+
+{%- if product.tags contains '__gift' -%}
+  <script>
+    window.location.href = '/';
+  </script>
+{%- else -%}
+  {%- comment -%} Home & Lifestyle items not tagged in-stock follow their own dispatch rules (see brf-hl-dispatch) {%- endcomment -%}
+  {%- assign brf_hl = false -%}
+  {%- if product.tags contains 'home-lifestyle' -%}{%- assign brf_hl = true -%}{%- endif -%}
+  {%- assign brf_hl_stocked = false -%}
+  {%- if brf_hl and product.tags contains 'in-stock' -%}{%- assign brf_hl_stocked = true -%}{%- endif -%}
+
+  {{ 'brf-pdp-glass.css' | asset_url | stylesheet_tag }}
+  {% section 'product-template' %}
+  <div id="brf-pdp-inject" hidden>
+    <div data-brf-slot="colours">{%- render 'brf-pdp-colours', product: product, collection: collection -%}</div>
+    <div data-brf-slot="dispatch">
+      {%- if brf_hl and brf_hl_stocked == false -%}
+        {%- render 'brf-hl-dispatch', product: product -%}
+      {%- else -%}
+        {%- render 'brf-pdp-dispatch', product: product -%}
+      {%- endif -%}
+    </div>
+    <div data-brf-slot="trust">{%- render 'brf-pdp-trust', product: product -%}</div>
+  </div>
+  <script>
+    (function(){
+      var src = document.getElementById('brf-pdp-inject'); if (!src) return;
+      var info = document.querySelector('.product-block-list__item--info');
+      var pay = info && info.querySelector('.product-form__payment-container');
+      var form = info && info.querySelector('form.product-form');
+      var cl = src.querySelector('[data-brf-slot="colours"]');
+      var variants = form && form.querySelector('.product-form__variants');
+      if (cl && cl.firstElementChild) {
+        if (variants) { variants.parentNode.insertBefore(cl.firstElementChild, variants); }
+        else if (form) { form.insertBefore(cl.firstElementChild, form.firstChild); }
+        var cur = info.querySelector('.brf-colours__current strong');
+        if (cur) {
+          var orig = cur.textContent;
+          info.querySelectorAll('.brf-colour').forEach(function(a){
+            a.addEventListener('mouseenter', function(){ cur.textContent = a.title; });
+            a.addEventListener('mouseleave', function(){ cur.textContent = orig; });
+          });
+        }
+      }
+      var d = src.querySelector('[data-brf-slot="dispatch"]'), t = src.querySelector('[data-brf-slot="trust"]');
+      var sticky = src.querySelector('[data-brf-sticky]');
+      if (sticky) document.body.appendChild(sticky);
+      if (pay && d) { while (d.firstChild) pay.parentNode.insertBefore(d.firstChild, pay); }
+      if (form && t) { var after = form.nextSibling; while (t.firstChild) form.parentNode.insertBefore(t.firstChild, after); }
+      src.remove();
+    })();
+  </script>
+  {%- if brf_hl -%}
+    {%- render 'brf-hl-tabs', product: product, stocked: brf_hl_stocked -%}
+  {%- endif -%}
+  {% section 'product-recommendations' %}
+  {% section 'brf-pdp-upsell' %}
+  {% section 'static-recently-viewed-products' %}
+
+  <script>
+    window.ShopifyXR=window.ShopifyXR||function(){(ShopifyXR.q=ShopifyXR.q||[]).push(arguments)};
+    ShopifyXR('addModels', {{ product.media | where: 'media_type', 'model' | json }});
+  </script>
+{%- endif -%}
+
