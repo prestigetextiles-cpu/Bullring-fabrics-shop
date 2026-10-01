@@ -1,0 +1,25 @@
+{%- liquid
+  assign brf_hl_sub = false
+  assign brf_menu = linklists['main-menu-2026']
+  if brf_menu.links.size == 0
+    assign brf_menu = linklists['main-menu']
+  endif
+  for l in brf_menu.links
+    assign k = l.title | handleize
+    if k == 'home-lifestyle'
+      for sub in l.links
+        if sub.object.handle == collection.handle
+          assign brf_hl_sub = true
+        endif
+      endfor
+    endif
+  endfor
+-%}
+{%- if collection.handle == 'home-lifestyle' -%}
+  {% section 'brf-hl-landing' %}
+{%- elsif brf_hl_sub -%}
+  {%- render 'brf-hl-switcher', current: collection.handle -%}
+{%- endif -%}
+{% section 'brf-collection-head' %}
+{% section 'collection-template' %}
+{% section 'static-recently-viewed-products' %}

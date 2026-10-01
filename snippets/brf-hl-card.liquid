@@ -1,0 +1,25 @@
+{%- comment -%}
+  Bull Ring Fabrics — compact product card for the Home & Lifestyle landing page.
+  Params: p (product)
+{%- endcomment -%}
+<a class="hl-card" href="{{ p.url }}">
+  <span class="hl-card__img">
+    {%- if p.featured_image -%}
+      <img src="{{ p.featured_image | image_url: width: 400 }}" srcset="{{ p.featured_image | image_url: width: 300 }} 300w, {{ p.featured_image | image_url: width: 500 }} 500w" sizes="(max-width:749px) 46vw, 240px" alt="{{ p.featured_image.alt | default: p.title | escape }}" width="400" height="400" loading="lazy">
+    {%- endif -%}
+    {%- if p.tags contains 'in-stock' and p.available -%}
+      <span class="hl-card__badge">Same-day dispatch</span>
+    {%- elsif p.available == false -%}
+      <span class="hl-card__badge hl-card__badge--out">Sold out</span>
+    {%- endif -%}
+  </span>
+  <span class="hl-card__t">{{ p.title }}</span>
+  <span class="hl-card__p">
+    {%- if p.price_varies -%}From {% endif -%}
+    {%- if p.compare_at_price > p.price -%}
+      <em>{{ p.price | money }}</em> <s>{{ p.compare_at_price | money }}</s>
+    {%- else -%}
+      {{ p.price | money }}
+    {%- endif -%}
+  </span>
+</a>

@@ -1,0 +1,95 @@
+{%- comment -%}
+  Bull Ring Fabrics — Home & Lifestyle category switcher.
+  A row of image chips for every Home & Lifestyle sub-category, so shoppers can hop between
+  categories without going back to the header menu. Categories come from the "Home & Lifestyle"
+  item in the main menu, so editing that menu updates this row.
+  Shown on the Home & Lifestyle landing page and on every one of its sub-category pages.
+  Params: current (handle of the collection being viewed)
+{%- endcomment -%}
+{%- liquid
+  assign hl = collections['home-lifestyle']
+  assign hl_menu = linklists['main-menu-2026']
+  if hl_menu.links.size == 0
+    assign hl_menu = linklists['main-menu']
+  endif
+  assign hl_link = nil
+  for l in hl_menu.links
+    assign k = l.title | handleize
+    if k == 'home-lifestyle'
+      assign hl_link = l
+      break
+    endif
+  endfor
+-%}
+{%- if hl_link and hl_link.links.size > 0 -%}
+<nav class="hl-switch" aria-label="Home &amp; Lifestyle categories" data-hl-switch>
+  <div class="container hl-switch__wrap">
+    <button type="button" class="hl-switch__arrow hl-switch__arrow--prev" data-hl-dir="-1" aria-label="Scroll categories left" hidden>‹</button>
+    <ul class="hl-switch__list" role="list" data-hl-track>
+      <li>
+        <a class="hl-chip{% if current == 'home-lifestyle' %} is-on{% endif %}" href="{{ hl.url | default: '/collections/home-lifestyle' }}"{% if current == 'home-lifestyle' %} aria-current="page"{% endif %}>
+          <span class="hl-chip__img hl-chip__img--all" aria-hidden="true">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 4l9 6.5"/><path d="M5 9.5V20h14V9.5"/><path d="M10 20v-5h4v5"/></svg>
+          </span>
+          <span class="hl-chip__t">All</span>
+        </a>
+      </li>
+      {%- for sub in hl_link.links -%}
+        {%- assign so = sub.object -%}
+        {%- assign simg = so.image | default: so.products.first.featured_image -%}
+        {%- assign on = false -%}
+        {%- if so.handle == current -%}{%- assign on = true -%}{%- endif -%}
+        <li>
+          <a class="hl-chip{% if on %} is-on{% endif %}" href="{{ sub.url }}"{% if on %} aria-current="page"{% endif %}>
+            <span class="hl-chip__img" aria-hidden="true">
+              {%- if simg -%}<img src="{{ simg | image_url: width: 96, height: 96, crop: 'center' }}" alt="" width="48" height="48" loading="lazy">{%- endif -%}
+            </span>
+            <span class="hl-chip__t">{{ sub.title }}</span>
+          </a>
+        </li>
+      {%- endfor -%}
+    </ul>
+    <button type="button" class="hl-switch__arrow hl-switch__arrow--next" data-hl-dir="1" aria-label="Scroll categories right" hidden>›</button>
+  </div>
+</nav>
+
+<style>
+  .hl-switch{position:relative;padding:14px 0 6px}
+  .hl-switch__wrap{position:relative}
+  .hl-switch__list{display:flex;gap:10px;margin:0;padding:4px 2px 10px;list-style:none;overflow-x:auto;scroll-snap-type:x proximity;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+  .hl-switch__list::-webkit-scrollbar{display:none}
+  .hl-switch__list>li{flex:0 0 auto;scroll-snap-align:start}
+  .hl-chip{display:flex;align-items:center;gap:10px;height:56px;padding:4px 18px 4px 4px;border-radius:980px;background:#fff;box-shadow:inset 0 0 0 1px #E4DDD1;color:#1D1D1F;text-decoration:none;font-size:14px;font-weight:500;white-space:nowrap;transition:box-shadow .2s,background .2s,transform .2s}
+  .hl-chip:hover{box-shadow:inset 0 0 0 1px #1D1D1F;transform:translateY(-1px)}
+  .hl-chip:focus-visible{outline:none;box-shadow:0 0 0 3px rgba(20,153,84,.3),inset 0 0 0 1px #149954}
+  .hl-chip__img{flex:0 0 48px;width:48px;height:48px;border-radius:50%;overflow:hidden;background:#F6F3EE;display:grid;place-items:center}
+  .hl-chip__img img{width:100%;height:100%;object-fit:cover;mix-blend-mode:multiply}
+  .hl-chip__img--all{color:#1D1D1F}
+  .hl-chip.is-on{background:#1D1D1F;color:#fff;box-shadow:none}
+  .hl-chip.is-on .hl-chip__img{background:#fff}
+  .hl-chip.is-on .hl-chip__img--all{background:#2C2C2E;color:#fff}
+  .hl-switch__arrow{position:absolute;top:50%;z-index:2;width:38px;height:38px;margin-top:-24px;border:0;border-radius:50%;background:rgba(255,255,255,.92);box-shadow:0 4px 14px -4px rgba(0,0,0,.25),inset 0 0 0 1px #E4DDD1;font-size:22px;line-height:1;color:#1D1D1F;cursor:pointer}
+  .hl-switch__arrow--prev{left:6px}
+  .hl-switch__arrow--next{right:6px}
+  @media (hover:none),(max-width:749px){.hl-switch__arrow{display:none}}
+  @media (max-width:749px){
+    .hl-switch{padding-top:10px}
+    .hl-chip{height:48px;font-size:13.5px;padding-right:14px}
+    .hl-chip__img{flex-basis:40px;width:40px;height:40px}
+  }
+</style>
+<script>
+(function(){
+  var nav = document.querySelector('[data-hl-switch]'); if (!nav || nav.__hl) return; nav.__hl = true;
+  var track = nav.querySelector('[data-hl-track]'), prev = nav.querySelector('[data-hl-dir="-1"]'), next = nav.querySelector('[data-hl-dir="1"]');
+  var on = track.querySelector('.is-on');
+  if (on && on.parentNode.offsetLeft > track.clientWidth * .6) track.scrollLeft = on.parentNode.offsetLeft - 24;
+  function arrows(){
+    prev.hidden = track.scrollLeft < 8;
+    next.hidden = track.scrollLeft + track.clientWidth >= track.scrollWidth - 8;
+  }
+  [prev, next].forEach(function(b){ b.addEventListener('click', function(){ track.scrollBy({left: parseInt(b.dataset.hlDir, 10) * track.clientWidth * .7, behavior: 'smooth'}); }); });
+  track.addEventListener('scroll', arrows, {passive:true}); window.addEventListener('resize', arrows); arrows();
+})();
+</script>
+{%- endif -%}
