@@ -14,18 +14,18 @@
 <p class="brf-hl-del__this">
   <strong>This item:</strong>
   {%- if stocked %} in stock at our Birmingham warehouse. Order before 10pm Monday to Friday and we dispatch it the same day.
-  {%- elsif brf_direct %} sent direct from our supplier, dispatched within 1–3 working days with tracking.
+  {%- elsif brf_direct %} sent direct from our supplier and delivered in 3–5 working days, with tracking.
   {%- else %} dispatched from our Birmingham warehouse within 1–3 working days.
   {%- endif %}
 </p>
 
 <h3>How Home &amp; Lifestyle orders are dispatched</h3>
 <table class="brf-hl-del__table">
-<thead><tr><th>Item</th><th>Dispatch</th></tr></thead>
+<thead><tr><th>Item</th><th>When it ships</th></tr></thead>
 <tbody>
 <tr><td><strong>In stock with us</strong><br><span>Marked “Same-day dispatch” on the product page</span></td><td>Same day, Monday–Friday, for orders placed before 10pm</td></tr>
 <tr><td><strong>Ordered in for you</strong></td><td>Within 1–3 working days</td></tr>
-<tr><td><strong>Larger items sent direct from our supplier</strong><br><span>Usually items £80 and over</span></td><td>Within 1–3 working days, delivered separately with its own tracking</td></tr>
+<tr><td><strong>Larger items sent direct from our supplier</strong><br><span>Usually items £80 and over</span></td><td>Delivered in 3–5 working days, in a separate parcel with its own tracking</td></tr>
 </tbody>
 </table>
 
@@ -33,7 +33,8 @@
 <ul>
 <li><strong>Free tracked UK delivery</strong> on orders over £65.</li>
 <li>Standard delivery £3.99 on orders under £65.</li>
-<li>Delivery times are counted from the day your item is dispatched. Most orders arrive 2–5 working days after you order.</li>
+<li>Next day delivery is only available on items we hold in stock.</li>
+<li>Items we order in usually arrive 2–5 working days after you order.</li>
 </ul>
 
 <h3>Good to know</h3>
@@ -70,7 +71,7 @@
   [].forEach.call(document.querySelectorAll('.brf-trust-chips li'), function(li){
     if (li.textContent.indexOf('Same-day dispatch') > -1) {
       var svg = li.querySelector('svg');
-      li.textContent = ' Dispatched in 1–3 working days';
+      li.textContent = {% if brf_direct %}' Delivered in 3–5 working days'{% else %}' Dispatched in 1–3 working days'{% endif %};
       if (svg) li.insertBefore(svg, li.firstChild);
     }
   });
