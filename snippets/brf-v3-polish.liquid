@@ -698,6 +698,8 @@
     var hdr = doc.getElementById('shopify-section-header');
     var off = 0;
     if (hdr) { var ps = getComputedStyle(hdr).position; if (ps === 'sticky' || ps === 'fixed') off = hdr.offsetHeight + Math.min(0, parseFloat(getComputedStyle(hdr).top) || 0); }
+    /* the slim glass capsule hangs a little below the header box: leave a comfortable gap under it */
+    if (document.documentElement.classList.contains('brf-hc-on')) off += 34;
     return Math.max(0, Math.round(el.getBoundingClientRect().top + window.scrollY - off));
   }
   var restoring = null;

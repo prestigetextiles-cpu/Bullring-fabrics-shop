@@ -1,50 +1,59 @@
 {%- comment -%}
   Bull Ring Fabrics — v4 polish (October 2026)
-  1  Category pages: after "Add to bag", the button becomes a quantity box with a compact add button
-  2  Quick view: clearer liquid glass, rounded main image, soft "melt away" close
+  1  Product cards: quantity box + "Add to bag" (compact after the first add); quick view is a frosted eye on the photo
+  2  Quick view: liquid glass, rounded image, soft close, closes on any outside click, no tax/shipping line, readable old price
   3  Breadcrumbs as liquid-glass pills everywhere
   4  Product page: no thumbnail strip when there is only one photo, no hover zoom
   5  Home & Lifestyle descriptions read as plain text (sub-headings as bold lines)
-  6  Delivery options card: opens where there is room on desktop, bottom sheet on phones and tablets
+  6  Delivery options card: always opens below the link on desktop, bottom sheet on phones and tablets
   7  Header bag icon sizing
+  8  Search: click anywhere to close the main header search; an empty search shows a joke instead
 {%- endcomment -%}
 <style>
-  /* ---------- 1. Quantity box after the first add ---------- */
-  .brf-qa{display:none;align-items:center;gap:6px;flex:1 1 auto;min-width:0}
-  .brf-qa.is-on{display:flex;animation:brf-qa-in .45s cubic-bezier(.2,.9,.25,1.15) both}
-  @keyframes brf-qa-in{from{opacity:0;transform:scale(.92)}to{opacity:1;transform:none}}
-  .product-item__action-list .brf-qa-hide{display:none!important}
-  .brf-qa__qty{display:flex;align-items:center;flex:1 1 auto;min-width:0;height:34px;border-radius:980px;background:#fff;box-shadow:inset 0 0 0 1px #DDD5C8}
+  /* ---------- 1. Product cards: quantity box + Add to bag, quick view eye on the photo ---------- */
+  .product-item .brf-qa-form{flex-direction:row;flex-wrap:nowrap;align-items:center;gap:8px}
+  html .product-item .brf-qa-form>.product-item__action-button{flex:1 1 auto;margin:0!important;min-width:0}
+  .brf-qa__qty{display:flex;align-items:center;flex:0 0 104px;min-width:0;height:40px;border-radius:980px;background:#fff;box-shadow:inset 0 0 0 1px #DDD5C8;transition:box-shadow .2s}
   .brf-qa__qty:focus-within{box-shadow:inset 0 0 0 1.5px #1D1D1F}
-  .brf-qa__step{flex:0 0 30px;height:100%;padding:0;border:0;background:transparent;color:#1D1D1F;font:600 17px/1 var(--text-font-family,sans-serif);cursor:pointer;border-radius:980px;transition:background .15s}
+  .brf-qa__step{flex:0 0 32px;height:100%;padding:0;border:0;background:transparent;color:#1D1D1F;font:600 18px/1 var(--text-font-family,sans-serif);cursor:pointer;border-radius:980px;transition:background .15s,color .15s}
   .brf-qa__step:hover{background:rgba(29,29,31,.06)}
   .brf-qa__step:disabled{color:#C9C2B7;cursor:default;background:transparent}
-  .brf-qa__in{flex:1 1 auto;min-width:0;width:100%;height:100%;padding:0;border:0;background:transparent;text-align:center;font:600 14px/1 var(--text-font-family,sans-serif);color:#1D1D1F;-moz-appearance:textfield;appearance:textfield}
+  .brf-qa__in{flex:1 1 auto;min-width:0;width:100%;height:100%;padding:0;border:0;background:transparent;text-align:center;font:600 15px/1 var(--text-font-family,sans-serif);color:#1D1D1F;-moz-appearance:textfield;appearance:textfield}
   .brf-qa__in::-webkit-inner-spin-button,.brf-qa__in::-webkit-outer-spin-button{-webkit-appearance:none;margin:0}
   .brf-qa__in:focus{outline:0}
-  html .product-item .brf-qa__add{flex:0 0 auto;display:inline-flex;align-items:center;justify-content:center;gap:5px;height:34px;min-width:0;padding:0 13px;margin:0!important;border:0!important;border-radius:980px!important;
-    background:#149954!important;color:#fff!important;font:600 13px/1 var(--text-font-family,sans-serif);cursor:pointer;white-space:nowrap;transition:background .2s,transform .2s}
-  html .product-item .brf-qa__add:hover{background:#0F7A42!important}
-  html .product-item .brf-qa__add:active{transform:scale(.95)}
-  html .product-item .brf-qa__add[disabled]{opacity:.7;cursor:wait}
-  .brf-qa__add svg{width:15px;height:15px;flex:0 0 auto}
-  .brf-qa__add.is-done{background:#1D1D1F!important}
-  /* once the quantity box shows, Quick view shrinks to an eye icon so everything fits on one line */
-  html .product-item .brf-qa-on .button--ternary{flex:0 0 34px!important;width:34px;min-width:0;padding:0!important;font-size:0!important;position:relative}
-  html .product-item .brf-qa-on .button--ternary::before{content:"";position:absolute;inset:0;margin:auto;width:17px;height:17px;background:currentColor;
-    -webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z'/%3E%3Ccircle cx='12' cy='12' r='3'/%3E%3C/svg%3E") center/contain no-repeat;
-    mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z'/%3E%3Ccircle cx='12' cy='12' r='3'/%3E%3C/svg%3E") center/contain no-repeat}
+  .brf-qa__qty.is-max{animation:brf-qa-nudge .4s ease}
+  @keyframes brf-qa-nudge{25%{transform:translateX(-3px)}75%{transform:translateX(3px)}}
+  html .product-item .brf-qa__add{display:inline-flex;align-items:center;justify-content:center;gap:7px;height:40px;line-height:1;padding:0 14px;white-space:nowrap;overflow:hidden;
+    transition:background .25s,color .25s,transform .2s,max-width .45s cubic-bezier(.2,.9,.25,1.05),padding .3s}
+  .brf-qa__add svg{flex:0 0 auto;width:16px;height:16px}
+  /* after an add: a quick "Added" tick, then the button settles as a compact "Add" next to the box */
+  html .product-item .brf-qa__add.is-done{background:#1D1D1F!important;border-color:#1D1D1F!important;color:#fff!important}
+  html .product-item .brf-qa-form.is-compact .brf-qa__qty{flex:1 1 auto}
+  html .product-item .brf-qa-form.is-compact .brf-qa__add{flex:0 0 auto;padding:0 14px}
+  .brf-qa__add.is-pop{animation:brf-qa-pop .45s cubic-bezier(.2,1.4,.3,1)}
+  @keyframes brf-qa-pop{40%{transform:scale(1.06)}}
   @media (max-width:640px){
-    .brf-qa__qty,html .product-item .brf-qa__add{height:32px}
-    .brf-qa__step{flex-basis:26px}
-    html .product-item .brf-qa__add{padding:0 10px}
-    .brf-qa__add span{display:none}
+    .product-item .brf-qa-form{flex-wrap:wrap;gap:6px}
+    .brf-qa__qty,html .product-item .brf-qa-form.is-compact .brf-qa__qty{flex:1 1 100%;height:36px}
+    html .product-item .brf-qa-form>.product-item__action-button,html .product-item .brf-qa-form.is-compact .brf-qa__add{flex:1 1 100%;height:38px}
   }
+  /* quick view: a frosted eye on the photo, shown on hover */
+  .brf-pi-media{position:relative}
+  .brf-qv-eye{position:absolute;top:12px;right:12px;z-index:3;display:grid;place-items:center;width:44px;height:44px;padding:0;border:0;border-radius:50%;cursor:pointer;color:#1D1D1F;
+    background:rgba(255,255,255,.55);-webkit-backdrop-filter:saturate(180%) blur(16px);backdrop-filter:saturate(180%) blur(16px);
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.9),0 0 0 .5px rgba(29,29,31,.1),0 10px 24px -10px rgba(29,29,31,.45);
+    opacity:0;transform:scale(.8);transition:opacity .25s ease,transform .35s cubic-bezier(.2,1.3,.3,1),background .2s}
+  .brf-qv-eye svg{width:21px;height:21px}
+  .brf-qv-eye:hover{background:rgba(255,255,255,.82);transform:scale(1.08)!important}
+  .product-item:hover .brf-qv-eye,.brf-qv-eye:focus-visible{opacity:1;transform:none}
+  @media (hover:none),(max-width:999px){.brf-qv-eye{display:none}}
+  @supports not ((-webkit-backdrop-filter:blur(1px)) or (backdrop-filter:blur(1px))){.brf-qv-eye{background:rgba(255,255,255,.92)}}
 
   /* ---------- 2. Quick view ---------- */
   html .modal[id^="modal-quick-view"]{background:rgba(29,29,31,.16)!important;-webkit-backdrop-filter:blur(6px) saturate(120%);backdrop-filter:blur(6px) saturate(120%);
     transition:opacity .55s cubic-bezier(.4,0,.2,1) .05s,visibility 0s linear .6s}
-  html .modal[id^="modal-quick-view"][aria-hidden="false"]{transition:opacity .3s ease}
+  /* the theme only treats the window as open once "visibility" has finished its transition, so it must always run */
+  html .modal[id^="modal-quick-view"][aria-hidden="false"]{transition:opacity .3s ease,visibility .3s linear}
   html .modal[id^="modal-quick-view"] .modal__dialog,html.brf-hw-page .modal[id^="modal-quick-view"] .modal__dialog{
     background:linear-gradient(140deg,rgba(255,255,255,.66) 0%,rgba(255,255,255,.46) 55%,rgba(255,255,255,.58) 100%)!important;
     -webkit-backdrop-filter:saturate(190%) blur(34px)!important;backdrop-filter:saturate(190%) blur(34px)!important;
@@ -63,6 +72,11 @@
   html .modal[id^="modal-quick-view"] .product-gallery__image,
   html .modal[id^="modal-quick-view"] .product-gallery__carousel-item{border-radius:24px}
   html .modal[id^="modal-quick-view"] .quantity-selector,html .modal[id^="modal-quick-view"] select{background:rgba(255,255,255,.75)}
+  /* no "Tax included, shipping calculated" line, and an easy-to-read old price */
+  html .modal[id^="modal-quick-view"] p.product-form__price-info,html .modal[id^="modal-quick-view"] .brf-ship{display:none!important}
+  html .modal[id^="modal-quick-view"] .price--compare{color:#fff!important;opacity:1!important;font-weight:600;text-decoration:none!important;
+    text-shadow:0 1px 2px rgba(29,29,31,.6),0 0 12px rgba(29,29,31,.3)}
+  html .modal[id^="modal-quick-view"] .price--compare::before{display:block!important;height:2px!important;margin-top:-1px;border-radius:2px;background:#E0262B!important;box-shadow:0 1px 2px rgba(29,29,31,.35)}
   @media (prefers-reduced-motion:reduce){
     html .modal[id^="modal-quick-view"] .modal__dialog{filter:none;transition:opacity .2s ease!important}
   }
@@ -70,9 +84,11 @@
   /* ---------- 3. Breadcrumbs as liquid glass ---------- */
   html body .breadcrumb,.brf-chead__crumbs,.dl-crumbs,.sl-crumbs{
     display:inline-flex!important;align-items:center;flex-wrap:wrap;gap:2px 8px;width:auto;max-width:100%;padding:7px 16px!important;border-radius:980px!important;
-    background:linear-gradient(135deg,rgba(255,255,255,.72),rgba(255,255,255,.45))!important;
-    -webkit-backdrop-filter:saturate(180%) blur(18px)!important;backdrop-filter:saturate(180%) blur(18px)!important;
-    border:0!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.9),inset 0 0 0 .5px rgba(255,255,255,.6),0 0 0 .5px rgba(29,29,31,.08),0 6px 18px -10px rgba(29,29,31,.28)!important;
+    background:linear-gradient(135deg,rgba(255,255,255,.62) 0%,rgba(255,255,255,.34) 50%,rgba(255,255,255,.5) 100%)!important;
+    -webkit-backdrop-filter:blur(28px) saturate(200%) brightness(1.06)!important;backdrop-filter:blur(28px) saturate(200%) brightness(1.06)!important;
+    border:1px solid rgba(255,255,255,.8)!important;
+    box-shadow:inset 0 1px 1px rgba(255,255,255,.95),inset 0 -1px 1px rgba(255,255,255,.35),inset 0 0 18px rgba(255,255,255,.35),0 0 0 .5px rgba(29,29,31,.07),0 10px 28px -12px rgba(29,29,31,.3)!important;
+    text-shadow:0 1px 0 rgba(255,255,255,.7);
     font-size:12.5px!important;line-height:1.3}
   html body .breadcrumb__list{display:flex;flex-wrap:wrap;align-items:center;gap:2px 0}
   html body .breadcrumb__link,.brf-chead__crumbs a,.dl-crumbs a,.sl-crumbs a{color:#515154!important;text-decoration:none!important;transition:color .2s}
@@ -98,91 +114,188 @@
   .rte .brf-desc-h{margin:1.2em 0 .35em!important;font-weight:700;font-size:1.02em;color:#1D1D1F}
   .rte .brf-desc-h+ul{margin-top:0}
 
-  /* ---------- 6. Delivery card on desktop: below the link when there's room ---------- */
+  /* ---------- 6. Delivery card on desktop: always opens below the link, never over the product title ---------- */
   @media (min-width:1000px){
     .brf-ship__card{margin-left:var(--brf-ship-dx,0px)}
     .brf-ship__card::after{margin-left:calc(-1 * var(--brf-ship-dx,0px))}
-    .brf-ship.is-down .brf-ship__card{top:calc(100% + 12px);bottom:auto;transform:translate(-50%,-6px)}
-    .brf-ship.is-down.is-open .brf-ship__card{transform:translate(-50%,0)}
-    .brf-ship.is-down .brf-ship__card::after{top:-6px;bottom:auto;box-shadow:-1px -1px 0 rgba(29,29,31,.06)}
+    html .brf-ship .brf-ship__card{top:calc(100% + 12px)!important;bottom:auto!important;transform:translate(-50%,-6px)}
+    html .brf-ship.is-open .brf-ship__card{transform:translate(-50%,0)}
+    html .brf-ship .brf-ship__card::after{top:-6px!important;bottom:auto!important;box-shadow:-1px -1px 0 rgba(29,29,31,.06)}
   }
 
   /* ---------- 7. Bag icon in the header ---------- */
   html .header .icon--cart{width:28px;height:28px;margin-top:-3px}
+
+  /* ---------- 8. Empty search: a friendly giggle instead of an empty results page ---------- */
+  .brf-nothing{position:fixed;z-index:2147483000;left:50%;top:0;max-width:min(560px,calc(100vw - 32px));margin:0;padding:11px 18px;border-radius:980px;pointer-events:none;
+    background:rgba(255,255,255,.94);-webkit-backdrop-filter:saturate(180%) blur(20px);backdrop-filter:saturate(180%) blur(20px);
+    box-shadow:0 0 0 .5px rgba(29,29,31,.08),0 18px 40px -16px rgba(29,29,31,.45);
+    font:500 14.5px/1.35 var(--text-font-family,Inter,sans-serif);color:#1D1D1F;text-align:center;
+    opacity:0;visibility:hidden;transform:translate(-50%,-8px) scale(.96);transition:opacity .25s ease,transform .3s ease,visibility 0s linear .25s}
+  .brf-nothing.is-on{opacity:1;visibility:visible;transform:translate(-50%,0);transition:opacity .25s ease,transform .5s cubic-bezier(.2,1.4,.3,1)}
+  .brf-shake{animation:brf-shake .45s cubic-bezier(.36,.07,.19,.97)}
+  @keyframes brf-shake{15%,85%{transform:translateX(-2px)}30%,70%{transform:translateX(4px)}45%{transform:translateX(-6px)}60%{transform:translateX(6px)}}
+  @media (prefers-reduced-motion:reduce){.brf-shake{animation:none}}
 </style>
 
 <script>
 (function(){
   var doc = document, root = doc.documentElement;
   if (root.__brfV4) return; root.__brfV4 = true;
+  var desk = window.matchMedia('(min-width:1000px)');
 
-  /* ---------- 1. Category pages: quantity box after the first add ---------- */
-  var BAG = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 8h14l-1.2 11.2a1 1 0 0 1-1 .8H7.2a1 1 0 0 1-1-.8z"/><path d="M9 8V6.5a3 3 0 0 1 6 0V8"/><path d="M12 11.5v5M9.5 14h5"/></svg>';
-  var pending = null;
-  function maxFor(form){ var m = parseInt(form.getAttribute('data-brf-max'), 10); return isNaN(m) || m < 1 ? 999 : m; }
-  function morph(btn){
-    var form = btn.closest('form'); if (!form || form.querySelector('.brf-qa')) return;
-    var hidden = form.querySelector('input[name="quantity"]'); if (!hidden) return;
-    var qa = doc.createElement('div');
-    qa.className = 'brf-qa';
-    qa.innerHTML = '<div class="brf-qa__qty"><button type="button" class="brf-qa__step" data-d="-1" aria-label="One less">−</button>' +
-      '<input class="brf-qa__in" type="number" inputmode="numeric" min="1" value="1" aria-label="Quantity">' +
-      '<button type="button" class="brf-qa__step" data-d="1" aria-label="One more">+</button></div>' +
-      '<button type="submit" class="brf-qa__add" data-action="add-to-cart" aria-label="Add to bag">' + BAG + '<span>Add</span></button>';
-    btn.classList.add('brf-qa-hide'); form.classList.add('brf-qa-on');
-    var qv = form.querySelector('.button--ternary'); if (qv && !qv.title) qv.title = 'Quick view';
-    btn.parentNode.insertBefore(qa, btn.nextSibling);
-    var input = qa.querySelector('.brf-qa__in'), minus = qa.querySelector('[data-d="-1"]');
-    function set(v){
-      v = Math.max(1, Math.min(maxFor(form), parseInt(v, 10) || 1));
-      input.value = v; hidden.value = v; minus.disabled = v <= 1;
+  /* ---------- 1. Product cards: quantity box + Add to bag ---------- */
+  function clampQty(input, v){
+    var max = parseInt(input.getAttribute('max'), 10); if (isNaN(max) || max < 1) max = 9999;
+    v = parseInt(v, 10); if (isNaN(v) || v < 1) v = 1;
+    var hit = v > max; v = Math.min(v, max);
+    input.value = v;
+    var box = input.closest('.brf-qa__qty');
+    if (box) {
+      var minus = box.querySelector('[data-d="-1"]'), plus = box.querySelector('[data-d="1"]');
+      if (minus) minus.disabled = v <= 1;
+      if (plus) plus.disabled = v >= max;
+      if (hit) { box.classList.remove('is-max'); void box.offsetWidth; box.classList.add('is-max'); }
     }
-    qa.addEventListener('click', function(e){
-      var st = e.target.closest('.brf-qa__step'); if (!st) return;
-      e.preventDefault(); set((parseInt(input.value, 10) || 1) + parseInt(st.getAttribute('data-d'), 10));
-    });
-    input.addEventListener('input', function(){ if (input.value !== '') hidden.value = Math.max(1, parseInt(input.value, 10) || 1); });
-    input.addEventListener('change', function(){ set(input.value); });
-    input.addEventListener('keydown', function(e){ if (e.key === 'Enter') { e.preventDefault(); set(input.value); qa.querySelector('.brf-qa__add').click(); } });
-    set(1);
-    requestAnimationFrame(function(){ qa.classList.add('is-on'); });
-  }
-  function flash(btn){
-    if (!btn || !btn.classList.contains('brf-qa__add')) return;
-    var sp = btn.querySelector('span'); btn.classList.add('is-done'); if (sp) sp.textContent = 'Added';
-    setTimeout(function(){ btn.classList.remove('is-done'); if (sp) sp.textContent = 'Add'; }, 1600);
+    return v;
   }
   doc.addEventListener('click', function(e){
-    var b = e.target.closest && e.target.closest('.product-item form[action*="/cart/add"] [data-action="add-to-cart"]');
-    if (b) pending = b;
+    var st = e.target.closest && e.target.closest('.brf-qa__step'); if (!st) return;
+    e.preventDefault();
+    var input = st.parentNode.querySelector('.brf-qa__in'); if (!input) return;
+    clampQty(input, (parseInt(input.value, 10) || 1) + parseInt(st.getAttribute('data-d'), 10));
+  });
+  doc.addEventListener('change', function(e){ if (e.target.classList && e.target.classList.contains('brf-qa__in')) clampQty(e.target, e.target.value); });
+  doc.addEventListener('keydown', function(e){
+    if (e.key !== 'Enter' || !e.target.classList || !e.target.classList.contains('brf-qa__in')) return;
+    e.preventDefault(); clampQty(e.target, e.target.value);
+    var add = e.target.closest('form').querySelector('.brf-qa__add'); if (add) add.click();
+  });
+  /* make sure a half-typed number is tidied before the theme reads the form */
+  doc.addEventListener('click', function(e){
+    var b = e.target.closest && e.target.closest('.brf-qa__add'); if (!b) return;
+    var input = b.form && b.form.querySelector('.brf-qa__in'); if (input) clampQty(input, input.value);
+    pending = b;
   }, true);
-  /* the theme fires "product:added" once the add has gone through; listen at the window so the slim header can't hide it */
-  window.addEventListener('product:added', function(){
+  var pending = null;
+  function added(btn){
+    var form = btn.closest('form'), lbl = btn.querySelector('.brf-qa__lbl');
+    if (!lbl) return;
+    clearTimeout(btn.__brfT);
+    btn.classList.add('is-done', 'is-pop'); lbl.textContent = 'Added!';
+    btn.__brfT = setTimeout(function(){
+      btn.classList.remove('is-done', 'is-pop');
+      lbl.textContent = 'Add';
+      if (form) form.classList.add('is-compact');
+      btn.setAttribute('aria-label', 'Add more to bag');
+      var input = form && form.querySelector('.brf-qa__in'); if (input) clampQty(input, 1);
+    }, 1400);
+  }
+
+  /* ---------- 2. Quick view: adds show the "In the bag!" note on top, the window closes properly ---------- */
+  var QV = '.modal[id^="modal-quick-view"]';
+  /* the slim header (brf-slim-header) swaps the drawer for its note; here we just make sure the window closes */
+  doc.body.addEventListener('product:added', function(e){
+    var t = e.target, qv = t && t.closest && t.closest(QV);
+    if (qv) { setTimeout(function(){ closeQv(qv); }, 80); return; }
     var b = pending; pending = null;
-    if (!b || !b.isConnected) return;
-    if (b.classList.contains('brf-qa__add')) flash(b); else morph(b);
+    if (b && b.isConnected && t && t.contains && t.contains(b)) added(b);
+  });
+  function closeQv(m){
+    m = m || doc.querySelector(QV + '[aria-hidden="false"]'); if (!m || m.getAttribute('aria-hidden') !== 'false') return;
+    doc.dispatchEvent(new CustomEvent('modal:close'));
+    /* belt and braces: if the theme lost track of the window, close it ourselves */
+    setTimeout(function(){
+      if (m.getAttribute('aria-hidden') === 'false') {
+        m.setAttribute('aria-hidden', 'true');
+        m.dispatchEvent(new CustomEvent('modal:closed'));
+      }
+      if (!doc.querySelector('.modal[aria-hidden="false"]')) root.classList.remove('is-locked');
+    }, 120);
+  }
+  /* click anywhere outside the quick view box to close it */
+  doc.addEventListener('click', function(e){
+    var m = doc.querySelector(QV + '[aria-hidden="false"]'); if (!m) return;
+    var t = e.target, dlg = m.querySelector('.modal__dialog');
+    if ((dlg && dlg.contains(t)) || !t.closest || t.closest('.brf-hc__toast, .brf-hc__bag, [data-action="open-modal"]')) return;
+    e.preventDefault(); e.stopPropagation();
+    closeQv(m);
   }, true);
 
-  /* ---------- 6. Delivery card: open below the link when there's room, and keep it inside the window ---------- */
-  function placeShip(w){
-    if (!window.matchMedia('(min-width:1000px)').matches) { w.classList.remove('is-down'); return; }
+  /* ---------- 6. Delivery card: below the link on desktop, nudged into view if needed ---------- */
+  function placeShip(w, scroll){
+    if (!desk.matches) return;
     var link = w.querySelector('a'), card = w.querySelector('.brf-ship__card'); if (!link || !card) return;
     var r = link.getBoundingClientRect(), h = card.offsetHeight || 300, wd = card.offsetWidth || 320;
-    var hdr = doc.getElementById('shopify-section-header'), top = 0;
-    if (hdr) { var hr = hdr.getBoundingClientRect(); if (hr.bottom > 0) top = hr.bottom; }
-    var below = window.innerHeight - r.bottom - 16, above = r.top - top - 16;
-    w.classList.toggle('is-down', below >= h + 12 || below > above);
     var cx = r.left + r.width / 2, left = cx - wd / 2, dx = 0;
     if (left < 12) dx = 12 - left; else if (left + wd > window.innerWidth - 12) dx = window.innerWidth - 12 - (left + wd);
     card.style.setProperty('--brf-ship-dx', Math.round(dx) + 'px');
+    var deficit = r.bottom + 12 + h + 16 - window.innerHeight;
+    if (scroll && deficit > 0) window.scrollBy({top: deficit, behavior: window.matchMedia('(prefers-reduced-motion:reduce)').matches ? 'auto' : 'smooth'});
   }
   function initShip(){
     var w = doc.querySelector('.brf-ship'); if (!w || w.__brfV4) return; w.__brfV4 = true;
-    new MutationObserver(function(){ if (w.classList.contains('is-open')) placeShip(w); }).observe(w, {attributes: true, attributeFilter: ['class']});
-    w.addEventListener('mouseenter', function(){ placeShip(w); });
+    var was = false;
+    new MutationObserver(function(){
+      var on = w.classList.contains('is-open');
+      if (on && !was) placeShip(w, true);
+      was = on;
+    }).observe(w, {attributes: true, attributeFilter: ['class']});
+    w.addEventListener('mouseenter', function(){ placeShip(w, false); });
   }
   initShip();
   window.addEventListener('load', initShip);
   setTimeout(initShip, 1500);
+
+  /* ---------- 8. Main header search: click anywhere to close; an empty search gets a giggle instead ---------- */
+  doc.addEventListener('pointerdown', function(e){
+    if (!root.classList.contains('brf-so-open') || !window.brfSearchClose) return;
+    var t = e.target;
+    if (!t.closest || t.closest('#brf-sp, #shopify-section-header form.search-bar, [data-action="toggle-search"], .brf-hc__search')) return;
+    window.brfSearchClose();
+  }, true);
+  var NOTHING = [
+    'You came, you saw, you… forgot to type. Happens to the best of us 😄',
+    'Our search bar is clever, but it can’t read minds. Yet. 🔮',
+    'Searching for nothing? We’ve got loads of that, and it’s free! 😄',
+    'Even our bull needs a clue. Pop a word in! 🐂',
+    'We searched high and low for “ ” and found… fresh air. Try a fabric! 🌬️',
+    'Blank search, blank canvas. Type a fabric and let’s fill it 🎨',
+    'Needle threaded, scissors sharpened… we just need a word ✂️',
+    'Psst… the magic only works when you type something ✨',
+    'Bold move, searching for nothing. Bolder move: type “velvet” 😉',
+    'You searched for absolutely nothing. Very zen. Very calm. Very unhelpful 🧘',
+    'Nothing in, nothing out. Even a quilt starts with one square 🧵',
+    'Our bull pressed the button too. Nothing happened for him either 🐂'
+  ];
+  var nAt = -1;
+  window.brfNothingQuip = function(){
+    var i = Math.floor(Math.random() * NOTHING.length);
+    if (i === nAt) i = (i + 1) % NOTHING.length;
+    nAt = i; return NOTHING[i];
+  };
+  var mform = doc.querySelector('#shopify-section-header form.search-bar');
+  var minput = mform && mform.querySelector('.search-bar__input');
+  if (mform && minput) {
+    var note = doc.createElement('p'); note.className = 'brf-nothing'; note.setAttribute('role', 'status'); note.setAttribute('aria-live', 'polite');
+    doc.body.appendChild(note);
+    var nT = 0;
+    var showNote = function(){
+      var r = mform.getBoundingClientRect();
+      note.textContent = window.brfNothingQuip();
+      note.style.top = Math.round(r.bottom + 12) + 'px';
+      note.style.left = Math.round(r.left + r.width / 2) + 'px';
+      note.classList.remove('is-on'); void note.offsetWidth; note.classList.add('is-on');
+      mform.classList.remove('brf-shake'); void mform.offsetWidth; mform.classList.add('brf-shake');
+      clearTimeout(nT); nT = setTimeout(function(){ note.classList.remove('is-on'); }, 3800);
+      try { minput.focus({preventScroll: true}); } catch (err) {}
+    };
+    mform.addEventListener('submit', function(e){
+      if (minput.value.trim()) { note.classList.remove('is-on'); return; }
+      e.preventDefault(); e.stopImmediatePropagation(); showNote();
+    }, true);
+    minput.addEventListener('input', function(){ if (minput.value.trim()) note.classList.remove('is-on'); });
+    window.addEventListener('scroll', function(){ note.classList.remove('is-on'); }, {passive: true});
+  }
 })();
 </script>

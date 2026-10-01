@@ -375,7 +375,7 @@
         if (cur !== 'GBP') return;
         fetch('/cart.js', {credentials:'same-origin'}).then(function(r){ return r.json(); }).then(function(c){
           var n = card.querySelector('[data-brf-ship-cart]'), left = 6500 - (c.total_price || 0);
-          n.innerHTML = left > 0 ? (c.total_price ? 'Your cart is <strong>' + money(left / 100) + '</strong> away from free UK delivery.' : 'Same-day dispatch Mon–Fri on orders before 10pm.') : '<strong>Your cart qualifies for free UK delivery ✓</strong>';
+          n.innerHTML = left > 0 ? (c.total_price ? 'Your bag is <strong>' + money(left / 100) + '</strong> away from free UK delivery.' : 'Same-day dispatch Mon–Fri on orders before 10pm.') : '<strong>Your cart qualifies for free UK delivery ✓</strong>';
         }).catch(function(){});
       }
     }

@@ -1,0 +1,230 @@
+<form method="post" action="{{ routes.cart_url }}" id="mini-cart" class="mini-cart brf-mc" aria-hidden="true" novalidate="novalidate" data-item-count="{{ cart.item_count }}">
+  <input type="hidden" name="attributes[collection_products_per_page]" value="">
+  <input type="hidden" name="attributes[collection_layout]" value="">
+
+  {%- render 'icon', icon: 'nav-triangle-borderless' -%}
+
+  {%- comment -%}Bull Ring: free-delivery progress + same-day dispatch countdown{%- endcomment -%}
+  {%- liquid
+    assign free_threshold = settings.cart_free_shipping_threshold | times: 100 | round
+    if free_threshold <= 0
+      assign free_threshold = 6500
+    endif
+    assign show_free = false
+    if cart.currency.iso_code == 'GBP'
+      assign show_free = true
+    endif
+    assign free_pct = cart.total_price | times: 100 | divided_by: free_threshold
+    if free_pct > 100
+      assign free_pct = 100
+    endif
+    if cart.total_price > 0 and free_pct < 4
+      assign free_pct = 4
+    endif
+    assign free_left = free_threshold | minus: cart.total_price
+  -%}
+
+  {%- capture brf_perks -%}
+    <div class="brf-mc__perks">
+      {%- if show_free -%}
+        <div class="brf-mc__free{% if free_left <= 0 %} is-done{% endif %}">
+          <p class="brf-mc__free-t">
+            {%- if cart.total_price == 0 -%}
+              <strong>Free tracked UK delivery</strong> on orders over {{ free_threshold | money_without_trailing_zeros }}
+            {%- elsif free_left > 0 -%}
+              You’re <strong>{{ free_left | money }}</strong> away from <strong>free UK delivery</strong>
+            {%- else -%}
+              <span class="brf-mc__tick" aria-hidden="true">✓</span> <strong>You’ve unlocked free tracked UK delivery</strong>
+            {%- endif -%}
+          </p>
+          <div class="brf-mc__bar" role="progressbar" aria-label="Progress to free delivery" aria-valuemin="0" aria-valuemax="100" aria-valuenow="{{ free_pct }}">
+            <span style="width: {{ free_pct }}%"></span>
+          </div>
+        </div>
+      {%- endif -%}
+      <div class="brf-mc__dispatch" data-brf-mc-dispatch>
+        <span class="brf-mc__dot" aria-hidden="true"></span>
+        <span data-brf-mc-dispatch-text>Same-day dispatch Monday to Friday for orders before 10pm</span>
+      </div>
+    </div>
+  {%- endcapture -%}
+
+  {%- if cart.item_count == 0 -%}
+    {%- liquid
+      assign q = 'now' | date: '%s' | modulo: 6
+      case q
+        when 0
+          assign quote = 'Your bag is looking a little threadbare.'
+        when 1
+          assign quote = 'Sew empty in here… let’s fix that.'
+        when 2
+          assign quote = 'Nothing in here but a few loose threads.'
+        when 3
+          assign quote = 'This bag is dying to be filled with fabric.'
+        when 4
+          assign quote = 'Keep calm and add fabric.'
+        else
+          assign quote = 'Fabric is cheaper than therapy. Probably.'
+      endcase
+    -%}
+    <div class="mini-cart__content mini-cart__content--empty brf-mc__empty">
+      <div class="brf-mc__empty-art" aria-hidden="true">
+        <svg viewBox="0 0 220 150" width="220" height="150" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <ellipse cx="110" cy="138" rx="78" ry="7" fill="#1D1D1F" opacity=".07"/>
+          <path d="M70 46c0-20 12-32 30-32s30 12 30 32" stroke="#1D1D1F" stroke-width="5" stroke-linecap="round"/>
+          <path d="M52 46h116l-10 86a8 8 0 0 1-8 7H70a8 8 0 0 1-8-7L52 46Z" fill="#F6F3EE" stroke="#1D1D1F" stroke-width="4" stroke-linejoin="round"/>
+          <path d="M62 60h96" stroke="#1D1D1F" stroke-width="2.5" stroke-dasharray="6 6" stroke-linecap="round" opacity=".5"/>
+          <path d="M92 94c0 4 4 6 8 3m20 0c4 3 8 1 8-3" stroke="#1D1D1F" stroke-width="3" stroke-linecap="round"/>
+          <path d="M100 112c6-5 14-5 20 0" stroke="#1D1D1F" stroke-width="3" stroke-linecap="round"/>
+          <g transform="translate(160 84) rotate(12)">
+            <rect x="0" y="0" width="30" height="8" rx="2" fill="#C9A06A" stroke="#1D1D1F" stroke-width="2.5"/>
+            <rect x="3" y="8" width="24" height="26" fill="#149954" stroke="#1D1D1F" stroke-width="2.5"/>
+            <path d="M5 14h20M5 20h20M5 26h20" stroke="#fff" stroke-width="1.6" opacity=".6"/>
+            <rect x="0" y="34" width="30" height="8" rx="2" fill="#C9A06A" stroke="#1D1D1F" stroke-width="2.5"/>
+          </g>
+          <path d="M176 118c-8 10-26 8-34 18s-26 4-30-2" stroke="#149954" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+          <path d="M28 40l4 8 8 4-8 4-4 8-4-8-8-4 8-4 4-8Z" fill="#E0A526"/>
+          <path d="M190 22l3 6 6 3-6 3-3 6-3-6-6-3 6-3 3-6Z" fill="#B3261E" opacity=".85"/>
+        </svg>
+      </div>
+      <p class="brf-mc__empty-q">“{{ quote }}”</p>
+      <p class="brf-mc__empty-s">Over 800 fabrics cut to your length, dispatched same day Monday to Friday.</p>
+      <a href="{{ settings.cart_empty_button_link | default: '/collections/all' }}" class="button button--primary button--full brf-mc__cta">Start filling it up</a>
+      <div class="brf-mc__chips">
+        <a href="/collections/sale" class="brf-mc__chip brf-mc__chip--sale">Sale</a>
+        <a href="/collections/pound-fabrics" class="brf-mc__chip">Pound Fabrics</a>
+        <a href="/collections/satin" class="brf-mc__chip">Satin</a>
+        <a href="/collections/craft-cotton" class="brf-mc__chip">Craft cotton</a>
+        <a href="/collections/halloween" class="brf-mc__chip">Halloween</a>
+      </div>
+      {{ brf_perks }}
+    </div>
+  {%- else -%}
+    <div class="mini-cart__inner">
+      <div class="brf-mc__head">
+        <p class="brf-mc__title">Your bag <span>{{ cart.item_count }} {% if cart.item_count == 1 %}item{% else %}items{% endif %}</span></p>
+        <p class="brf-mc__added" data-brf-mc-added hidden><span aria-hidden="true">✓</span> Added to your cart</p>
+      </div>
+      <div class="mini-cart__content">
+        <div class="mini-cart__alert-wrapper">{{ brf_perks }}</div>
+
+        <div class="mini-cart__line-item-list">
+          {%- for line_item in cart.items -%}
+            <div class="mini-cart__line-item">
+              <div class="mini-cart__image-wrapper">
+                <a href="{{ line_item.url }}" class="brf-mc__img" tabindex="-1" aria-hidden="true">
+                  {%- if line_item.image -%}<img loading="lazy" src="{{ line_item.image | image_url: width: 200, height: 200, crop: 'center' }}" alt="{{ line_item.image.alt | default: line_item.product.title | escape }}" width="100" height="100">{%- endif -%}
+                </a>
+              </div>
+
+              <div class="mini-cart__item-wrapper">
+                <div class="mini-cart__product-info">
+                  <a href="{{ line_item.url }}" class="mini-cart__product-title text--strong link">{{ line_item.product.title }}</a>
+                  {%- unless line_item.product.has_only_default_variant -%}
+                    <p class="brf-mc__variant">{{ line_item.variant.title }}</p>
+                  {%- endunless -%}
+
+                  {%- unless line_item.properties == blank -%}
+                    <ul class="mini-cart__property-list">
+                      {%- for property in line_item.properties -%}
+                        {%- assign first_character_in_key = property.first | truncate: 1, '' -%}
+                        {%- if property.last == blank or first_character_in_key == '_' -%}{%- continue -%}{%- endif -%}
+                        <li class="mini-cart__property">{{ property.first }}: {{ property.last }}</li>
+                      {%- endfor -%}
+                    </ul>
+                  {%- endunless -%}
+
+                  <div class="mini-cart__price-list">
+                    {%- if line_item.final_line_price < line_item.original_line_price -%}
+                      <span class="price price--highlight">{{ line_item.final_line_price | money }}</span>
+                      <span class="price price--compare">{{ line_item.original_line_price | money }}</span>
+                    {%- elsif line_item.variant.compare_at_price > line_item.variant.price -%}
+                      <span class="price price--highlight">{{ line_item.final_line_price | money }}</span>
+                      <span class="price price--compare">{{ line_item.variant.compare_at_price | times: line_item.quantity | money }}</span>
+                    {%- else -%}
+                      <span class="price">{{ line_item.final_line_price | money }}</span>
+                    {%- endif -%}
+                  </div>
+
+                  {%- assign brf_stock = line_item.variant.inventory_quantity -%}
+                  {%- if line_item.variant.inventory_management == 'shopify' and line_item.variant.inventory_policy == 'deny' and brf_stock > 0 and brf_stock < 10 -%}
+                    <p class="brf-mc__low"><i aria-hidden="true"></i>{% if brf_stock <= line_item.quantity %}Last {{ brf_stock }} in stock – you have them all{% else %}Only {{ brf_stock }} left in stock – checkout soon{% endif %}</p>
+                  {%- endif -%}
+
+                  {%- if line_item.line_level_discount_allocations != blank -%}
+                    <ul class="mini-cart__discount-list">
+                      {%- for discount_allocation in line_item.line_level_discount_allocations -%}
+                        <li class="mini-cart__discount">{%- render 'icon', icon: 'sale' -%}{{ discount_allocation.discount_application.title }} (-{{ discount_allocation.amount | money }})</li>
+                      {%- endfor -%}
+                    </ul>
+                  {%- endif -%}
+                </div>
+
+                {%- unless line_item.product.tags contains '__gift' -%}
+                  <div class="mini-cart__quantity">
+                    <div class="quantity-selector">
+                      {%- assign allow_to_add_more = true -%}
+                      {%- if line_item.variant.inventory_management and line_item.variant.inventory_policy == 'deny' and line_item.quantity == line_item.variant.inventory_quantity -%}
+                        {%- assign allow_to_add_more = false -%}
+                      {%- endif -%}
+                      <button class="quantity-selector__button" data-action="decrease-quantity" data-quantity="{{ line_item.quantity | minus: 1 }}" data-line-id="{{ line_item.key }}" aria-label="{{ 'cart.items.decrease_quantity' | t }}" title="{{ 'cart.items.decrease_quantity' | t }}">{% render 'icon', icon: 'minus' %}</button>
+                      <input aria-label="{{ 'product.form.quantity' | t }}" class="quantity-selector__value" pattern="[0-9]*" data-current-value="{{ line_item.quantity }}" data-line-id="{{ line_item.id }}" value="{{ line_item.quantity }}" size="{{ line_item.quantity | append: '' | size | at_least: 2 }}">
+                      <button class="quantity-selector__button" data-action="increase-quantity" data-quantity="{{ line_item.quantity | plus: 1 }}" data-line-id="{{ line_item.key }}" {% if allow_to_add_more %}aria-label="{{ 'cart.items.increase_quantity' | t }}" title="{{ 'cart.items.increase_quantity' | t }}"{% else %}disabled="disabled" aria-label="{{ 'cart.items.no_more_stock' | t }}" data-tooltip="{{ 'cart.items.no_more_stock' | t }}" data-tooltip-position="bottom-left"{% endif %}>{% render 'icon', icon: 'plus' %}</button>
+                    </div>
+                    <a href="{{ routes.cart_change_url }}?quantity=0&id={{ line_item.key }}" data-action="decrease-quantity" data-quantity="0" data-line-id="{{ line_item.key }}" class="mini-cart__quantity-remove link">{{ 'cart.items.remove' | t }}</a>
+                  </div>
+                {%- endunless -%}
+              </div>
+            </div>
+          {%- endfor -%}
+        </div>
+      </div>
+
+      <div class="mini-cart__recap">
+        {%- if cart.cart_level_discount_applications != blank -%}
+          {%- for discount_application in cart.cart_level_discount_applications -%}
+            <div class="mini-cart__recap-price-line mini-cart__recap-price-line--highlight text--pull">
+              <span>{{ discount_application.title }}</span>
+              <span>-{{ discount_application.total_allocated_amount | money }}</span>
+            </div>
+          {%- endfor -%}
+        {%- endif -%}
+
+        {%- assign total_discount = 0 -%}
+        {%- for line_item in cart.items -%}
+          {%- if line_item.final_line_price < line_item.original_line_price -%}
+            {%- assign total_discount = total_discount | plus: line_item.total_discount -%}
+          {%- elsif line_item.variant.compare_at_price > line_item.variant.price -%}
+            {%- assign line_discount = line_item.variant.compare_at_price | minus: line_item.variant.price | times: line_item.quantity -%}
+            {%- assign total_discount = total_discount | plus: line_discount -%}
+          {%- endif -%}
+        {%- endfor -%}
+
+        <div class="mini-cart__recap-price-line brf-mc__total">
+          <span>Subtotal</span>
+          <span>{{ cart.total_price | money }}</span>
+        </div>
+        {%- if total_discount > 0 -%}
+          <p class="brf-mc__saved">You’re saving <strong>{{ total_discount | money }}</strong> on this order</p>
+        {%- endif -%}
+
+        <div class="mini-cart__button-container brf-mc__buttons">
+          <button type="submit" name="checkout" class="button button--primary brf-mc__checkout">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>
+            Secure checkout
+          </button>
+          <a href="{{ routes.cart_url }}" class="brf-mc__viewcart">View full cart</a>
+        </div>
+        <p class="brf-mc__trust">Apple Pay · PayPal · all major cards</p>
+
+        {%- if settings.hide_express_checkout_buttons -%}
+          {%- if additional_checkout_buttons -%}
+            <div class="additional-checkout-buttons" style="display: none !important">
+              {{ content_for_additional_checkout_buttons }}
+            </div>
+          {%- endif -%}
+        {%- endif -%}
+      </div>
+    </div>
+  {%- endif -%}
+</form>

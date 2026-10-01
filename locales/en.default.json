@@ -58,7 +58,7 @@
       "account": "My account",
       "login": "Login / Signup",
       "welcome": "Hello 👋 {{first_name}}",
-      "cart": "Cart"
+      "cart": "Bag"
     },
     "navigation": {
       "menu": "Menu",
@@ -314,11 +314,11 @@
   },
   "cart": {
     "general": {
-      "title": "My cart",
-      "empty": "Your cart is empty ☹️",
+      "title": "Your Bag",
+      "empty": "Your bag is empty ☹️",
       "empty_button": "Craft up something amazing today 😎👌🔥",
       "search": "Search...",
-      "view_cart": "View cart",
+      "view_cart": "View bag",
       "note_title": "Order instructions",
       "edit_note": "Edit",
       "save_note": "Save",
@@ -474,7 +474,7 @@
         "unavailable": "Unavailable",
         "on_sale": "Sale",
         "quantity": "Quantity",
-        "add_to_cart": "Add to bag",
+        "add_to_cart": "Add to cart",
         "back_to_collection": "Back to {{ title }}",
         "view_details": "View details"
       }

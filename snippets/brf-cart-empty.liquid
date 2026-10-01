@@ -1,0 +1,50 @@
+{%- comment -%}Bull Ring: fun empty-cart state (cart page){%- endcomment -%}
+    {%- liquid
+      assign q = 'now' | date: '%s' | modulo: 6
+      case q
+        when 0
+          assign quote = 'Your bag is looking a little threadbare.'
+        when 1
+          assign quote = 'Sew empty in here… let’s fix that.'
+        when 2
+          assign quote = 'Nothing in here but a few loose threads.'
+        when 3
+          assign quote = 'This bag is dying to be filled with fabric.'
+        when 4
+          assign quote = 'Keep calm and add fabric.'
+        else
+          assign quote = 'Fabric is cheaper than therapy. Probably.'
+      endcase
+    -%}
+    <div class="brf-cp__empty brf-mc__empty">
+      <div class="brf-mc__empty-art" aria-hidden="true">
+        <svg viewBox="0 0 220 150" width="220" height="150" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <ellipse cx="110" cy="138" rx="78" ry="7" fill="#1D1D1F" opacity=".07"/>
+          <path d="M70 46c0-20 12-32 30-32s30 12 30 32" stroke="#1D1D1F" stroke-width="5" stroke-linecap="round"/>
+          <path d="M52 46h116l-10 86a8 8 0 0 1-8 7H70a8 8 0 0 1-8-7L52 46Z" fill="#F6F3EE" stroke="#1D1D1F" stroke-width="4" stroke-linejoin="round"/>
+          <path d="M62 60h96" stroke="#1D1D1F" stroke-width="2.5" stroke-dasharray="6 6" stroke-linecap="round" opacity=".5"/>
+          <path d="M92 94c0 4 4 6 8 3m20 0c4 3 8 1 8-3" stroke="#1D1D1F" stroke-width="3" stroke-linecap="round"/>
+          <path d="M100 112c6-5 14-5 20 0" stroke="#1D1D1F" stroke-width="3" stroke-linecap="round"/>
+          <g transform="translate(160 84) rotate(12)">
+            <rect x="0" y="0" width="30" height="8" rx="2" fill="#C9A06A" stroke="#1D1D1F" stroke-width="2.5"/>
+            <rect x="3" y="8" width="24" height="26" fill="#149954" stroke="#1D1D1F" stroke-width="2.5"/>
+            <path d="M5 14h20M5 20h20M5 26h20" stroke="#fff" stroke-width="1.6" opacity=".6"/>
+            <rect x="0" y="34" width="30" height="8" rx="2" fill="#C9A06A" stroke="#1D1D1F" stroke-width="2.5"/>
+          </g>
+          <path d="M176 118c-8 10-26 8-34 18s-26 4-30-2" stroke="#149954" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+          <path d="M28 40l4 8 8 4-8 4-4 8-4-8-8-4 8-4 4-8Z" fill="#E0A526"/>
+          <path d="M190 22l3 6 6 3-6 3-3 6-3-6-6-3 6-3 3-6Z" fill="#B3261E" opacity=".85"/>
+        </svg>
+      </div>
+      <p class="brf-mc__empty-q">“{{ quote }}”</p>
+      <p class="brf-mc__empty-s">Over 800 fabrics cut to your length, dispatched same day Monday to Friday.</p>
+      <a href="{{ settings.cart_empty_button_link | default: '/collections/all' }}" class="button button--primary button--full brf-mc__cta">Start filling it up</a>
+      <div class="brf-mc__chips">
+        <a href="/collections/sale" class="brf-mc__chip brf-mc__chip--sale">Sale</a>
+        <a href="/collections/pound-fabrics" class="brf-mc__chip">Pound Fabrics</a>
+        <a href="/collections/satin" class="brf-mc__chip">Satin</a>
+        <a href="/collections/craft-cotton" class="brf-mc__chip">Craft cotton</a>
+        <a href="/collections/halloween" class="brf-mc__chip">Halloween</a>
+      </div>
+      {%- render 'brf-cart-perks' -%}
+    </div>
