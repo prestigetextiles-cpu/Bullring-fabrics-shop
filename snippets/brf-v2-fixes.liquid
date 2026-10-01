@@ -1,0 +1,232 @@
+{%- comment -%}
+  Bull Ring Fabrics — mobile fixes + Liquid Glass refresh (v2)
+  1  Estimate shipping tab: no duplicate heading, text wraps cleanly
+  2  Theme's own cookie bar removed (Shopify's consent banner stays)
+  3  Sticky "Add to cart" bar hides while the cart drawer is open
+  4  Cart drawer fits the real screen height, "View full cart" always reachable
+  5  Cart drawer shows "↓ N more items" and a soft fade when the list scrolls
+  6  Product card colour swatches: round, centred, inside the card
+  7  Delivery options: bottom sheet on phones instead of floating over Apple Pay
+  8  Halloween trust strip: centred text on a liquid-glass card
+  9  Active filter pills (see brf-filter-bar): moved to the front with a clear ×
+  10 Liquid Glass: consistent frosted surfaces, edge highlights, springy presses
+  Rendered once from layout/theme.liquid.
+{%- endcomment -%}
+<style>
+  :root{
+    --lg-ease:cubic-bezier(.4,0,.6,1);
+    --lg-spring:cubic-bezier(.34,1.56,.64,1);
+    --lg-blur:saturate(180%) blur(24px);
+    --lg-bg:rgba(255,255,255,.74);
+    --lg-bg-strong:rgba(250,250,252,.9);
+    --lg-edge:inset 0 1px 0 rgba(255,255,255,.75),inset 0 0 0 .5px rgba(255,255,255,.45),0 10px 30px -14px rgba(29,29,31,.28);
+    --lg-line:rgba(0,0,0,.08);
+    --lg-ink:#1D1D1F;
+  }
+
+  /* ---------- 1. Estimate shipping tab ---------- */
+  .brf-tab-min .card > .card__header{display:none!important}
+  .brf-tab-min .brf-tab-toggle{display:flex;align-items:center;gap:14px;width:100%;text-align:left}
+  .brf-tab-min .brf-tab-toggle > span:first-child{flex:1 1 auto;min-width:0;display:flex;flex-direction:column;gap:4px}
+  .brf-tab-min .brf-tab-toggle .card__title{margin:0}
+  .brf-tab-min .brf-tab-toggle__sub{white-space:normal;overflow:visible;text-overflow:clip;line-height:1.4}
+  .brf-tab-min .brf-tab-toggle .plus-button{flex:none}
+
+  /* ---------- 2. Duplicate cookie bar ---------- */
+  .cookie-bar{display:none!important}
+
+  /* ---------- 3. Sticky add-to-cart hides behind the cart / sheets ---------- */
+  html.brf-cart-open .brf-sticky-atc,
+  html.is-locked .brf-sticky-atc,
+  html.brf-ship-sheet .brf-sticky-atc{opacity:0!important;visibility:hidden!important;pointer-events:none!important;transform:translateY(130%)!important}
+
+  /* ---------- 4 + 5. Cart drawer fits the screen, scroll cue ---------- */
+  @media (max-width:999px){
+    .mini-cart.brf-mc{height:calc(100dvh - var(--brf-mc-top,86px))!important;max-height:calc(100dvh - var(--brf-mc-top,86px))!important}
+    .brf-mc .mini-cart__inner{height:100%!important;max-height:100%!important;display:flex!important;flex-direction:column!important}
+    .brf-mc .mini-cart__content{flex:1 1 auto!important;min-height:0!important;display:flex!important;flex-direction:column!important;position:relative;overflow:hidden}
+    .brf-mc .mini-cart__line-item-list{flex:1 1 auto!important;min-height:0!important;max-height:none!important;overflow-y:auto!important;-webkit-overflow-scrolling:touch;overscroll-behavior:contain}
+    .brf-mc .mini-cart__recap{flex:none!important;margin-top:0!important;padding-bottom:calc(12px + env(safe-area-inset-bottom))!important}
+  }
+  .brf-mc .mini-cart__line-item-list.brf-has-more{
+    -webkit-mask-image:linear-gradient(#000 calc(100% - 64px),rgba(0,0,0,.15));mask-image:linear-gradient(#000 calc(100% - 64px),rgba(0,0,0,.15))}
+  .brf-mc__more{position:absolute;left:50%;bottom:12px;z-index:3;display:inline-flex;align-items:center;gap:6px;
+    padding:8px 14px 8px 12px;border:0;border-radius:999px;font:600 13px/1 Inter,-apple-system,sans-serif;color:var(--lg-ink);cursor:pointer;
+    background:var(--lg-bg-strong);-webkit-backdrop-filter:var(--lg-blur);backdrop-filter:var(--lg-blur);box-shadow:var(--lg-edge),0 0 0 .5px var(--lg-line);
+    transform:translate(-50%,0);opacity:1;transition:opacity .25s var(--lg-ease),transform .35s var(--lg-spring)}
+  .brf-mc__more[hidden]{display:inline-flex!important;opacity:0;transform:translate(-50%,12px);pointer-events:none}
+  .brf-mc__more svg{animation:brfNudge 1.6s var(--lg-ease) infinite}
+  @keyframes brfNudge{0%,100%{transform:translateY(0)}50%{transform:translateY(2px)}}
+  .brf-mc__count{display:inline-flex;align-items:center;justify-content:center;min-width:22px;height:22px;padding:0 7px;margin-left:8px;border-radius:999px;background:#1D1D1F;color:#fff;font-size:12px;font-weight:700;vertical-align:middle}
+
+  /* ---------- 6. Round, centred colour swatches ---------- */
+  .product-item .product-item__swatch-list{display:flex!important;justify-content:center;width:100%;max-width:100%;margin:8px 0 2px!important;padding:0 6px!important;overflow:hidden;box-sizing:border-box}
+  .product-item .color-swatch-list{display:flex!important;flex-wrap:nowrap;align-items:center;justify-content:center;gap:8px;margin:0!important;padding:0!important;white-space:normal}
+  .product-item .color-swatch{margin:0!important;flex:none}
+  .product-item .color-swatch__item{width:20px!important;height:20px!important;border-radius:50%!important;
+    box-shadow:inset 0 0 0 1px rgba(0,0,0,.14),inset 0 1px 1px rgba(255,255,255,.35)!important;outline:0!important;border:0!important;
+    transition:transform .3s var(--lg-spring),box-shadow .2s var(--lg-ease)}
+  .product-item .color-swatch__item::before,.product-item .color-swatch__item::after{border-radius:50%!important}
+  .product-item .color-swatch__radio:checked + .color-swatch__item{box-shadow:0 0 0 2px #fff,0 0 0 3.5px var(--lg-ink),inset 0 0 0 1px rgba(0,0,0,.14)!important}
+  .product-item .color-swatch__item:hover{transform:scale(1.12)}
+  .product-item .color-swatch--view-more .color-swatch__item-link{display:inline-flex!important;align-items:center;height:22px;padding:0 8px;border-radius:999px;font-size:11.5px;font-weight:600}
+  @media (max-width:640px){
+    .product-item .color-swatch-list{gap:6px}
+    .product-item .color-swatch__item{width:17px!important;height:17px!important}
+  }
+  html.brf-hw-page .product-item .color-swatch__item{box-shadow:inset 0 0 0 1px rgba(255,255,255,.38),inset 0 1px 1px rgba(255,255,255,.25)!important}
+  html.brf-hw-page .product-item .color-swatch__radio:checked + .color-swatch__item{box-shadow:0 0 0 2px #221A2C,0 0 0 3.5px #F08A24!important}
+
+  /* ---------- 7. Delivery options as a bottom sheet on phones and tablets ---------- */
+  @media (max-width:999px){
+    .brf-ship__card.is-sheet{opacity:1!important;visibility:visible!important;pointer-events:auto!important;display:block!important;position:fixed!important;left:12px!important;right:12px!important;top:auto!important;
+      bottom:calc(12px + env(safe-area-inset-bottom))!important;width:auto!important;max-width:none!important;max-height:70dvh;overflow:auto;
+      transform:none!important;z-index:1006!important;border-radius:24px!important;
+      background:var(--lg-bg-strong)!important;-webkit-backdrop-filter:var(--lg-blur);backdrop-filter:var(--lg-blur);
+      box-shadow:var(--lg-edge),0 0 0 100vmax rgba(15,15,20,.32)!important;animation:brfSheetUp .38s var(--lg-spring)}
+  }
+  @keyframes brfSheetUp{from{transform:translateY(40px);opacity:0}to{transform:none;opacity:1}}
+  .product-form__payment-container{margin-bottom:18px}
+
+  /* ---------- 8. Halloween trust strip: centred on liquid glass ---------- */
+  html.brf-hw-page .brf-hw__trust{background:transparent!important;border:0!important;box-shadow:none!important}
+  html.brf-hw-page .brf-hw__trust-row{
+    width:auto;max-width:calc(1480px - 80px);margin:0 auto;padding:20px 28px!important;border-radius:24px;box-sizing:border-box;
+    background:linear-gradient(180deg,rgba(255,255,255,.10),rgba(255,255,255,.04))!important;
+    -webkit-backdrop-filter:saturate(170%) blur(22px);backdrop-filter:saturate(170%) blur(22px);
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.16),inset 0 0 0 1px rgba(240,138,36,.22),0 18px 40px -22px rgba(0,0,0,.8)}
+  html.brf-hw-page .brf-hw__trust-item{justify-content:center;text-align:center}
+  html.brf-hw-page .brf-hw__trust-item > div{display:flex;flex-direction:column;align-items:center}
+  @media (max-width:1023px){ html.brf-hw-page .brf-hw__trust-row{margin:0 24px} }
+  @media (max-width:640px){
+    html.brf-hw-page .brf-hw__trust-row{margin:0 16px;padding:16px 12px!important;gap:16px 10px!important;border-radius:20px}
+    html.brf-hw-page .brf-hw__trust-item strong{font-size:13.5px}
+    html.brf-hw-page .brf-hw__trust-item span{font-size:12.5px}
+  }
+
+  /* ---------- 9. Active filter pills with a clear × ---------- */
+  .brf-pillgrp{position:relative;display:inline-flex;align-items:center;flex:none;order:-1}
+  .brf-pillgrp .brf-pill{padding-right:40px!important}
+  .brf-pill__x{position:absolute;right:6px;top:50%;width:26px;height:26px;margin-top:-13px;display:grid;place-items:center;border-radius:50%;
+    color:inherit!important;text-decoration:none!important;background:rgba(29,29,31,.08);transition:background .2s var(--lg-ease),transform .3s var(--lg-spring)}
+  .brf-pill__x:hover{background:rgba(29,29,31,.16)}
+  .brf-pill__x:active{transform:scale(.88)}
+  .brf-pill__x.is-loading{opacity:.5}
+  html.brf-hw-page .brf-pill__x{background:rgba(240,138,36,.18);color:#F5A04A!important}
+
+  /* ---------- 10. Liquid Glass: readable surfaces + springy presses ---------- */
+  #shopify-section-header{background:rgba(255,255,255,.8)!important;-webkit-backdrop-filter:var(--lg-blur)!important;backdrop-filter:var(--lg-blur)!important;
+    box-shadow:inset 0 -.5px 0 var(--lg-line),inset 0 1px 0 rgba(255,255,255,.6)}
+  .brf-fstick::before{background:rgba(250,250,252,.86)!important;-webkit-backdrop-filter:var(--lg-blur)!important;backdrop-filter:var(--lg-blur)!important;
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.7),0 .5px 0 var(--lg-line)!important}
+  html.brf-hw-page .brf-fstick::before{background:rgba(22,18,27,.82)!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.06),0 .5px 0 rgba(240,138,36,.2)!important}
+  .brf-fbar .brf-pill,.brf-sort{transition:transform .35s var(--lg-spring),background-color .2s var(--lg-ease),box-shadow .2s var(--lg-ease)}
+  .brf-fbar .brf-pill{background:rgba(255,255,255,.78);box-shadow:inset 0 1px 0 rgba(255,255,255,.9),0 0 0 .5px rgba(0,0,0,.1),0 2px 8px -4px rgba(0,0,0,.12)}
+  html.brf-hw-page .brf-fbar .brf-pill{box-shadow:inset 0 1px 0 rgba(255,255,255,.08),0 0 0 .5px rgba(237,230,218,.2)}
+  .brf-panel{-webkit-backdrop-filter:var(--lg-blur);backdrop-filter:var(--lg-blur);box-shadow:var(--lg-edge),0 0 0 .5px var(--lg-line)!important}
+  .brf-sticky-atc__inner{background:rgba(255,255,255,.78)!important;-webkit-backdrop-filter:var(--lg-blur)!important;backdrop-filter:var(--lg-blur)!important;
+    box-shadow:var(--lg-edge),0 0 0 .5px var(--lg-line)!important}
+  .brf-mc .mini-cart__recap{background:rgba(250,250,252,.92);-webkit-backdrop-filter:var(--lg-blur);backdrop-filter:var(--lg-blur);box-shadow:inset 0 .5px 0 var(--lg-line)}
+  /* springy press feedback on everything tappable */
+  .button,.brf-pill,.brf-sort,.brf-opt,.brf-chip,.brf-mc__viewcart,.brf-mc__checkout,.product-item__action-button,.brf-sticky-atc button,.color-swatch__item-link{
+    transition:transform .35s var(--lg-spring),background-color .2s var(--lg-ease),box-shadow .2s var(--lg-ease),opacity .2s var(--lg-ease)}
+  .button:active,.brf-pill:active,.brf-sort:active,.brf-opt:active,.brf-chip:active,.brf-mc__viewcart:active,.brf-mc__checkout:active,
+  .product-item__action-button:active,.brf-sticky-atc button:active{transform:scale(.97)}
+  .brf-mc__viewcart{display:block;padding:12px 0!important;text-align:center;font-weight:600;color:var(--lg-ink)!important;min-height:44px;box-sizing:border-box}
+
+  @media (prefers-reduced-motion:reduce){
+    .brf-mc__more,.brf-mc__more svg,.brf-ship__card,.brf-pill__x,.color-swatch__item,.brf-sticky-atc{animation:none!important;transition:none!important}
+    .button:active,.brf-pill:active,.brf-sort:active,.brf-opt:active{transform:none}
+  }
+</style>
+
+<script>
+(function(){
+  var root = document.documentElement;
+
+  /* ---------- 4 + 5. Cart drawer height + "more items" cue ---------- */
+  var mc = null, list = null, pill = null;
+  function mcTop(){
+    if (!mc) return;
+    var t = Math.max(0, Math.round(mc.getBoundingClientRect().top));
+    if (t && t < window.innerHeight) mc.style.setProperty('--brf-mc-top', t + 'px');
+  }
+  function update(){
+    if (!list || !pill) return;
+    var lb = list.getBoundingClientRect().bottom - 24, hidden = 0;
+    var items = list.querySelectorAll('.mini-cart__line-item');
+    for (var i = 0; i < items.length; i++) if (items[i].getBoundingClientRect().top >= lb) hidden++;
+    var more = list.scrollHeight - list.clientHeight - list.scrollTop > 8;
+    var label = hidden > 0 ? hidden + ' more item' + (hidden === 1 ? '' : 's') : 'More below';
+    var span = pill.querySelector('span');
+    if (span.textContent !== label) span.textContent = label;
+    if (pill.hidden === more) pill.hidden = !more;
+    if (list.classList.contains('brf-has-more') !== more) list.classList.toggle('brf-has-more', more);
+  }
+  function setup(){
+    mc = document.querySelector('.mini-cart.brf-mc') || document.querySelector('.mini-cart');
+    if (!mc) return;
+    var l = mc.querySelector('.mini-cart__line-item-list');
+    if (l === list && pill && pill.isConnected) return;
+    list = l;
+    if (!list) return;
+    pill = document.createElement('button');
+    pill.type = 'button'; pill.className = 'brf-mc__more'; pill.hidden = true;
+    pill.innerHTML = '<svg width="12" height="12" viewBox="0 0 12 12" aria-hidden="true"><path d="M6 2v8M2.5 6.5 6 10l3.5-3.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg><span></span>';
+    pill.addEventListener('click', function(){ list.scrollBy({top: list.clientHeight * 0.8, behavior: 'smooth'}); });
+    list.parentNode.appendChild(pill);
+    list.addEventListener('scroll', update, {passive: true});
+    /* item count badge next to the title */
+    var title = mc.querySelector('.brf-mc__title');
+    var n = mc.querySelectorAll('.mini-cart__line-item').length;
+    if (title && n && !title.querySelector('.brf-mc__count') && !/\d/.test(title.textContent)) {
+      var b = document.createElement('span'); b.className = 'brf-mc__count'; b.textContent = n; title.appendChild(b);
+    }
+    mcTop(); update();
+  }
+  function watch(){
+    var target = document.querySelector('.mini-cart');
+    if (!target || target.__brfWatch) return;
+    target.__brfWatch = true;
+    /* the theme re-renders the drawer after each cart change: re-attach only when the list element is new */
+    new MutationObserver(function(){
+      var l = target.querySelector('.mini-cart__line-item-list');
+      if (l !== list || !pill || !pill.isConnected) { setup(); }
+    }).observe(target, {childList: true, subtree: true});
+    /* recalculate when the drawer opens */
+    new MutationObserver(function(){
+      if (root.classList.contains('brf-cart-open')) setTimeout(function(){ mcTop(); update(); }, 60);
+    }).observe(root, {attributes: true, attributeFilter: ['class']});
+    window.addEventListener('resize', function(){ mcTop(); update(); }, {passive: true});
+  }
+
+  /* ---------- 7. Delivery sheet: flag + close on scroll ---------- */
+  function initShip(){
+    var w = document.querySelector('.brf-ship');
+    if (!w || w.__brfSheet) return;
+    w.__brfSheet = true;
+    var y = 0, card = w.querySelector('.brf-ship__card');
+    if (!card) return;
+    new MutationObserver(function(){
+      var open = w.classList.contains('is-open') && window.matchMedia('(max-width:999px)').matches;
+      if (root.classList.contains('brf-ship-sheet') !== open) root.classList.toggle('brf-ship-sheet', open);
+      /* a frosted ancestor traps position:fixed, so lift the card to <body> while it is a sheet */
+      if (open && card.parentNode !== document.body) { document.body.appendChild(card); card.classList.add('is-sheet'); }
+      if (!open && card.parentNode !== w) { card.classList.remove('is-sheet'); w.appendChild(card); }
+      if (open) y = window.scrollY;
+    }).observe(w, {attributes: true, attributeFilter: ['class']});
+    window.addEventListener('scroll', function(){
+      if (w.classList.contains('is-open') && Math.abs(window.scrollY - y) > 60 && window.matchMedia('(max-width:999px)').matches) w.classList.remove('is-open');
+    }, {passive: true});
+  }
+
+  /* ---------- 9. Keep the pill row scrolled to the start so active pills are visible ---------- */
+  function initPills(){
+    document.querySelectorAll('.brf-fbar__pills').forEach(function(p){ if (p.querySelector('.brf-pillgrp')) p.scrollLeft = 0; });
+  }
+
+  function init(){ setup(); watch(); initShip(); initPills(); }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init); else init();
+  window.addEventListener('load', init);
+})();
+</script>

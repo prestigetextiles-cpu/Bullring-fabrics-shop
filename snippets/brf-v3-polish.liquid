@@ -208,6 +208,8 @@
   /* ================= shared: cart helpers ================= */
   function refreshCart(){ root.dispatchEvent(new CustomEvent('cart:refresh', {bubbles: true, detail: {}})); }
   function openDrawer(){
+    /* the slim desktop header shows its own "In the bag!" note instead of the drawer */
+    if (root.classList.contains('brf-hc')) { doc.dispatchEvent(new CustomEvent('brf:bag-added')); return; }
     if (!(window.theme && theme.cartType === 'drawer')) { location.href = '/cart'; return; }
     setTimeout(function(){
       if (root.classList.contains('brf-cart-open')) return;
@@ -431,7 +433,7 @@
       }
       if (inp) { if (max != null) inp.max = max; else inp.removeAttribute('max'); }
       var note = m.querySelector('.brf-qty-note');
-      var msg = max != null && max > 0 && max <= 10 ? 'Only ' + max + ' in stock – you can order up to ' + max + '.' : '';
+      var msg = max != null && max > 0 && max <= 10 ? 'Hurry! Only ' + max + ' in stock – you can order a maximum of ' + max + '. Grab it before another crafter does! 🧵' : '';
       if (!note && msg) {
         note = doc.createElement('p'); note.className = 'brf-qty-note';
         var host = m.querySelector('.product-form__info-item--quantity .product-form__info-content') || (sel || inp).parentNode;

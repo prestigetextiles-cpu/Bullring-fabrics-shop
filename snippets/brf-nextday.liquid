@@ -1,0 +1,51 @@
+{%- comment -%} Bull Ring Fabrics — slim Next Day Delivery strip under the header, on every page except checkout-style pages. {%- endcomment -%}
+{%- unless request.page_type == 'password' or request.page_type == 'gift_card' -%}
+<div class="brf-nd" data-brf-nd>
+  <div class="container brf-nd__in">
+    <span class="brf-nd__icon" aria-hidden="true">
+      <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7h11v9H3z"/><path d="M14 10h4l3 3v3h-7"/><circle cx="7" cy="17.5" r="1.8"/><circle cx="17.5" cy="17.5" r="1.8"/></svg>
+    </span>
+    <p class="brf-nd__text" data-brf-nd-next><strong>FREE Next Day Delivery</strong> on orders over £150 placed before 9pm (UK time)<span class="brf-nd__timer" data-brf-nd-timer hidden> · order within <b data-brf-nd-left></b></span></p>
+    <p class="brf-nd__text brf-nd__text--sd" data-brf-nd-same hidden><strong>Same-day dispatch</strong> closes at 10pm (UK time) · order within <b data-brf-nd-sleft></b> and it ships today</p>
+    <span class="brf-nd__meta"><strong>Same-day dispatch</strong> on all orders before 10pm</span>
+    <a class="brf-nd__link" href="/pages/delivery-times">Delivery info <svg viewBox="0 0 12 12" width="9" height="9" aria-hidden="true"><path d="M4.5 2.5 8 6 4.5 9.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+  </div>
+</div>
+<style>
+  /* Last 4 hours before the 9pm next-day cut-off, and the 9–10pm same-day window: the countdown turns red */
+  .brf-nd.is-urgent .brf-nd__timer b,.brf-nd.is-sameday [data-brf-nd-sleft]{background:#fff;color:#D92D20;animation:brf-nd-pulse 2s ease-in-out infinite}
+  .brf-nd.is-urgent .brf-nd__timer{color:#fff}
+  .brf-nd [data-brf-nd-sleft]{font-variant-numeric:tabular-nums;font-weight:700;padding:1px 7px;border-radius:6px}
+  .brf-nd.is-sameday .brf-nd__meta{display:none}
+  @keyframes brf-nd-pulse{0%,100%{box-shadow:0 0 0 0 rgba(255,255,255,.55)}50%{box-shadow:0 0 0 4px rgba(255,255,255,0)}}
+  @media (prefers-reduced-motion:reduce){.brf-nd.is-urgent .brf-nd__timer b,.brf-nd.is-sameday [data-brf-nd-sleft]{animation:none}}
+</style>
+<script>
+(function(){
+  var el = document.querySelector('[data-brf-nd]'); if (!el || el.dataset.ready) return; el.dataset.ready = '1';
+  var HOL = ['2026-12-25','2026-12-28','2027-01-01','2027-03-26','2027-03-29','2027-05-03','2027-05-31','2027-08-30','2027-12-27','2027-12-28'];
+  var fmt; try { fmt = new Intl.DateTimeFormat('en-GB', {timeZone:'Europe/London', year:'numeric', month:'2-digit', day:'2-digit', hour:'2-digit', minute:'2-digit', second:'2-digit', hour12:false, weekday:'short'}); } catch (e) { return; }
+  var timer = el.querySelector('[data-brf-nd-timer]'), left = el.querySelector('[data-brf-nd-left]');
+  function pad(n){ return (n < 10 ? '0' : '') + n; }
+  var nextEl = el.querySelector('[data-brf-nd-next]'), sameEl = el.querySelector('[data-brf-nd-same]'), sLeft = el.querySelector('[data-brf-nd-sleft]');
+  function span(l){ var h = Math.floor(l / 3600), m = Math.floor(l % 3600 / 60), s = l % 60; return (h ? h + 'h ' : '') + pad(m) + 'm ' + pad(s) + 's'; }
+  function tick(){
+    var p = {}; fmt.formatToParts(new Date()).forEach(function(x){ p[x.type] = x.value; });
+    var wd = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'].indexOf(p.weekday), ymd = p.year + '-' + p.month + '-' + p.day;
+    var secs = (parseInt(p.hour,10) % 24) * 3600 + parseInt(p.minute,10) * 60 + parseInt(p.second,10), cut = 21 * 3600, sameCut = 22 * 3600;
+    var workday = wd >= 1 && wd <= 5 && HOL.indexOf(ymd) === -1;
+    var sameDay = workday && secs >= cut && secs < sameCut; /* 9pm–10pm: next day has closed, same-day dispatch is still open */
+    nextEl.hidden = sameDay; sameEl.hidden = !sameDay;
+    if (sameDay) {
+      sLeft.textContent = span(sameCut - secs);
+      timer.hidden = true; el.classList.add('is-urgent', 'is-sameday');
+    } else if (workday && secs < cut) {
+      var l = cut - secs;
+      left.textContent = span(l);
+      timer.hidden = false; el.classList.remove('is-sameday'); el.classList.toggle('is-urgent', l <= 4 * 3600);
+    } else { timer.hidden = true; el.classList.remove('is-urgent', 'is-sameday'); }
+  }
+  tick(); setInterval(tick, 1000);
+})();
+</script>
+{%- endunless -%}

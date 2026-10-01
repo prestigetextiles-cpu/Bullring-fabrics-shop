@@ -1,0 +1,188 @@
+{%- comment -%}
+  Bull Ring Fabrics — v4 polish (October 2026)
+  1  Category pages: after "Add to bag", the button becomes a quantity box with a compact add button
+  2  Quick view: clearer liquid glass, rounded main image, soft "melt away" close
+  3  Breadcrumbs as liquid-glass pills everywhere
+  4  Product page: no thumbnail strip when there is only one photo, no hover zoom
+  5  Home & Lifestyle descriptions read as plain text (sub-headings as bold lines)
+  6  Delivery options card: opens where there is room on desktop, bottom sheet on phones and tablets
+  7  Header bag icon sizing
+{%- endcomment -%}
+<style>
+  /* ---------- 1. Quantity box after the first add ---------- */
+  .brf-qa{display:none;align-items:center;gap:6px;flex:1 1 auto;min-width:0}
+  .brf-qa.is-on{display:flex;animation:brf-qa-in .45s cubic-bezier(.2,.9,.25,1.15) both}
+  @keyframes brf-qa-in{from{opacity:0;transform:scale(.92)}to{opacity:1;transform:none}}
+  .product-item__action-list .brf-qa-hide{display:none!important}
+  .brf-qa__qty{display:flex;align-items:center;flex:1 1 auto;min-width:0;height:34px;border-radius:980px;background:#fff;box-shadow:inset 0 0 0 1px #DDD5C8}
+  .brf-qa__qty:focus-within{box-shadow:inset 0 0 0 1.5px #1D1D1F}
+  .brf-qa__step{flex:0 0 30px;height:100%;padding:0;border:0;background:transparent;color:#1D1D1F;font:600 17px/1 var(--text-font-family,sans-serif);cursor:pointer;border-radius:980px;transition:background .15s}
+  .brf-qa__step:hover{background:rgba(29,29,31,.06)}
+  .brf-qa__step:disabled{color:#C9C2B7;cursor:default;background:transparent}
+  .brf-qa__in{flex:1 1 auto;min-width:0;width:100%;height:100%;padding:0;border:0;background:transparent;text-align:center;font:600 14px/1 var(--text-font-family,sans-serif);color:#1D1D1F;-moz-appearance:textfield;appearance:textfield}
+  .brf-qa__in::-webkit-inner-spin-button,.brf-qa__in::-webkit-outer-spin-button{-webkit-appearance:none;margin:0}
+  .brf-qa__in:focus{outline:0}
+  html .product-item .brf-qa__add{flex:0 0 auto;display:inline-flex;align-items:center;justify-content:center;gap:5px;height:34px;min-width:0;padding:0 13px;margin:0!important;border:0!important;border-radius:980px!important;
+    background:#149954!important;color:#fff!important;font:600 13px/1 var(--text-font-family,sans-serif);cursor:pointer;white-space:nowrap;transition:background .2s,transform .2s}
+  html .product-item .brf-qa__add:hover{background:#0F7A42!important}
+  html .product-item .brf-qa__add:active{transform:scale(.95)}
+  html .product-item .brf-qa__add[disabled]{opacity:.7;cursor:wait}
+  .brf-qa__add svg{width:15px;height:15px;flex:0 0 auto}
+  .brf-qa__add.is-done{background:#1D1D1F!important}
+  /* once the quantity box shows, Quick view shrinks to an eye icon so everything fits on one line */
+  html .product-item .brf-qa-on .button--ternary{flex:0 0 34px!important;width:34px;min-width:0;padding:0!important;font-size:0!important;position:relative}
+  html .product-item .brf-qa-on .button--ternary::before{content:"";position:absolute;inset:0;margin:auto;width:17px;height:17px;background:currentColor;
+    -webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z'/%3E%3Ccircle cx='12' cy='12' r='3'/%3E%3C/svg%3E") center/contain no-repeat;
+    mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z'/%3E%3Ccircle cx='12' cy='12' r='3'/%3E%3C/svg%3E") center/contain no-repeat}
+  @media (max-width:640px){
+    .brf-qa__qty,html .product-item .brf-qa__add{height:32px}
+    .brf-qa__step{flex-basis:26px}
+    html .product-item .brf-qa__add{padding:0 10px}
+    .brf-qa__add span{display:none}
+  }
+
+  /* ---------- 2. Quick view ---------- */
+  html .modal[id^="modal-quick-view"]{background:rgba(29,29,31,.16)!important;-webkit-backdrop-filter:blur(6px) saturate(120%);backdrop-filter:blur(6px) saturate(120%);
+    transition:opacity .55s cubic-bezier(.4,0,.2,1) .05s,visibility 0s linear .6s}
+  html .modal[id^="modal-quick-view"][aria-hidden="false"]{transition:opacity .3s ease}
+  html .modal[id^="modal-quick-view"] .modal__dialog,html.brf-hw-page .modal[id^="modal-quick-view"] .modal__dialog{
+    background:linear-gradient(140deg,rgba(255,255,255,.66) 0%,rgba(255,255,255,.46) 55%,rgba(255,255,255,.58) 100%)!important;
+    -webkit-backdrop-filter:saturate(190%) blur(34px)!important;backdrop-filter:saturate(190%) blur(34px)!important;
+    border:1px solid rgba(255,255,255,.75)!important;border-radius:30px!important;
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.95),inset 0 -1px 0 rgba(255,255,255,.35),0 0 0 .5px rgba(29,29,31,.06),0 40px 100px -30px rgba(29,29,31,.5)!important;
+    /* closing: the glass softly melts away */
+    opacity:0;transform:translateY(26px) scale(.95);filter:blur(10px);
+    transition:transform .55s cubic-bezier(.4,0,.6,1),opacity .45s ease,filter .5s ease,visibility .55s linear!important}
+  html .modal[id^="modal-quick-view"][aria-hidden="false"] .modal__dialog{opacity:1;transform:none;filter:none;
+    transition:transform .6s cubic-bezier(.2,1.15,.3,1),opacity .3s ease,filter .4s ease,visibility 0s linear!important}
+  .modal[id^="modal-quick-view"] .modal__close{background:rgba(255,255,255,.7);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px)}
+  /* rounded main photo */
+  html .modal[id^="modal-quick-view"] .product-gallery__carousel-wrapper,
+  html .modal[id^="modal-quick-view"] .product-gallery__carousel,
+  html .modal[id^="modal-quick-view"] .product-gallery__carousel .flickity-viewport{border-radius:24px!important;overflow:hidden!important;-webkit-mask-image:-webkit-radial-gradient(#fff,#000);isolation:isolate}
+  html .modal[id^="modal-quick-view"] .product-gallery__image,
+  html .modal[id^="modal-quick-view"] .product-gallery__carousel-item{border-radius:24px}
+  html .modal[id^="modal-quick-view"] .quantity-selector,html .modal[id^="modal-quick-view"] select{background:rgba(255,255,255,.75)}
+  @media (prefers-reduced-motion:reduce){
+    html .modal[id^="modal-quick-view"] .modal__dialog{filter:none;transition:opacity .2s ease!important}
+  }
+
+  /* ---------- 3. Breadcrumbs as liquid glass ---------- */
+  html body .breadcrumb,.brf-chead__crumbs,.dl-crumbs,.sl-crumbs{
+    display:inline-flex!important;align-items:center;flex-wrap:wrap;gap:2px 8px;width:auto;max-width:100%;padding:7px 16px!important;border-radius:980px!important;
+    background:linear-gradient(135deg,rgba(255,255,255,.72),rgba(255,255,255,.45))!important;
+    -webkit-backdrop-filter:saturate(180%) blur(18px)!important;backdrop-filter:saturate(180%) blur(18px)!important;
+    border:0!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.9),inset 0 0 0 .5px rgba(255,255,255,.6),0 0 0 .5px rgba(29,29,31,.08),0 6px 18px -10px rgba(29,29,31,.28)!important;
+    font-size:12.5px!important;line-height:1.3}
+  html body .breadcrumb__list{display:flex;flex-wrap:wrap;align-items:center;gap:2px 0}
+  html body .breadcrumb__link,.brf-chead__crumbs a,.dl-crumbs a,.sl-crumbs a{color:#515154!important;text-decoration:none!important;transition:color .2s}
+  html body .breadcrumb a.breadcrumb__link:hover,.brf-chead__crumbs a:hover,.dl-crumbs a:hover,.sl-crumbs a:hover{color:#1D1D1F!important}
+  html body .breadcrumb__link[aria-current],.brf-chead__crumbs [aria-current],.dl-crumbs [aria-current],.sl-crumbs [aria-current]{color:#1D1D1F!important;font-weight:600}
+  html body .breadcrumb .icon{color:#A19A90}
+  .dl-hero--photo .dl-crumbs{background:linear-gradient(135deg,rgba(255,255,255,.26),rgba(255,255,255,.1))!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.35),0 0 0 .5px rgba(255,255,255,.25),0 8px 20px -12px rgba(0,0,0,.5)!important}
+  .dl-hero--photo .dl-crumbs a,.dl-hero--photo .dl-crumbs [aria-current]{color:#fff!important}
+  html.brf-hw-page body .breadcrumb,html.brf-hw-page .brf-chead__crumbs{background:linear-gradient(135deg,rgba(40,32,48,.7),rgba(28,22,34,.5))!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.08),0 0 0 .5px rgba(240,138,36,.25)!important}
+  html.brf-hw-page body .breadcrumb__link,html.brf-hw-page .brf-chead__crumbs a,html.brf-hw-page .brf-chead__crumbs [aria-current]{color:#EDE6DA!important}
+  @supports not ((-webkit-backdrop-filter:blur(1px)) or (backdrop-filter:blur(1px))){
+    html body .breadcrumb,.brf-chead__crumbs,.dl-crumbs,.sl-crumbs{background:rgba(255,255,255,.92)!important}
+  }
+
+  /* ---------- 4. Product photos ---------- */
+  html .product-gallery--single>.scroller,html .product-gallery--single .product-gallery__thumbnail-list{display:none!important}
+  .drift-zoom-pane,.drift-bounding-box,.product__zoom-wrapper{display:none!important}
+  @media (hover:hover) and (pointer:fine){
+    .product-gallery__carousel--zoomable .product-gallery__image,.product-gallery__carousel--zoomable{cursor:default!important}
+  }
+
+  /* ---------- 5. Home & Lifestyle descriptions ---------- */
+  .rte .brf-desc-h{margin:1.2em 0 .35em!important;font-weight:700;font-size:1.02em;color:#1D1D1F}
+  .rte .brf-desc-h+ul{margin-top:0}
+
+  /* ---------- 6. Delivery card on desktop: below the link when there's room ---------- */
+  @media (min-width:1000px){
+    .brf-ship__card{margin-left:var(--brf-ship-dx,0px)}
+    .brf-ship__card::after{margin-left:calc(-1 * var(--brf-ship-dx,0px))}
+    .brf-ship.is-down .brf-ship__card{top:calc(100% + 12px);bottom:auto;transform:translate(-50%,-6px)}
+    .brf-ship.is-down.is-open .brf-ship__card{transform:translate(-50%,0)}
+    .brf-ship.is-down .brf-ship__card::after{top:-6px;bottom:auto;box-shadow:-1px -1px 0 rgba(29,29,31,.06)}
+  }
+
+  /* ---------- 7. Bag icon in the header ---------- */
+  html .header .icon--cart{width:28px;height:28px;margin-top:-3px}
+</style>
+
+<script>
+(function(){
+  var doc = document, root = doc.documentElement;
+  if (root.__brfV4) return; root.__brfV4 = true;
+
+  /* ---------- 1. Category pages: quantity box after the first add ---------- */
+  var BAG = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 8h14l-1.2 11.2a1 1 0 0 1-1 .8H7.2a1 1 0 0 1-1-.8z"/><path d="M9 8V6.5a3 3 0 0 1 6 0V8"/><path d="M12 11.5v5M9.5 14h5"/></svg>';
+  var pending = null;
+  function maxFor(form){ var m = parseInt(form.getAttribute('data-brf-max'), 10); return isNaN(m) || m < 1 ? 999 : m; }
+  function morph(btn){
+    var form = btn.closest('form'); if (!form || form.querySelector('.brf-qa')) return;
+    var hidden = form.querySelector('input[name="quantity"]'); if (!hidden) return;
+    var qa = doc.createElement('div');
+    qa.className = 'brf-qa';
+    qa.innerHTML = '<div class="brf-qa__qty"><button type="button" class="brf-qa__step" data-d="-1" aria-label="One less">−</button>' +
+      '<input class="brf-qa__in" type="number" inputmode="numeric" min="1" value="1" aria-label="Quantity">' +
+      '<button type="button" class="brf-qa__step" data-d="1" aria-label="One more">+</button></div>' +
+      '<button type="submit" class="brf-qa__add" data-action="add-to-cart" aria-label="Add to bag">' + BAG + '<span>Add</span></button>';
+    btn.classList.add('brf-qa-hide'); form.classList.add('brf-qa-on');
+    var qv = form.querySelector('.button--ternary'); if (qv && !qv.title) qv.title = 'Quick view';
+    btn.parentNode.insertBefore(qa, btn.nextSibling);
+    var input = qa.querySelector('.brf-qa__in'), minus = qa.querySelector('[data-d="-1"]');
+    function set(v){
+      v = Math.max(1, Math.min(maxFor(form), parseInt(v, 10) || 1));
+      input.value = v; hidden.value = v; minus.disabled = v <= 1;
+    }
+    qa.addEventListener('click', function(e){
+      var st = e.target.closest('.brf-qa__step'); if (!st) return;
+      e.preventDefault(); set((parseInt(input.value, 10) || 1) + parseInt(st.getAttribute('data-d'), 10));
+    });
+    input.addEventListener('input', function(){ if (input.value !== '') hidden.value = Math.max(1, parseInt(input.value, 10) || 1); });
+    input.addEventListener('change', function(){ set(input.value); });
+    input.addEventListener('keydown', function(e){ if (e.key === 'Enter') { e.preventDefault(); set(input.value); qa.querySelector('.brf-qa__add').click(); } });
+    set(1);
+    requestAnimationFrame(function(){ qa.classList.add('is-on'); });
+  }
+  function flash(btn){
+    if (!btn || !btn.classList.contains('brf-qa__add')) return;
+    var sp = btn.querySelector('span'); btn.classList.add('is-done'); if (sp) sp.textContent = 'Added';
+    setTimeout(function(){ btn.classList.remove('is-done'); if (sp) sp.textContent = 'Add'; }, 1600);
+  }
+  doc.addEventListener('click', function(e){
+    var b = e.target.closest && e.target.closest('.product-item form[action*="/cart/add"] [data-action="add-to-cart"]');
+    if (b) pending = b;
+  }, true);
+  /* the theme fires "product:added" once the add has gone through; listen at the window so the slim header can't hide it */
+  window.addEventListener('product:added', function(){
+    var b = pending; pending = null;
+    if (!b || !b.isConnected) return;
+    if (b.classList.contains('brf-qa__add')) flash(b); else morph(b);
+  }, true);
+
+  /* ---------- 6. Delivery card: open below the link when there's room, and keep it inside the window ---------- */
+  function placeShip(w){
+    if (!window.matchMedia('(min-width:1000px)').matches) { w.classList.remove('is-down'); return; }
+    var link = w.querySelector('a'), card = w.querySelector('.brf-ship__card'); if (!link || !card) return;
+    var r = link.getBoundingClientRect(), h = card.offsetHeight || 300, wd = card.offsetWidth || 320;
+    var hdr = doc.getElementById('shopify-section-header'), top = 0;
+    if (hdr) { var hr = hdr.getBoundingClientRect(); if (hr.bottom > 0) top = hr.bottom; }
+    var below = window.innerHeight - r.bottom - 16, above = r.top - top - 16;
+    w.classList.toggle('is-down', below >= h + 12 || below > above);
+    var cx = r.left + r.width / 2, left = cx - wd / 2, dx = 0;
+    if (left < 12) dx = 12 - left; else if (left + wd > window.innerWidth - 12) dx = window.innerWidth - 12 - (left + wd);
+    card.style.setProperty('--brf-ship-dx', Math.round(dx) + 'px');
+  }
+  function initShip(){
+    var w = doc.querySelector('.brf-ship'); if (!w || w.__brfV4) return; w.__brfV4 = true;
+    new MutationObserver(function(){ if (w.classList.contains('is-open')) placeShip(w); }).observe(w, {attributes: true, attributeFilter: ['class']});
+    w.addEventListener('mouseenter', function(){ placeShip(w); });
+  }
+  initShip();
+  window.addEventListener('load', initShip);
+  setTimeout(initShip, 1500);
+})();
+</script>

@@ -311,7 +311,7 @@
             {%- if product.has_only_default_variant -%}
               {%- form 'product', product -%}
                 <input type="hidden" name="id" value="{{ product.selected_or_first_available_variant.id }}">
-                <button type="submit" class="brf-btn brf-btn--line">Add to basket</button>
+                <button type="submit" class="brf-btn brf-btn--line">Add to bag</button>
               {%- endform -%}
             {%- else -%}
               <a class="brf-btn brf-btn--line" href="{{ product.url | within: hw }}">Choose options</a>
@@ -417,7 +417,7 @@
             {%- if product.available and product.has_only_default_variant -%}
               {%- form 'product', product -%}
                 <input type="hidden" name="id" value="{{ product.selected_or_first_available_variant.id }}">
-                <button type="submit" class="brf-btn brf-btn--line">Add to basket</button>
+                <button type="submit" class="brf-btn brf-btn--line">Add to bag</button>
               {%- endform -%}
             {%- elsif product.available -%}
               <a class="brf-btn brf-btn--line" href="{{ product.url | within: feat }}">Choose options</a>

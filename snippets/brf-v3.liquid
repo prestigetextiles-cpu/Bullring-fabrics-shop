@@ -407,7 +407,7 @@
         qSel.innerHTML = html; qSel.value = String(Math.min(val, top));
       }
       if (qIn) { if (max != null) qIn.max = max; else qIn.removeAttribute('max'); }
-      capNote(max != null && max > 0 && max <= 10 ? 'Only ' + max + ' in stock – you can order up to ' + max + '.' : '');
+      capNote(max != null && max > 0 && max <= 10 ? 'Hurry! Only ' + max + ' in stock – you can order a maximum of ' + max + '. Grab it before another crafter does! 🧵' : '');
     }
     if (idEl) { applyCap(true); setInterval(applyCap, 400); }
     document.addEventListener('input', function(e){

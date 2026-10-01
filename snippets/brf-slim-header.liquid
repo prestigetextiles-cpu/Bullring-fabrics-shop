@@ -1,9 +1,12 @@
 {%- comment -%}
   Bull Ring Fabrics — slim scrolling header for desktop (1000px and wider).
   As you scroll, the logo/search row slides away and the menu bar floats on as a slim glass capsule
-  with a mini logo, search and basket, a gliding hover highlight and a reading-progress line.
-  The full header slides back in whenever search, the basket or the account popover is opened,
-  or anything in it gets keyboard focus. Phones and tablets keep the existing header.
+  with a mini logo, search and bag, and a gliding hover highlight.
+  Search: the menu melts into one long search field, the page behind blurs and a fun line appears.
+  Bag: hovering shows what's in the bag, clicking goes to the cart page, and anything added while the
+  capsule is showing gets a small "In the bag!" note instead of the cart drawer.
+  The full header slides back in when the account popover is opened or anything in it gets keyboard
+  focus. Phones and tablets keep the existing header.
   How: the sticky header gets a negative top equal to the logo row's height, so only the menu bar
   stays pinned; nothing changes size, so the page below never jumps.
 {%- endcomment -%}
@@ -14,27 +17,28 @@
     html.brf-hc-reveal #shopify-section-header#shopify-section-header{top:0!important}
 
     /* Capsule parts are hidden until the header condenses */
-    .brf-hc__logo,.brf-hc__acts,.brf-hc__glide,.brf-hc__prog{display:none}
+    .brf-hc__logo,.brf-hc__acts,.brf-hc__glide,.brf-hc__veil,.brf-hc__quip,.brf-hc__bag,.brf-hc__toast{display:none}
 
     /* ---------- Condensed state ---------- */
     html.brf-hc #shopify-section-header#shopify-section-header{background:transparent!important;-webkit-backdrop-filter:none!important;backdrop-filter:none!important;border-bottom-color:transparent!important;box-shadow:none!important;pointer-events:none}
     html.brf-hc #shopify-section-header [data-brf-mm]{border-top-color:transparent}
     html.brf-hc [data-brf-mm]>.container{
-      position:relative;display:flex;align-items:center;gap:4px;height:42px;margin-top:4px;
-      max-width:min(1320px,calc(100% - 32px));padding:0 6px 0 8px;border-radius:980px;pointer-events:auto;
+      position:relative;display:flex;align-items:center;gap:4px;height:54px;margin-top:6px;margin-bottom:-14px;
+      max-width:min(1320px,calc(100% - 32px));padding:0 7px 0 8px;border-radius:980px;pointer-events:auto;
       background:rgba(255,255,255,.74);-webkit-backdrop-filter:saturate(180%) blur(22px);backdrop-filter:saturate(180%) blur(22px);
       box-shadow:inset 0 1px 0 rgba(255,255,255,.85),inset 0 0 0 .5px rgba(255,255,255,.6),0 0 0 .5px rgba(29,29,31,.08),0 12px 32px -14px rgba(29,29,31,.32);
       animation:brf-hc-in .62s cubic-bezier(.2,.9,.25,1.12) both}
-    html.brf-hc.brf-mm-open [data-brf-mm]>.container{background:rgba(255,255,255,.94)}
+    html.brf-hc.brf-mm-open [data-brf-mm]>.container,html.brf-hc.brf-hc-bagging [data-brf-mm]>.container{background:rgba(255,255,255,.94)}
+    html.brf-hc.brf-hc-searching [data-brf-mm]>.container{background:rgba(255,255,255,.97);box-shadow:inset 0 1px 0 #fff,0 0 0 .5px rgba(29,29,31,.1),0 0 0 8px rgba(255,255,255,.55),0 24px 60px -18px rgba(29,29,31,.45),0 0 90px 10px rgba(255,255,255,.75);transition:box-shadow .4s ease,background .3s ease}
     @keyframes brf-hc-in{from{opacity:.4;transform:translateY(-12px) scaleX(.94)}to{opacity:1;transform:none}}
 
     html.brf-hc .brf-mm__bar{flex:1 1 auto;min-width:0;position:static;z-index:1}
-    html.brf-hc .brf-mm__top{height:42px;padding:0 12px;font-size:13.5px}
+    html.brf-hc .brf-mm__top{height:54px;padding:0 13px;font-size:14px}
     html.brf-hc .brf-mm__top::after{display:none}
     html.brf-hc .brf-mm__top:focus-visible{outline-offset:-6px;border-radius:980px}
 
     /* Gliding highlight that follows the pointer between menu items */
-    html.brf-hc .brf-hc__glide{display:block;position:absolute;top:5px;left:0;height:32px;width:0;border-radius:980px;background:rgba(29,29,31,.07);opacity:0;pointer-events:none;z-index:0;
+    html.brf-hc .brf-hc__glide{display:block;position:absolute;top:8px;left:0;height:38px;width:0;border-radius:980px;background:rgba(29,29,31,.07);opacity:0;pointer-events:none;z-index:0;
       transition:transform .38s cubic-bezier(.3,1.3,.4,1),width .38s cubic-bezier(.3,1.3,.4,1),opacity .2s ease}
     html.brf-hc .brf-hc__glide.is-on{opacity:1}
 
@@ -50,18 +54,19 @@
 
     /* Mini logo + actions (wide screens only; 1000–1199px keeps just the menu) */
     @media (min-width:1200px){
-      html.brf-hc .brf-hc__logo{display:flex;align-items:center;justify-content:center;flex:0 0 auto;width:34px;height:34px;margin-right:6px;border-radius:50%;background:#fff;
+      html.brf-hc .brf-hc__logo{display:flex;align-items:center;justify-content:center;flex:0 0 auto;width:42px;height:42px;margin-right:6px;border-radius:50%;background:#fff;
         box-shadow:0 0 0 .5px rgba(29,29,31,.1),0 2px 6px -2px rgba(29,29,31,.2);animation:brf-hc-pop .7s cubic-bezier(.3,1.5,.4,1) .08s both}
-      html.brf-hc .brf-hc__logo img{width:26px;height:26px;object-fit:contain}
+      html.brf-hc .brf-hc__logo img{width:32px;height:32px;object-fit:contain}
       html.brf-hc .brf-hc__acts{display:flex;align-items:center;gap:2px;flex:0 0 auto;margin-left:4px;animation:brf-hc-pop .7s cubic-bezier(.3,1.5,.4,1) .14s both}
     }
     @keyframes brf-hc-pop{from{opacity:0;transform:scale(.4) rotate(-20deg)}to{opacity:1;transform:none}}
-    .brf-hc__btn{position:relative;display:grid;place-items:center;width:34px;height:34px;padding:0;border:0;border-radius:50%;background:transparent;color:#1D1D1F;cursor:pointer;text-decoration:none;transition:background .2s,transform .3s cubic-bezier(.3,1.5,.4,1)}
+    .brf-hc__btn{position:relative;display:grid;place-items:center;width:40px;height:40px;padding:0;border:0;border-radius:50%;background:transparent;color:#1D1D1F;cursor:pointer;text-decoration:none;transition:background .2s,transform .3s cubic-bezier(.3,1.5,.4,1)}
     .brf-hc__btn:hover{background:rgba(29,29,31,.07)}
     .brf-hc__btn:active{transform:scale(.9)}
     .brf-hc__btn:focus-visible{outline:2px solid #149954;outline-offset:1px}
-    .brf-hc__btn--cart{width:auto;min-width:34px;padding:0 12px 0 10px;gap:6px;display:inline-flex;align-items:center;background:#1D1D1F;color:#fff!important;border-radius:980px;font-size:13px;font-weight:600}
+    .brf-hc__btn--cart{width:auto;min-width:40px;padding:0 13px 0 10px;gap:7px;display:inline-flex;align-items:center;background:#1D1D1F;color:#fff!important;border-radius:980px;font-size:13px;font-weight:600}
     .brf-hc__btn--cart:hover{background:#000}
+    .brf-hc__bag-ic{display:block;flex:0 0 auto;width:21px;height:21px;margin:-2px 0 0}
     .brf-hc__count{min-width:18px;height:18px;padding:0 5px;border-radius:980px;background:#149954;color:#fff;font-size:11px;line-height:18px;text-align:center}
     .brf-hc__count[data-n="0"]{background:rgba(255,255,255,.2)}
     .brf-hc__count.is-bump{animation:brf-hc-bump .5s cubic-bezier(.3,1.6,.4,1)}
@@ -73,17 +78,17 @@
     html.brf-hc.brf-hc-searching .brf-mm__bar{opacity:0;transform:scale(.96);filter:blur(6px);pointer-events:none}
     html.brf-hc.brf-hc-searching .brf-hc__glide{opacity:0}
     @media (min-width:1200px){
-      html.brf-hc .brf-hc__search{display:flex;position:absolute;top:4px;bottom:4px;left:var(--brf-hc-sl,52px);right:var(--brf-hc-sr,150px);z-index:2;align-items:center;gap:10px;margin:0;padding:0 8px 0 18px;
+      html.brf-hc .brf-hc__search{display:flex;position:absolute;top:6px;bottom:6px;left:var(--brf-hc-sl,52px);right:var(--brf-hc-sr,150px);z-index:2;align-items:center;gap:10px;margin:0;padding:0 8px 0 18px;
         border-radius:980px;background:#fff;box-shadow:inset 0 0 0 1px rgba(29,29,31,.1),0 0 0 4px rgba(20,153,84,0);opacity:0;pointer-events:none;
-        clip-path:inset(0 0 0 calc(100% - 36px) round 980px);transition:clip-path .6s cubic-bezier(.2,.9,.25,1.04),opacity .18s ease,box-shadow .3s ease}
-      html.brf-hc.brf-hc-searching .brf-hc__search{opacity:1;pointer-events:auto;clip-path:inset(0 0 0 0 round 980px);box-shadow:inset 0 0 0 1px rgba(20,153,84,.55),0 0 0 4px rgba(20,153,84,.14)}
-      .brf-hc__search svg{flex:0 0 auto;color:#149954}
+        clip-path:inset(0 0 0 calc(100% - 42px) round 980px);transition:clip-path .6s cubic-bezier(.2,.9,.25,1.04),opacity .18s ease,box-shadow .3s ease}
+      html.brf-hc.brf-hc-searching .brf-hc__search{opacity:1;pointer-events:auto;clip-path:inset(0 0 0 0 round 980px);box-shadow:inset 0 0 0 1.5px #1D1D1F,0 0 0 4px rgba(29,29,31,.08)}
+      .brf-hc__search svg{flex:0 0 auto;color:#1D1D1F}
       .brf-hc__search input{flex:1 1 auto;min-width:0;height:100%;margin:0;padding:0;border:0;outline:0;background:transparent;font:500 15px/1 var(--text-font-family,Inter,-apple-system,sans-serif);color:#1D1D1F;-webkit-appearance:none;appearance:none}
       .brf-hc__search input::placeholder{color:#8C867D}
       .brf-hc__search input::-webkit-search-cancel-button{display:none}
       .brf-hc__esc{flex:0 0 auto;padding:4px 8px;border:0;border-radius:8px;background:#F2F0EC;color:#6B665F;font:600 11px/1 var(--text-font-family,Inter,sans-serif);letter-spacing:.04em;cursor:pointer}
       .brf-hc__esc:hover{background:#E7E3DC;color:#1D1D1F}
-      html.brf-hc.brf-hc-searching [data-brf-hc-search]{background:#149954;color:#fff}
+      html.brf-hc.brf-hc-searching [data-brf-hc-search]{background:#1D1D1F;color:#fff}
 
       /* Live suggestions drop down from the capsule like the mega menu */
       html.brf-hc.brf-hc-searching .brf-hc__sugg.is-on{display:block;position:absolute;left:0;right:0;top:calc(100% + 10px);z-index:31;padding:18px;border-radius:26px;
@@ -97,7 +102,7 @@
       .brf-hc__sugg-a img,.brf-hc__sugg-a .brf-hc__ph{flex:0 0 52px;width:52px;height:52px;border-radius:12px;object-fit:cover;background:#ECE6DC}
       .brf-hc__sugg-t{display:-webkit-box;font-size:13.5px;font-weight:500;line-height:1.3;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
       .brf-hc__sugg-p{display:block;margin-top:3px;font-size:13px;font-weight:600}
-      .brf-hc__sugg-all{display:inline-flex;margin:12px 6px 0;font-size:13.5px;font-weight:600;color:#149954;text-decoration:none}
+      .brf-hc__sugg-all{display:inline-flex;margin:12px 6px 0;font-size:13.5px;font-weight:600;color:#1D1D1F;text-decoration:none}
       .brf-hc__sugg-all:hover{text-decoration:underline}
       .brf-hc__sugg-none{margin:4px 6px;font-size:14px;color:#6B665F}
     }
@@ -105,15 +110,99 @@
       html.brf-hc .brf-mm__bar,html.brf-hc .brf-hc__search{transition:none}
     }
 
-    /* Reading-progress line along the bottom of the capsule */
-    html.brf-hc .brf-hc__prog{display:block;position:absolute;left:22px;right:22px;bottom:0;height:2px;border-radius:2px;overflow:hidden;pointer-events:none}
-    html.brf-hc .brf-hc__prog i{display:block;height:100%;background:linear-gradient(90deg,#149954,#1F4D3A);transform-origin:0 50%;transform:scaleX(var(--brf-hc-p,0))}
+    @media (min-width:1200px){
+      /* The page behind the search blurs like frosted glass */
+      html.brf-hc .brf-hc__veil{display:block;position:fixed;inset:0;z-index:-1;pointer-events:none;opacity:0;visibility:hidden;
+        background:rgba(246,244,240,.38);-webkit-backdrop-filter:blur(14px) saturate(140%);backdrop-filter:blur(14px) saturate(140%);
+        transition:opacity .35s ease,visibility 0s linear .35s}
+      html.brf-hc.brf-hc-searching .brf-hc__veil{opacity:1;visibility:visible;pointer-events:auto;cursor:default;transition:opacity .35s ease}
+
+      /* A fun line under the search field, different every time */
+      html.brf-hc .brf-hc__quip{display:block;position:absolute;left:50%;top:calc(100% + 14px);z-index:31;max-width:calc(100% - 40px);padding:9px 16px;border-radius:980px;
+        background:rgba(255,255,255,.9);-webkit-backdrop-filter:saturate(180%) blur(20px);backdrop-filter:saturate(180%) blur(20px);
+        box-shadow:0 0 0 .5px rgba(29,29,31,.08),0 14px 34px -16px rgba(29,29,31,.35);
+        font:500 14px/1.3 var(--text-font-family,Inter,sans-serif);color:#1D1D1F;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+        opacity:0;visibility:hidden;transform:translate(-50%,-6px);pointer-events:none;transition:opacity .25s ease,transform .35s cubic-bezier(.2,.9,.25,1.1),visibility 0s linear .25s}
+      html.brf-hc.brf-hc-searching .brf-hc__quip.is-on{opacity:1;visibility:visible;transform:translate(-50%,0);transition:opacity .3s ease .18s,transform .5s cubic-bezier(.2,.9,.25,1.1) .18s}
+      html.brf-hc.brf-hc-searching .brf-hc__sugg.is-on~.brf-hc__quip{opacity:0;visibility:hidden}
+
+      /* Bag: hover to peek inside */
+      html.brf-hc .brf-hc__bag{display:block;position:absolute;right:0;top:calc(100% + 10px);z-index:32;width:380px;max-width:calc(100vw - 32px);border-radius:26px;overflow:hidden;
+        background:rgba(250,250,252,.97);-webkit-backdrop-filter:saturate(180%) blur(24px);backdrop-filter:saturate(180%) blur(24px);
+        box-shadow:0 0 0 .5px rgba(29,29,31,.08),0 34px 80px -24px rgba(29,29,31,.45);
+        opacity:0;visibility:hidden;transform:translateY(-8px) scale(.98);transform-origin:90% 0;pointer-events:none;
+        transition:opacity .2s ease,transform .3s cubic-bezier(.2,.9,.25,1.05),visibility 0s linear .2s}
+      html.brf-hc.brf-hc-bagging .brf-hc__bag{opacity:1;visibility:visible;transform:none;pointer-events:auto;transition:opacity .2s ease,transform .35s cubic-bezier(.2,.9,.25,1.05)}
+      .brf-hc__bag-h{display:flex;align-items:baseline;justify-content:space-between;gap:12px;padding:18px 20px 10px;font-weight:600;font-size:15px;color:#1D1D1F}
+      .brf-hc__bag-h span{font-weight:400;font-size:13px;color:#6E6E73}
+      .brf-hc__bag-list{max-height:min(330px,calc(100vh - 300px));overflow:auto;margin:0;padding:0 10px;list-style:none;overscroll-behavior:contain;scrollbar-width:thin}
+      .brf-hc__bag-li{display:flex;gap:12px;align-items:center;padding:8px 10px;border-radius:16px;text-decoration:none;color:#1D1D1F;transition:background .2s}
+      .brf-hc__bag-li:hover{background:rgba(29,29,31,.05)}
+      .brf-hc__bag-li img,.brf-hc__bag-li .brf-hc__ph{flex:0 0 54px;width:54px;height:54px;border-radius:12px;object-fit:cover;background:#ECE6DC}
+      .brf-hc__bag-tx{flex:1 1 auto;min-width:0}
+      .brf-hc__bag-t{display:-webkit-box;font-size:13.5px;font-weight:500;line-height:1.3;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+      .brf-hc__bag-v{display:block;margin-top:2px;font-size:12px;color:#6E6E73}
+      .brf-hc__bag-p{flex:0 0 auto;font-size:13.5px;font-weight:600;white-space:nowrap}
+      .brf-hc__bag-free{margin:10px 20px 0;font-size:12.5px;color:#3A3835}
+      .brf-hc__bag-free i{display:block;height:5px;margin-top:7px;border-radius:5px;background:#ECE6DC;overflow:hidden}
+      .brf-hc__bag-free i b{display:block;height:100%;border-radius:5px;background:linear-gradient(90deg,#149954,#0F7A42);transition:width .6s cubic-bezier(.2,.8,.2,1)}
+      .brf-hc__bag-sub{display:flex;justify-content:space-between;margin:14px 20px 0;padding-top:12px;border-top:1px solid rgba(29,29,31,.08);font-size:14px}
+      .brf-hc__bag-sub b{font-size:16px}
+      .brf-hc__bag-btns{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:14px 16px 16px}
+      .brf-hc__bag-btns a{display:flex;align-items:center;justify-content:center;height:44px;border-radius:980px;font-size:14px;font-weight:600;text-decoration:none;transition:background .2s,transform .2s}
+      .brf-hc__bag-btns a:active{transform:scale(.97)}
+      .brf-hc__bag-view{background:rgba(29,29,31,.07);color:#1D1D1F!important}
+      .brf-hc__bag-view:hover{background:rgba(29,29,31,.12)}
+      .brf-hc__bag-go{background:#149954;color:#fff!important}
+      .brf-hc__bag-go:hover{background:#0F7A42}
+      .brf-hc__bag-empty{padding:26px 22px 22px;text-align:center;font-size:14px;color:#3A3835}
+      .brf-hc__bag-empty b{display:block;margin-bottom:4px;font-size:16px;color:#1D1D1F}
+      .brf-hc__bag-load{padding:34px;text-align:center;font-size:13px;color:#6E6E73}
+
+      /* "In the bag!" note when something is added while the capsule is showing */
+      html.brf-hc .brf-hc__toast{display:flex;align-items:center;gap:12px;position:absolute;right:0;top:calc(100% + 10px);z-index:33;width:340px;padding:10px 12px 10px 10px;border-radius:22px;
+        background:rgba(255,255,255,.95);-webkit-backdrop-filter:saturate(180%) blur(24px);backdrop-filter:saturate(180%) blur(24px);
+        box-shadow:0 0 0 .5px rgba(29,29,31,.08),0 24px 60px -22px rgba(29,29,31,.45);color:#1D1D1F;text-decoration:none;
+        opacity:0;visibility:hidden;transform:translateY(-10px) scale(.96);transform-origin:90% 0;pointer-events:none;
+        transition:opacity .25s ease,transform .35s cubic-bezier(.2,.9,.25,1.1),visibility 0s linear .25s}
+      html.brf-hc .brf-hc__toast.is-on{opacity:1;visibility:visible;transform:none;pointer-events:auto;transition:opacity .25s ease,transform .5s cubic-bezier(.2,1.3,.3,1)}
+      html.brf-hc.brf-hc-bagging .brf-hc__toast{opacity:0;visibility:hidden}
+      .brf-hc__toast img,.brf-hc__toast .brf-hc__ph{flex:0 0 46px;width:46px;height:46px;border-radius:12px;object-fit:cover;background:#ECE6DC}
+      .brf-hc__toast-tx{flex:1 1 auto;min-width:0}
+      .brf-hc__toast-h{display:flex;align-items:center;gap:6px;font-size:13.5px;font-weight:700}
+      .brf-hc__toast-h i{display:grid;place-items:center;width:18px;height:18px;border-radius:50%;background:#149954;color:#fff;font-style:normal;font-size:11px}
+      .brf-hc__toast-t{display:block;margin-top:2px;font-size:12.5px;color:#6E6E73;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+      .brf-hc__toast-go{flex:0 0 auto;font-size:12.5px;font-weight:600;color:#149954}
+    }
+
+    /* Filter bar under the capsule: one compact glass strip instead of a full-width band */
+    html.brf-hc .brf-fstick.brf-fstick.is-stuck::before{opacity:0!important}
+    html.brf-hc .brf-fstick.is-stuck .brf-fstick__in{width:-moz-fit-content;width:fit-content;max-width:min(1180px,calc(100% - 64px));margin:0 auto;transform:translateY(22px);padding:5px 6px 5px 6px!important;border-radius:980px;
+      background:rgba(255,255,255,.84);-webkit-backdrop-filter:saturate(180%) blur(24px);backdrop-filter:saturate(180%) blur(24px);
+      box-shadow:inset 0 1px 0 rgba(255,255,255,.8),0 0 0 .5px rgba(29,29,31,.08),0 10px 28px -16px rgba(29,29,31,.35);animation:brf-hc-fin .45s cubic-bezier(.2,.9,.25,1.05) both}
+    @keyframes brf-hc-fin{from{opacity:0;transform:translateY(14px) scale(.97)}to{opacity:1;transform:translateY(22px)}}
+    html.brf-hc.brf-hw-page .brf-fstick.is-stuck .brf-fstick__in{background:rgba(28,22,34,.72);box-shadow:inset 0 1px 0 rgba(255,255,255,.06),0 0 0 .5px rgba(240,138,36,.25),0 10px 28px -16px rgba(0,0,0,.6)}
+    html.brf-hc .brf-fstick.is-stuck .brf-fbar__row{gap:10px;flex-wrap:nowrap}
+    html.brf-hc .brf-fstick.is-stuck .brf-fbar__pills{flex:0 1 auto;flex-wrap:nowrap;gap:6px;overflow-x:auto;scrollbar-width:none}
+    html.brf-hc .brf-fstick.is-stuck .brf-fbar__pills::-webkit-scrollbar{display:none}
+    html.brf-hc .brf-fstick.is-stuck .brf-pill{padding:5px 12px;font-size:13px;line-height:17px;border-color:transparent;background:rgba(29,29,31,.05);box-shadow:none!important}
+    html.brf-hc .brf-fstick.is-stuck .brf-pill:hover{background:rgba(29,29,31,.09)}
+    html.brf-hc .brf-fstick.is-stuck .brf-pill.is-active,html.brf-hc .brf-fstick.is-stuck .brf-pill.is-open{background:#fff;box-shadow:0 0 0 1px #2F4A73 inset!important}
+    html.brf-hc .brf-fstick.is-stuck .brf-fbar__meta{gap:10px;padding-left:10px;border-left:1px solid rgba(29,29,31,.1)}
+    html.brf-hc .brf-fstick.is-stuck .brf-fbar__count{display:none}
+    html.brf-hc .brf-fstick.is-stuck .brf-switch{font-size:13px;gap:6px}
+    html.brf-hc .brf-fstick.is-stuck .brf-switch__track{transform:scale(.85)}
+    html.brf-hc .brf-fstick.is-stuck .brf-sort{font-size:13px;padding:5px 8px 5px 4px}
+    html.brf-hc .brf-fstick.is-stuck .brf-fbar .brf-panel{top:calc(100% + 14px);min-width:min(720px,calc(100vw - 64px))}
+    html.brf-hc .brf-fstick.is-stuck .brf-fbar .brf-panel--sort{min-width:0}
+    html.brf-hc.brf-hc-searching .brf-fstick{opacity:.35;transition:opacity .3s}
   }
   @media (min-width:1000px) and (prefers-reduced-motion:reduce){
     html.brf-hc [data-brf-mm]>.container,html.brf-hc .brf-hc__logo,html.brf-hc .brf-hc__acts{animation:none}
     html.brf-hc-anim #shopify-section-header#shopify-section-header,html.brf-hc .brf-hc__glide{transition:none}
   }
 </style>
+{%- capture brf_hc_bag_icon -%}{%- render 'brf-bag-icon', cls: 'brf-hc__bag-ic' -%}{%- endcapture -%}
 <script>
 (function(){
   var doc = document, root = doc.documentElement;
@@ -140,9 +229,9 @@
   acts.innerHTML =
     '<button type="button" class="brf-hc__btn" data-brf-hc-search aria-label="Search">' +
       '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m20 20-4.6-4.6"/></svg></button>' +
-    '<a class="brf-hc__btn brf-hc__btn--cart" href="{{ routes.cart_url }}" data-brf-hc-cart>' +
-      '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 8h14l-1.2 11.2a1 1 0 0 1-1 .8H7.2a1 1 0 0 1-1-.8z"/><path d="M9 8V6.5a3 3 0 0 1 6 0V8"/></svg>' +
-      '<span>Basket</span><span class="brf-hc__count" data-brf-hc-count></span></a>';
+    '<a class="brf-hc__btn brf-hc__btn--cart" href="{{ routes.cart_url }}" data-brf-hc-cart aria-haspopup="true" aria-expanded="false">' +
+      {{ brf_hc_bag_icon | strip | json }} +
+      '<span>Bag</span><span class="brf-hc__count" data-brf-hc-count></span></a>';
 
   var sform = doc.createElement('form');
   sform.className = 'brf-hc__search'; sform.action = '{{ routes.search_url }}'; sform.method = 'get'; sform.setAttribute('role', 'search');
@@ -157,19 +246,25 @@
   sinput.setAttribute('aria-controls', 'brf-hc-sugg');
 
   var glide = doc.createElement('span'); glide.className = 'brf-hc__glide'; glide.setAttribute('aria-hidden', 'true');
-  var prog = doc.createElement('span'); prog.className = 'brf-hc__prog'; prog.setAttribute('aria-hidden', 'true'); prog.innerHTML = '<i></i>';
+  var veil = doc.createElement('div'); veil.className = 'brf-hc__veil'; veil.setAttribute('aria-hidden', 'true');
+  var quip = doc.createElement('p'); quip.className = 'brf-hc__quip'; quip.setAttribute('aria-hidden', 'true');
+  var bag = doc.createElement('div'); bag.className = 'brf-hc__bag'; bag.id = 'brf-hc-bag'; bag.setAttribute('role', 'dialog'); bag.setAttribute('aria-label', 'Your bag');
+  var toast = doc.createElement('a'); toast.className = 'brf-hc__toast'; toast.href = '{{ routes.cart_url }}'; toast.setAttribute('role', 'status'); toast.setAttribute('aria-live', 'polite');
   pill.insertBefore(glide, pill.firstChild);
   pill.insertBefore(logo, glide.nextSibling);
   pill.appendChild(sform);
   pill.appendChild(acts);
-  pill.appendChild(prog);
   pill.appendChild(sugg);
+  pill.appendChild(quip);
+  pill.appendChild(bag);
+  pill.appendChild(toast);
+  hdr.insertBefore(veil, hdr.firstChild);
 
-  /* Basket count mirrors the theme's own counter */
+  /* Bag count mirrors the theme's own counter */
   var srcCount = row.querySelector('.header__cart-count'), count = acts.querySelector('[data-brf-hc-count]');
   function syncCount(bump){
     var n = srcCount ? parseInt(srcCount.textContent, 10) || 0 : {{ cart.item_count | json }};
-    if (count.textContent !== String(n)) { count.textContent = n; count.setAttribute('data-n', n); count.parentNode.setAttribute('aria-label', 'Basket, ' + n + (n === 1 ? ' item' : ' items')); if (bump && !calm) { count.classList.remove('is-bump'); void count.offsetWidth; count.classList.add('is-bump'); } }
+    if (count.textContent !== String(n)) { count.textContent = n; count.setAttribute('data-n', n); count.parentNode.setAttribute('aria-label', 'Bag, ' + n + (n === 1 ? ' item' : ' items')); if (bump && !calm) { count.classList.remove('is-bump'); void count.offsetWidth; count.classList.add('is-bump'); } }
   }
   syncCount(false);
   if (srcCount && window.MutationObserver) new MutationObserver(function(){ syncCount(true); }).observe(srcCount, {childList: true, characterData: true, subtree: true});
@@ -221,10 +316,61 @@
     pill.style.setProperty('--brf-hc-sl', Math.round((lg.width ? lg.right : p.left + 8) - p.left + 6) + 'px');
     pill.style.setProperty('--brf-hc-sr', Math.round(p.right - ac.left + 6) + 'px');
   }
+  var QUIPS = [
+    'Sew… what are we making today? 🧵',
+    'Type away. We promise not to judge your fabric stash.',
+    'Keep calm and search on. ✂️',
+    'Measure twice, search once. 📏',
+    'Warning: may cause a sudden urge to start a new project.',
+    'Fabric shopping counts as cardio, right? 🏃',
+    'We won’t tell anyone how much fabric you already own. 🤫',
+    'Thread lightly… actually no, go wild.',
+    'Bobbin along nicely? Let’s find your next fabric.',
+    'Life is short. Buy the fabric.',
+    'Sewing: cheaper than therapy, and you get a cushion out of it.',
+    'Pin it to win it. 📌',
+    'There’s no such thing as too much fabric. Just not enough shelves.',
+    'Seam-ingly endless choice awaits…',
+    'Knot sure what you need? Start typing!',
+    'You had us at “fat quarter”. 💚',
+    'Craft happens. Let’s make it happen faster.',
+    'Our search bar is sharper than your best scissors. ✂️',
+    'Running out of fabric is just sew rude.',
+    'Felt cute. Might search for felt later.',
+    'Hem-believable fabrics, one search away.',
+    'A stitch in time saves… a search later?',
+    'You’re one search away from a brilliant idea. 💡',
+    'We’ve got more rolls than a bakery. 🥖',
+    'Go on, treat yourself. Your sewing machine misses you.',
+    'On a roll? So are our fabrics.',
+    'Fabric-ulous finds start here. ✨',
+    'Let’s get you in stitches. 😄',
+    'Quilty pleasure? Your secret’s safe with us.',
+    'Searching… because the stash can always grow.',
+    'Cotton on to something special.',
+    'Lace up, it’s time to shop.',
+    'Our tape measure says you need more fabric.',
+    'Velvet? Satin? Sequins? Why not all three. 🤩',
+    'Every great project starts with a little search.',
+    'Reel-y good fabrics are just a few letters away.',
+    'Ready, set, sew! 🏁',
+    'Don’t be shy, the fabrics don’t bite. 🐂'
+  ];
+  var quipAt = -1;
+  function nextQuip(){
+    var last = -1; try { last = parseInt(sessionStorage.getItem('brf-quip'), 10); } catch (e) {}
+    if (isNaN(last)) last = -1;
+    var i = Math.floor(Math.random() * QUIPS.length);
+    if (i === last || i === quipAt) i = (i + 1 + Math.floor(Math.random() * (QUIPS.length - 1))) % QUIPS.length;
+    quipAt = i; try { sessionStorage.setItem('brf-quip', i); } catch (e) {}
+    return QUIPS[i];
+  }
   function openSearch(){
     if (searching) return;
     placeSearch();
     searching = true;
+    closeBag(true);
+    quip.textContent = nextQuip(); quip.classList.add('is-on');
     root.classList.add('brf-hc-searching');
     closeMenus();
     sinput.tabIndex = 0; sform.querySelector('[data-brf-hc-close]').tabIndex = 0;
@@ -235,7 +381,7 @@
     if (!searching) return;
     searching = false;
     root.classList.remove('brf-hc-searching');
-    sugg.classList.remove('is-on');
+    sugg.classList.remove('is-on'); quip.classList.remove('is-on');
     sinput.tabIndex = -1; sform.querySelector('[data-brf-hc-close]').tabIndex = -1;
     if (doc.activeElement === sinput) sinput.blur();
   }
@@ -255,7 +401,7 @@
         if (!searching || q !== sinput.value.trim()) return;
         var ps = (d && d.resources && d.resources.results && d.resources.results.products) || [];
         var all = sform.action + '?q=' + encodeURIComponent(q) + '&type=product&options%5Bprefix%5D=last';
-        if (!ps.length) { sugg.innerHTML = '<p class="brf-hc__sugg-none">No quick matches for “' + esc(q) + '”. Press Enter to search everything.</p>'; }
+        if (!ps.length) { sugg.innerHTML = '<p class="brf-hc__sugg-none">Hmm, our bull couldn’t sniff out “' + esc(q) + '” 🐂 Press Enter to search everything.</p>'; }
         else {
           sugg.innerHTML = '<p class="brf-hc__sugg-h">Top matches</p><ul class="brf-hc__sugg-list" role="list">' + ps.map(function(p){
             var img = p.featured_image && p.featured_image.url || p.image;
@@ -293,12 +439,106 @@
   /* Click anywhere outside the capsule and the menu comes back */
   doc.addEventListener('pointerdown', function(e){ if (searching && !pill.contains(e.target)) closeSearch(); }, true);
   doc.addEventListener('keydown', function(e){ if (searching && e.key === 'Escape') closeSearch(); });
-  acts.querySelector('[data-brf-hc-cart]').addEventListener('click', function(e){
-    var t = row.querySelector('.header__cart-toggle');
-    if (t && t.getAttribute('aria-controls')) { e.preventDefault(); e.stopPropagation(); setTimeout(function(){ t.click(); }, 0); }
-  });
+  veil.addEventListener('pointerdown', function(e){ e.preventDefault(); closeSearch(); });
 
-  /* ---------- Scroll: condense, progress ---------- */
+  /* ---------- Bag: hover to peek inside, click goes to the cart page ---------- */
+  var bagBtn = acts.querySelector('[data-brf-hc-cart]'), bagOpen = false, bagT = 0, cartData = null, cartAt = 0, cartReq = null;
+  var hoverable = window.matchMedia('(hover: hover) and (pointer: fine)');
+  var CUR = (window.Shopify && Shopify.currency && Shopify.currency.active) || 'GBP';
+  function fmt(c){ var n = (c || 0) / 100; try { return new Intl.NumberFormat('en-GB', {style: 'currency', currency: CUR}).format(n); } catch (e) { return '£' + n.toFixed(2); } }
+  function img(u, w){ if (!u) return ''; return u + (u.indexOf('?') > -1 ? '&' : '?') + 'width=' + w; }
+  function loadCart(force){
+    if (!force && cartData && Date.now() - cartAt < 4000) return Promise.resolve(cartData);
+    if (cartReq && !force) return cartReq;
+    cartReq = fetch('{{ routes.cart_url }}.js', {credentials: 'same-origin', headers: {'Accept': 'application/json'}})
+      .then(function(r){ return r.json(); })
+      .then(function(c){ cartData = c; cartAt = Date.now(); cartReq = null; return c; })
+      .catch(function(){ cartReq = null; return cartData; });
+    return cartReq;
+  }
+  function paintBag(c){
+    if (!c) { bag.innerHTML = '<p class="brf-hc__bag-load">Could not load your bag. <a href="{{ routes.cart_url }}">Open the bag page</a></p>'; return; }
+    if (!c.item_count) {
+      bag.innerHTML = '<div class="brf-hc__bag-empty"><b>Your bag is empty… for now 😉</b>Fill it with something fabulous.</div>';
+      return;
+    }
+    var free = 6500, left = free - c.total_price;
+    bag.innerHTML = '<div class="brf-hc__bag-h">Your bag <span>' + c.item_count + (c.item_count === 1 ? ' item' : ' items') + '</span></div>' +
+      '<ul class="brf-hc__bag-list" role="list">' + c.items.map(function(it){
+        var v = it.variant_title && it.variant_title !== 'Default Title' ? it.variant_title : '';
+        return '<li><a class="brf-hc__bag-li" href="' + esc(it.url) + '">' + (it.image ? '<img src="' + esc(img(it.image, 120)) + '" alt="" width="54" height="54" loading="lazy">' : '<span class="brf-hc__ph"></span>') +
+          '<span class="brf-hc__bag-tx"><span class="brf-hc__bag-t">' + esc(it.product_title) + '</span><span class="brf-hc__bag-v">' + (v ? esc(v) + ' · ' : '') + 'Qty ' + it.quantity + '</span></span>' +
+          '<span class="brf-hc__bag-p">' + esc(fmt(it.final_line_price)) + '</span></a></li>';
+      }).join('') + '</ul>' +
+      (CUR === 'GBP' ? '<p class="brf-hc__bag-free">' + (left > 0 ? 'You’re <b>' + esc(fmt(left)) + '</b> away from free UK delivery 🚚' : '<b>Woohoo! Your bag ships free in the UK 🎉</b>') +
+        '<i><b style="width:' + Math.min(100, Math.round(c.total_price / free * 100)) + '%"></b></i></p>' : '') +
+      '<div class="brf-hc__bag-sub"><span>Subtotal</span><b>' + esc(fmt(c.total_price)) + '</b></div>' +
+      '<div class="brf-hc__bag-btns"><a class="brf-hc__bag-view" href="{{ routes.cart_url }}">View bag</a><a class="brf-hc__bag-go" href="/checkout">Checkout</a></div>';
+  }
+  function openBag(){
+    clearTimeout(bagT);
+    if (bagOpen || searching || !root.classList.contains('brf-hc') || !hoverable.matches) return;
+    bagOpen = true; closeMenus(); hideToast();
+    if (!cartData) bag.innerHTML = '<p class="brf-hc__bag-load">Peeking inside your bag…</p>'; else paintBag(cartData);
+    root.classList.add('brf-hc-bagging'); bagBtn.setAttribute('aria-expanded', 'true');
+    loadCart().then(function(c){ if (bagOpen) paintBag(c); });
+  }
+  function closeBag(now){
+    clearTimeout(bagT);
+    var go = function(){ bagOpen = false; root.classList.remove('brf-hc-bagging'); bagBtn.setAttribute('aria-expanded', 'false'); };
+    if (now) go(); else bagT = setTimeout(go, 220);
+  }
+  [bagBtn, bag].forEach(function(el){
+    el.addEventListener('mouseenter', openBag);
+    el.addEventListener('mouseleave', function(){ closeBag(false); });
+  });
+  bagBtn.addEventListener('focus', function(){ if (hoverable.matches) openBag(); });
+  bag.addEventListener('focusout', function(e){ if (!bag.contains(e.relatedTarget) && e.relatedTarget !== bagBtn) closeBag(false); });
+  doc.addEventListener('keydown', function(e){ if (bagOpen && e.key === 'Escape') closeBag(true); });
+  /* plain link to the cart page; stop the theme from turning the click into its drawer */
+  bagBtn.addEventListener('click', function(e){ e.stopPropagation(); });
+
+  /* ---------- Added to the bag while the capsule is showing: a small note, no drawer ---------- */
+  var toastT = 0, lastVariant = null;
+  function hideToast(){ clearTimeout(toastT); toast.classList.remove('is-on'); }
+  function showToast(c){
+    if (!c || !c.items || !c.items.length) return;
+    var it = null;
+    if (lastVariant) c.items.some(function(x){ if (String(x.variant_id) === String(lastVariant)) { it = x; return true; } });
+    it = it || c.items[0];
+    toast.innerHTML = (it.image ? '<img src="' + esc(img(it.image, 100)) + '" alt="" width="46" height="46">' : '<span class="brf-hc__ph"></span>') +
+      '<span class="brf-hc__toast-tx"><span class="brf-hc__toast-h"><i aria-hidden="true">✓</i>In the bag!</span><span class="brf-hc__toast-t">' + esc(it.product_title) + '</span></span>' +
+      '<span class="brf-hc__toast-go">View bag ›</span>';
+    clearTimeout(toastT);
+    toast.classList.remove('is-on'); void toast.offsetWidth; toast.classList.add('is-on');
+    toastT = setTimeout(hideToast, 3600);
+  }
+  toast.addEventListener('mouseenter', function(){ clearTimeout(toastT); });
+  toast.addEventListener('mouseleave', function(){ toastT = setTimeout(hideToast, 1200); });
+  function quietAdd(){
+    cartData = null;
+    setTimeout(function(){ loadCart(true).then(function(c){ syncCount(true); if (root.classList.contains('brf-hc')) showToast(c); }); }, 150);
+  }
+  /* remember which variant was just added, so the note can show it */
+  doc.addEventListener('submit', function(e){ var f = e.target, id = f && f.querySelector && f.querySelector('[name="id"]'); if (id && /\/cart\/add/.test(f.getAttribute('action') || '')) lastVariant = id.value; }, true);
+  doc.addEventListener('click', function(e){
+    var b = e.target.closest && e.target.closest('[data-action="add-to-cart"], form[action*="/cart/add"] [type="submit"]');
+    var f = b && b.closest('form'), id = f && f.querySelector('[name="id"]');
+    if (id) lastVariant = id.value;
+  }, true);
+  /* the theme announces a theme-handled add with "product:added" on its way up to <html>, where its cart opens the drawer */
+  doc.body.addEventListener('product:added', function(e){
+    if (!desk.matches || !root.classList.contains('brf-hc')) return;
+    e.stopPropagation();
+    if (e.detail && e.detail.variant && e.detail.variant.id) lastVariant = e.detail.variant.id;
+    root.dispatchEvent(new CustomEvent('cart:refresh', {bubbles: true, detail: {scrollToTop: false}}));
+    quietAdd();
+  });
+  /* our own add-to-bag forms (see brf-v3-polish) ask before opening the drawer */
+  doc.addEventListener('brf:bag-added', function(){ quietAdd(); });
+  root.addEventListener('cart:rerendered', function(){ cartData = null; }, true);
+
+  /* ---------- Scroll: condense ---------- */
   var ticking = false;
   function update(){
     ticking = false;
@@ -306,8 +546,7 @@
     var stuck = hdr.getBoundingClientRect().top <= topVal + 0.5 && window.scrollY > 0;
     root.classList.toggle('brf-hc', stuck && !revealed);
     if (searching && !(stuck && !revealed)) closeSearch();
-    var max = doc.documentElement.scrollHeight - window.innerHeight;
-    pill.style.setProperty('--brf-hc-p', max > 0 ? Math.min(1, Math.max(0, window.scrollY / max)).toFixed(4) : 0);
+    if (!(stuck && !revealed)) { if (bagOpen) closeBag(true); hideToast(); }
   }
   hdr.addEventListener('transitionend', function(e){ if (e.target === hdr) update(); });
   window.addEventListener('scroll', function(){ if (!ticking) { ticking = true; requestAnimationFrame(update); } }, {passive: true});
