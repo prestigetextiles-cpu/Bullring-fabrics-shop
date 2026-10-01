@@ -1,0 +1,419 @@
+{%- comment -%}
+  Bull Ring Fabrics — Sale landing page.
+  Shown at the top of /collections/sale (see templates/collection.liquid), above the full sale grid
+  and its filters. Discounts are worked out live from each product's compare-at price.
+  Wording is editable in Customize.
+{%- endcomment -%}
+{%- liquid
+  assign sc = collections['sale']
+  assign sale_n = sc.products_count
+  assign best = 0
+  assign big = ''
+  assign big_n = 0
+  assign hero_picks = ''
+  for p in sc.products
+    if p.available == false or p.compare_at_price <= p.price
+      continue
+    endif
+    assign off = p.compare_at_price | minus: p.price | times: 100 | divided_by: p.compare_at_price
+    if off > best
+      assign best = off
+    endif
+  endfor
+  assign best_s = best | append: ''
+  assign sale_s = sale_n | append: ''
+
+  # Product-type filter values (if the store's filters include product type) become "shop the sale by fabric" chips.
+  assign type_filter = nil
+  assign price_filter = nil
+  for f in collection.filters
+    if f.param_name == 'filter.p.product_type'
+      assign type_filter = f
+    elsif f.type == 'price_range'
+      assign price_filter = f
+    endif
+  endfor
+  assign base = sc.url | append: '?filter.v.availability=1'
+  assign price_param = 'filter.v.price.lte'
+  if price_filter
+    assign price_param = price_filter.max_value.param_name | default: 'filter.v.price.lte'
+  endif
+-%}
+
+<div class="sl" data-sl>
+
+  {%- comment -%} ---------- HERO ---------- {%- endcomment -%}
+  <section class="sl-hero">
+    <div class="container sl-hero__in">
+      <div class="sl-hero__copy sl-reveal">
+        <nav class="sl-crumbs" aria-label="Breadcrumb"><a href="{{ routes.root_url }}">Home</a><span aria-hidden="true">›</span><span aria-current="page">Sale</span></nav>
+        <p class="sl-hero__eyebrow"><span class="sl-dot" aria-hidden="true"></span>{{ section.settings.eyebrow | escape }}</p>
+        <h1 class="sl-hero__title">
+          {%- if best >= 10 -%}
+            <span class="sl-hero__upto">Up to</span>
+            <span class="sl-hero__pct" data-sl-count="{{ best }}">{{ best }}%</span>
+            <span class="sl-hero__off">off</span>
+          {%- else -%}
+            {{ section.settings.heading | escape }}
+          {%- endif -%}
+        </h1>
+        <p class="sl-hero__text">{{ section.settings.text | escape | replace: '[count]', sale_s | replace: '[best]', best_s }}</p>
+        <div class="sl-hero__ctas">
+          <a class="sl-btn sl-btn--red" href="#sl-deals">See the biggest savings</a>
+          <a class="sl-btn sl-btn--ghost" href="#sl-all">Shop all {{ sale_n }}</a>
+        </div>
+      </div>
+
+      {%- comment -%} Swing tags: a few best-selling reductions, each with its saving {%- endcomment -%}
+      <div class="sl-tags" aria-hidden="true">
+        {%- assign shown = 0 -%}
+        {%- for p in sc.products -%}
+          {%- unless p.available and p.featured_image and p.compare_at_price > p.price -%}{%- continue -%}{%- endunless -%}
+          {%- assign shown = shown | plus: 1 -%}
+          {%- assign off = p.compare_at_price | minus: p.price | times: 100 | divided_by: p.compare_at_price -%}
+          <a class="sl-tag sl-tag--{{ shown }}" href="{{ p.url }}" tabindex="-1">
+            <span class="sl-tag__img"><img src="{{ p.featured_image | image_url: width: 460, height: 460, crop: 'center' }}" alt="" width="230" height="230" loading="eager"></span>
+            <span class="sl-tag__price"><b>{{ p.price | money }}</b> <s>{{ p.compare_at_price | money }}</s></span>
+            <span class="sl-tag__off">-{{ off }}%</span>
+          </a>
+          {%- if shown == 4 -%}{%- break -%}{%- endif -%}
+        {%- endfor -%}
+      </div>
+    </div>
+
+    <div class="sl-ticker" aria-hidden="true">
+      <div class="sl-ticker__track">
+        {%- for i in (1..2) -%}
+          <span>{{ sale_n }} fabrics reduced</span><i>✦</i>
+          <span>Up to {{ best }}% off</span><i>✦</i>
+          <span>Same-day dispatch before 10pm</span><i>✦</i>
+          <span>Free next day delivery over £150</span><i>✦</i>
+          <span>While stocks last</span><i>✦</i>
+        {%- endfor -%}
+      </div>
+    </div>
+  </section>
+
+  {%- comment -%} ---------- QUICK WAYS IN: by price, by fabric type ---------- {%- endcomment -%}
+  <section class="sl-sec">
+    <div class="container">
+      <div class="sl-sec__head sl-reveal">
+        <h2 class="sl-sec__title">Find your bargain</h2>
+        <p class="sl-sec__sub">Jump straight to the deals that suit your budget.</p>
+      </div>
+      <div class="sl-price">
+        {%- assign caps = '5,10,20' | split: ',' -%}
+        {%- for c in caps -%}
+          <a class="sl-pcard sl-reveal" href="{{ base }}&{{ price_param }}={{ c }}#sl-all">
+            <span class="sl-pcard__k">Under</span>
+            <span class="sl-pcard__v">£{{ c }}</span>
+            <span class="sl-pcard__go">Shop <span aria-hidden="true">›</span></span>
+          </a>
+        {%- endfor -%}
+        <a class="sl-pcard sl-pcard--new sl-reveal" href="{{ base }}&sort_by=price-ascending#sl-all">
+          <span class="sl-pcard__k">Lowest</span>
+          <span class="sl-pcard__v">prices first</span>
+          <span class="sl-pcard__go">Shop <span aria-hidden="true">›</span></span>
+        </a>
+      </div>
+
+      {%- if type_filter and type_filter.values.size > 1 -%}
+        <div class="sl-types sl-reveal">
+          <h3 class="sl-types__t">Shop the sale by fabric</h3>
+          <ul class="sl-types__list" role="list">
+            {%- for v in type_filter.values -%}
+              {%- if v.count == 0 or v.label == blank -%}{%- continue -%}{%- endif -%}
+              <li><a class="sl-chip" href="{{ v.url_to_add }}#sl-all">{{ v.label | escape }} <span>{{ v.count }}</span></a></li>
+            {%- endfor -%}
+          </ul>
+        </div>
+      {%- endif -%}
+    </div>
+  </section>
+
+  {%- comment -%} ---------- BIGGEST SAVINGS rail ---------- {%- endcomment -%}
+  {%- capture deals -%}
+    {%- assign n = 0 -%}
+    {%- for p in sc.products -%}
+      {%- unless p.available and p.compare_at_price > p.price -%}{%- continue -%}{%- endunless -%}
+      {%- assign off = p.compare_at_price | minus: p.price | times: 100 | divided_by: p.compare_at_price -%}
+      {%- if off < section.settings.deal_min -%}{%- continue -%}{%- endif -%}
+      {%- assign n = n | plus: 1 -%}
+      <li class="sl-rail__item">{%- render 'brf-hl-card', p: p, cover: true -%}</li>
+      {%- if n >= 12 -%}{%- break -%}{%- endif -%}
+    {%- endfor -%}
+  {%- endcapture -%}
+  {%- if deals != blank -%}
+  <section class="sl-sec sl-sec--dark" id="sl-deals">
+    <div class="container">
+      <div class="sl-sec__head sl-sec__head--row sl-reveal">
+        <div>
+          <p class="sl-sec__eyebrow">{{ section.settings.deal_min }}% off or more</p>
+          <h2 class="sl-sec__title">The biggest savings</h2>
+          <p class="sl-sec__sub">Our best sellers with the deepest cuts.</p>
+        </div>
+        <div class="sl-rail__nav" data-sl-railnav>
+          <button type="button" class="sl-round" data-dir="-1" aria-label="Previous">‹</button>
+          <button type="button" class="sl-round" data-dir="1" aria-label="Next">›</button>
+        </div>
+      </div>
+      <ul class="sl-rail" role="list" data-sl-rail>{{ deals }}</ul>
+    </div>
+  </section>
+  {%- endif -%}
+
+  {%- comment -%} ---------- MORE WAYS TO SAVE ---------- {%- endcomment -%}
+  {%- assign c_pound = collections['pound-fabrics'] -%}
+  {%- assign c_trade = collections['trade-outlet'] -%}
+  <section class="sl-sec">
+    <div class="container">
+      <div class="sl-more">
+        {%- if c_pound.products_count > 0 -%}
+          <a class="sl-more__card sl-more__card--gold sl-reveal" href="{{ c_pound.url }}">
+            <span class="sl-more__tag">Clearance</span>
+            <span class="sl-more__t">Pound Fabrics</span>
+            <span class="sl-more__s">{{ c_pound.products_count }} bargain fabrics at pocket-money prices.</span>
+            <span class="sl-more__go">Shop clearance <span aria-hidden="true">›</span></span>
+          </a>
+        {%- endif -%}
+        {%- if c_trade.products_count > 0 -%}
+          <a class="sl-more__card sl-more__card--ink sl-reveal" href="{{ c_trade.url }}">
+            <span class="sl-more__tag">Trade outlet</span>
+            <span class="sl-more__t">Buying in bulk?</span>
+            <span class="sl-more__s">Full rolls and job lots at wholesale prices for makers and businesses.</span>
+            <span class="sl-more__go">Shop wholesale <span aria-hidden="true">›</span></span>
+          </a>
+        {%- endif -%}
+      </div>
+    </div>
+  </section>
+
+  <div class="container sl-allhead" id="sl-all">
+    <h2 class="sl-sec__title">Everything in the sale</h2>
+    <p class="sl-sec__sub">{{ sale_n }} reduced fabrics. Use the filters to narrow it down.</p>
+  </div>
+</div>
+
+<style>
+  /* Sale page only: the standard collection heading is replaced by the hero above */
+  html .template-collection .brf-chead__crumbs,
+  html .template-collection .brf-chead__eyebrow,
+  html .template-collection .brf-chead__title,
+  html .template-collection .brf-chead__desc{display:none!important}
+  html .template-collection .brf-chead{padding-top:0}
+
+  .sl{--ink:#1D1D1F;--sub:#6B665F;--line:#E4DDD1;--sand:#F6F3EE;--red:#B3261E;--red2:#D4362B;--green:#149954;color:var(--ink)}
+  .sl a{color:inherit}
+
+  .sl-btn{display:inline-flex;align-items:center;gap:6px;height:48px;padding:0 24px;border-radius:980px;font-size:15px;font-weight:600;text-decoration:none;white-space:nowrap;transition:transform .2s,background .2s}
+  .sl-btn--red{background:var(--red);color:#fff!important}
+  .sl-btn--red:hover{background:#951E17;transform:translateY(-1px)}
+  .sl-btn--ghost{box-shadow:inset 0 0 0 1px var(--ink);background:rgba(255,255,255,.7)}
+  .sl-btn--ghost:hover{background:#fff;transform:translateY(-1px)}
+
+  /* Hero */
+  .sl-hero{position:relative;overflow:hidden;background:radial-gradient(900px 500px at 82% 30%,#F8DDD8 0%,rgba(248,221,216,0) 60%),linear-gradient(180deg,#FFF9F7 0%,#FBEFEA 100%)}
+  .sl-hero__in{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);align-items:center;gap:40px;min-height:520px;padding-top:36px;padding-bottom:48px}
+  .sl-crumbs{display:flex;gap:8px;margin:0 0 20px;font-size:13px;color:var(--sub)}
+  .sl-crumbs a{text-decoration:none}
+  .sl-hero__eyebrow{display:flex;align-items:center;gap:8px;margin:0 0 10px;font-size:13px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--red)}
+  .sl-dot{width:8px;height:8px;border-radius:50%;background:var(--red);animation:sl-pulse 2s infinite}
+  @keyframes sl-pulse{0%{box-shadow:0 0 0 0 rgba(179,38,30,.45)}70%{box-shadow:0 0 0 9px rgba(179,38,30,0)}100%{box-shadow:0 0 0 0 rgba(179,38,30,0)}}
+  .sl-hero__title{display:flex;flex-wrap:wrap;align-items:baseline;gap:0 .18em;margin:0;font:700 clamp(40px,5vw,64px)/1 var(--heading-font-family);letter-spacing:-.03em;color:var(--ink)}
+  .sl-hero__pct{font-size:clamp(88px,11vw,168px);line-height:.92;letter-spacing:-.05em;background:linear-gradient(135deg,#D4362B 0%,#8E1B14 100%);-webkit-background-clip:text;background-clip:text;color:transparent;font-variant-numeric:tabular-nums}
+  .sl-hero__upto{flex-basis:100%;font-size:clamp(22px,2.4vw,30px);font-weight:600;letter-spacing:-.01em;color:#4A463F}
+  .sl-hero__text{max-width:500px;margin:18px 0 0;font-size:clamp(16px,1.5vw,19px);line-height:1.5;color:#4A463F}
+  .sl-hero__ctas{display:flex;flex-wrap:wrap;gap:12px;margin-top:26px}
+
+  /* Swing tags */
+  .sl-tags{position:relative;height:490px}
+  .sl-tag{position:absolute;display:flex;flex-direction:column;width:200px;padding:12px 12px 14px;border-radius:20px;background:#fff;text-decoration:none;
+    box-shadow:0 30px 60px -28px rgba(90,25,15,.45),0 0 0 .5px rgba(0,0,0,.05);transform-origin:50% -30px;animation:sl-swing 6s ease-in-out infinite;transition:box-shadow .3s}
+  .sl-tag::before{content:"";position:absolute;left:50%;top:-34px;width:1.5px;height:34px;background:linear-gradient(#C9B9A8,#9C8A78);transform:translateX(-50%)}
+  .sl-tag::after{content:"";position:absolute;left:50%;top:6px;width:10px;height:10px;margin-left:-5px;border-radius:50%;background:#FBEFEA;box-shadow:inset 0 1px 2px rgba(0,0,0,.25)}
+  .sl-tag:hover{box-shadow:0 40px 70px -26px rgba(90,25,15,.55)}
+  .sl-tag__img{display:block;aspect-ratio:1/1;margin-top:12px;border-radius:12px;overflow:hidden;background:var(--sand)}
+  .sl-tag__img img{width:100%;height:100%;object-fit:cover}
+  .sl-tag__price{margin-top:10px;font-size:15px}
+  .sl-tag__price b{color:var(--red)}
+  .sl-tag__price s{margin-left:4px;color:var(--sub);font-size:13px}
+  .sl-tag__off{position:absolute;right:-14px;top:22px;display:grid;place-items:center;width:62px;height:62px;border-radius:50%;background:var(--red);color:#fff;font-size:16px;font-weight:800;letter-spacing:-.02em;box-shadow:0 10px 20px -8px rgba(179,38,30,.7);transform:rotate(12deg)}
+  .sl-tag--1{left:0;top:40px;z-index:2;--a:-4deg;animation-delay:-1s}
+  .sl-tag--2{left:34%;top:20px;z-index:3;--a:3deg;width:220px;animation-delay:-3s}
+  .sl-tag--3{left:14%;top:240px;z-index:4;--a:-2deg;animation-delay:-2s}
+  .sl-tag--4{right:0;top:170px;z-index:1;--a:5deg;animation-delay:-4s}
+  @keyframes sl-swing{0%,100%{transform:rotate(var(--a,0deg))}50%{transform:rotate(calc(var(--a,0deg) * -1))}}
+
+  /* Ticker */
+  .sl-ticker{overflow:hidden;background:var(--red);color:#fff;white-space:nowrap}
+  .sl-ticker__track{display:inline-flex;align-items:center;gap:22px;padding:13px 0;font-size:14px;font-weight:600;letter-spacing:.02em;animation:sl-tick 34s linear infinite}
+  .sl-ticker__track i{font-style:normal;opacity:.6}
+  @keyframes sl-tick{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+
+  /* Sections */
+  .sl-sec{padding:60px 0 8px}
+  .sl-sec__head{margin-bottom:24px}
+  .sl-sec__head--row{display:flex;align-items:flex-end;justify-content:space-between;gap:20px}
+  .sl-sec__eyebrow{margin:0 0 8px;font-size:13px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#FF8A7E}
+  .sl-sec__title{margin:0;font:600 clamp(28px,3.4vw,40px)/1.1 var(--heading-font-family);letter-spacing:-.015em;color:var(--ink)}
+  .sl-sec__sub{margin:8px 0 0;font-size:17px;line-height:1.45;color:var(--sub)}
+
+  /* Price cards */
+  .sl-price{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px}
+  .sl-pcard{position:relative;display:flex;flex-direction:column;padding:24px 24px 20px;min-height:170px;border-radius:24px;background:var(--sand);text-decoration:none;overflow:hidden;transition:transform .35s cubic-bezier(.2,.8,.2,1),background .25s}
+  .sl-pcard::after{content:"";position:absolute;right:-30px;bottom:-30px;width:120px;height:120px;border-radius:50%;background:rgba(179,38,30,.08);transition:transform .5s cubic-bezier(.2,.8,.2,1)}
+  .sl-pcard:hover{transform:translateY(-4px);background:#F3E6DF}
+  .sl-pcard:hover::after{transform:scale(1.6)}
+  .sl-pcard__k{font-size:14px;font-weight:600;color:var(--sub)}
+  .sl-pcard__v{font:700 clamp(36px,3.6vw,52px)/1.05 var(--heading-font-family);letter-spacing:-.03em;color:var(--ink)}
+  .sl-pcard--new .sl-pcard__v{font-size:clamp(24px,2.2vw,30px);margin-top:6px}
+  .sl-pcard__go{margin-top:auto;padding-top:14px;font-size:14px;font-weight:600;color:var(--red)}
+
+  .sl-types{margin-top:28px}
+  .sl-types__t{margin:0 0 12px;font-size:17px;font-weight:600}
+  .sl-types__list{display:flex;flex-wrap:wrap;gap:8px;margin:0;padding:0;list-style:none}
+  .sl-chip{display:inline-flex;align-items:center;gap:8px;height:40px;padding:0 16px;border-radius:980px;background:#fff;box-shadow:inset 0 0 0 1px var(--line);font-size:14px;font-weight:500;text-decoration:none;transition:background .2s,color .2s,box-shadow .2s}
+  .sl-chip span{font-size:12px;color:var(--sub)}
+  .sl-chip:hover{background:var(--ink);color:#fff!important;box-shadow:none}
+  .sl-chip:hover span{color:rgba(255,255,255,.7)}
+
+  /* Dark deals band */
+  .sl-sec--dark{margin-top:56px;padding:56px 0;background:#1D1D1F}
+  .sl-sec--dark .sl-sec__title{color:#fff}
+  .sl-sec--dark .sl-sec__sub{color:rgba(255,255,255,.7)}
+  .sl-sec--dark .hl-card{color:#fff}
+  .sl-sec--dark .hl-card__p s{color:rgba(255,255,255,.55)}
+  .sl-sec--dark .hl-card__p em{color:#FF8A7E}
+  .sl-rail{display:grid;grid-auto-flow:column;grid-auto-columns:calc((100% - 4*18px)/5);gap:18px;margin:0;padding:4px 2px 8px;list-style:none;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none}
+  .sl-rail::-webkit-scrollbar{display:none}
+  .sl-rail__item{scroll-snap-align:start}
+  .sl-rail__nav{display:flex;gap:10px}
+  .sl-round{width:44px;height:44px;border:0;border-radius:50%;background:rgba(255,255,255,.12);font-size:22px;line-height:1;color:#fff;cursor:pointer;transition:background .2s}
+  .sl-round:hover{background:#fff;color:var(--ink)}
+  .sl-round:disabled{opacity:.3;cursor:default;background:rgba(255,255,255,.12);color:#fff}
+
+  /* Cards (shared with the department pages) */
+  .hl-card{display:flex;flex-direction:column;height:100%;text-decoration:none;color:var(--ink)}
+  .hl-card__img{position:relative;display:block;aspect-ratio:1/1;border-radius:20px;background:#fff;overflow:hidden}
+  .hl-card__img img{width:100%;height:100%;object-fit:contain;padding:8%;transition:transform .45s cubic-bezier(.2,.8,.2,1)}
+  .hl-card--cover .hl-card__img{background:#2C2C2E}
+  .hl-card--cover .hl-card__img img{object-fit:cover;padding:0}
+  .hl-card:hover .hl-card__img img{transform:scale(1.05)}
+  .hl-card__badge{position:absolute;left:10px;top:10px;padding:4px 10px;border-radius:980px;background:rgba(20,153,84,.1);color:#0E7A41;font-size:11.5px;font-weight:700}
+  .hl-card__badge--out{background:#F1EEE9;color:var(--sub)}
+  .hl-card__off{position:absolute;right:10px;top:10px;padding:4px 9px;border-radius:980px;background:var(--red);color:#fff;font-size:12px;font-weight:700;letter-spacing:.01em}
+  .hl-card__t{display:-webkit-box;margin-top:12px;font-size:14.5px;font-weight:500;line-height:1.35;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+  .hl-card__p{margin-top:6px;font-size:15px;font-weight:600}
+  .hl-card__p em{font-style:normal;color:var(--red)}
+  .hl-card__p s{margin-left:4px;font-weight:400;color:var(--sub)}
+
+  /* More ways to save */
+  .sl-more{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+  .sl-more__card{display:flex;flex-direction:column;align-items:flex-start;gap:6px;min-height:200px;padding:30px;border-radius:26px;text-decoration:none;transition:transform .35s cubic-bezier(.2,.8,.2,1)}
+  .sl-more__card:hover{transform:translateY(-4px)}
+  .sl-more__card--gold{background:linear-gradient(135deg,#F6E7B8 0%,#E8C86A 100%)}
+  .sl-more__card--ink{background:linear-gradient(135deg,#1F4D3A 0%,#2C6A50 100%);color:#fff!important}
+  .sl-more__tag{padding:4px 10px;border-radius:980px;background:rgba(0,0,0,.08);font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase}
+  .sl-more__card--ink .sl-more__tag{background:rgba(255,255,255,.15)}
+  .sl-more__t{margin-top:6px;font:600 clamp(24px,2.4vw,30px)/1.1 var(--heading-font-family);letter-spacing:-.01em}
+  .sl-more__s{max-width:420px;font-size:15px;line-height:1.45;opacity:.8}
+  .sl-more__go{margin-top:auto;padding-top:12px;font-size:14.5px;font-weight:600}
+
+  .sl-allhead{padding-top:64px;padding-bottom:4px;scroll-margin-top:90px}
+  #sl-deals{scroll-margin-top:60px}
+
+  .sl-js .sl-reveal{opacity:0;transform:translateY(18px);transition:opacity .6s ease,transform .6s cubic-bezier(.2,.8,.2,1)}
+  .sl-js .sl-reveal.is-in{opacity:1;transform:none}
+  @media (prefers-reduced-motion:reduce){
+    .sl-tag,.sl-dot,.sl-ticker__track{animation:none}
+    .sl-js .sl-reveal{opacity:1;transform:none;transition:none}
+  }
+
+  @media (max-width:999px){
+    .sl-hero__in{grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:16px}
+    .sl-tag{width:180px}.sl-tag--2{width:190px}.sl-tag--4{display:none}
+    .sl-price{grid-template-columns:repeat(2,minmax(0,1fr))}
+    .sl-rail{grid-auto-columns:calc((100% - 2*16px)/3.2)}
+  }
+  @media (max-width:749px){
+    .sl-hero__in{grid-template-columns:minmax(0,1fr);gap:0;min-height:0;padding-top:20px;padding-bottom:30px}
+    .sl-tags{order:-1;height:270px;margin:0 -6px 6px}
+    .sl-tag{width:140px;padding:8px 8px 10px;border-radius:16px}
+    .sl-tag__img{margin-top:10px}
+    .sl-tag__price{font-size:13px}.sl-tag__price s{display:none}
+    .sl-tag__off{width:48px;height:48px;font-size:13px;right:-10px}
+    .sl-tag--1{left:2%;top:58px}.sl-tag--2{left:34%;top:36px;width:150px}.sl-tag--3{left:auto;right:3%;top:72px}
+    .sl-hero__ctas .sl-btn{flex:1 1 auto;justify-content:center}
+    .sl-sec{padding-top:40px}
+    .sl-sec__sub{font-size:15.5px}
+    .sl-pcard{min-height:130px;padding:18px;border-radius:20px}
+    .sl-sec--dark{margin-top:40px;padding:40px 0}
+    .sl-rail__nav{display:none}
+    .sl-rail{grid-auto-columns:46%;gap:12px}
+    .sl-types__list{flex-wrap:nowrap;overflow-x:auto;margin:0 -16px;padding:0 16px 2px;scrollbar-width:none}
+    .sl-types__list::-webkit-scrollbar{display:none}
+    .sl-chip{white-space:nowrap}
+    .sl-more{grid-template-columns:minmax(0,1fr);gap:12px}
+    .sl-more__card{min-height:0;padding:22px;border-radius:22px}
+    .sl-allhead{padding-top:48px}
+  }
+</style>
+
+<script>
+(function(){
+  var root = document.querySelector('[data-sl]'); if (!root || root.__sl) return; root.__sl = true;
+  var calm = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  if ('IntersectionObserver' in window && !calm) {
+    root.classList.add('sl-js');
+    var io = new IntersectionObserver(function(es){ es.forEach(function(e){ if (e.isIntersecting) { e.target.classList.add('is-in'); io.unobserve(e.target); } }); }, {rootMargin: '0px 0px -8% 0px'});
+    [].forEach.call(root.querySelectorAll('.sl-reveal'), function(el, i){ el.style.transitionDelay = (i % 4) * 60 + 'ms'; io.observe(el); });
+  }
+
+  /* The headline discount counts up when the page opens */
+  var pct = root.querySelector('[data-sl-count]');
+  if (pct && !calm && window.requestAnimationFrame) {
+    var target = parseInt(pct.getAttribute('data-sl-count'), 10), t0 = null;
+    pct.textContent = '0%';
+    requestAnimationFrame(function step(ts){
+      if (!t0) t0 = ts;
+      var k = Math.min(1, (ts - t0) / 1100), e = 1 - Math.pow(1 - k, 3);
+      pct.textContent = Math.round(target * e) + '%';
+      if (k < 1) requestAnimationFrame(step);
+    });
+  }
+
+  [].forEach.call(root.querySelectorAll('a[href^="#sl-"]'), function(a){
+    a.addEventListener('click', function(e){
+      var t = document.querySelector(a.getAttribute('href')); if (!t) return;
+      e.preventDefault(); t.scrollIntoView({behavior: calm ? 'auto' : 'smooth', block: 'start'});
+    });
+  });
+
+  var rail = root.querySelector('[data-sl-rail]'), rnav = root.querySelector('[data-sl-railnav]');
+  if (rail && rnav) {
+    var bs = rnav.querySelectorAll('button');
+    function upd(){ bs[0].disabled = rail.scrollLeft < 8; bs[1].disabled = rail.scrollLeft + rail.clientWidth >= rail.scrollWidth - 8; }
+    [].forEach.call(bs, function(b){ b.addEventListener('click', function(){ rail.scrollBy({left: parseInt(b.dataset.dir, 10) * rail.clientWidth * .8, behavior: 'smooth'}); }); });
+    rail.addEventListener('scroll', upd, {passive: true}); window.addEventListener('resize', upd); upd();
+  }
+
+  /* Links that filter the grid land on the results, not the top of the page */
+  if (location.hash === '#sl-all') {
+    var all = document.getElementById('sl-all');
+    if (all) setTimeout(function(){ all.scrollIntoView({block: 'start'}); }, 60);
+  }
+})();
+</script>
+
+{% schema %}
+{
+  "name": "Sale landing",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Small heading", "default": "The Bull Ring Sale" },
+    { "type": "text", "id": "heading", "label": "Heading (used if no discount can be worked out)", "default": "Fabric sale" },
+    { "type": "textarea", "id": "text", "label": "Text", "info": "[count] = number of products in the sale, [best] = biggest discount.", "default": "[count] fabrics reduced across dress, craft and upholstery. Same-day dispatch, while stocks last." },
+    { "type": "range", "id": "deal_min", "label": "\"Biggest savings\" shows products with at least this % off", "min": 10, "max": 70, "step": 5, "unit": "%", "default": 35 }
+  ]
+}
+{% endschema %}

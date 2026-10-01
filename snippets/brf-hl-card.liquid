@@ -12,6 +12,10 @@
     {%- elsif p.available == false -%}
       <span class="hl-card__badge hl-card__badge--out">Sold out</span>
     {%- endif -%}
+    {%- if p.compare_at_price > p.price and p.available -%}
+      {%- assign off = p.compare_at_price | minus: p.price | times: 100 | divided_by: p.compare_at_price -%}
+      {%- if off >= 5 -%}<span class="hl-card__off">-{{ off }}%</span>{%- endif -%}
+    {%- endif -%}
   </span>
   <span class="hl-card__t">{{ p.title }}</span>
   <span class="hl-card__p">

@@ -23,6 +23,8 @@
 -%}
 {%- if collection.handle == 'home-lifestyle' -%}
   {% section 'brf-hl-landing' %}
+{%- elsif collection.handle == 'sale' -%}
+  {% section 'brf-sale-landing' %}
 {%- elsif brf_dept != '' -%}
   {%- render 'brf-hl-switcher', key: brf_dept, current: collection.handle -%}
 {%- endif -%}
