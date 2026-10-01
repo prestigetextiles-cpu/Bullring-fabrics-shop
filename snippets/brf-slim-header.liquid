@@ -38,11 +38,15 @@
       transition:transform .38s cubic-bezier(.3,1.3,.4,1),width .38s cubic-bezier(.3,1.3,.4,1),opacity .2s ease}
     html.brf-hc .brf-hc__glide.is-on{opacity:1}
 
-    /* Mega menu panels drop down as a floating card the width of the capsule */
-    html.brf-hc .brf-mm__panel{top:calc(100% + 10px);border-top:0;border-radius:26px;
-      box-shadow:0 0 0 .5px rgba(29,29,31,.08),0 34px 80px -24px rgba(29,29,31,.4);transform:translateY(-8px) scale(.985);transform-origin:50% 0}
-    html.brf-hc .brf-mm__item.is-open .brf-mm__panel{transform:none}
-    html.brf-hc .brf-mm__panel>.container{max-width:none}
+    /* Mega menu panels drop down as a floating glass card the width of the capsule.
+       The shared full-width glass layer (brf-apple-ux) is switched off here: it sits outside the capsule
+       and would paint over the panel. */
+    html.brf-hc [data-brf-mm]>.container{z-index:30}
+    html.brf-hc [data-brf-mm] .brf-mm__bg{display:none!important}
+    html.brf-hc [data-brf-mm] .brf-mm__panel{top:calc(100% + 10px);border-radius:26px;
+      background:rgba(250,250,252,.96)!important;-webkit-backdrop-filter:saturate(180%) blur(24px);backdrop-filter:saturate(180%) blur(24px);
+      box-shadow:0 0 0 .5px rgba(29,29,31,.08),0 34px 80px -24px rgba(29,29,31,.4)!important}
+    html.brf-hc [data-brf-mm] .brf-mm__panel>.container{max-width:none}
 
     /* Mini logo + actions (wide screens only; 1000–1199px keeps just the menu) */
     @media (min-width:1200px){
