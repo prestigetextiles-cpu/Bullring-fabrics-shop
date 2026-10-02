@@ -289,7 +289,18 @@
     row.className = 'brf-mc__undo'; row.setAttribute('role', 'status');
     row.innerHTML = (it.image ? '<img src="' + esc(it.image) + (it.image.indexOf('?') > -1 ? '&' : '?') + 'width=96" alt="" width="40" height="40">' : '') +
       '<span class="brf-mc__undo-t">Removed <b>' + esc(it.product_title) + '</b></span><button type="button" class="brf-mc__undo-btn">Undo</button><span class="brf-mc__undo-bar" style="animation-duration:' + Math.max(0, pendingUndo.until - Date.now()) + 'ms"></span>';
-    host.insertBefore(row, host.firstChild);
+    /* put the Undo row where the item was and keep it in view (the list scrolls once it holds 4+ items) */
+    var lines = host.querySelectorAll ? host.querySelectorAll('.mini-cart__line-item') : [];
+    var at = pendingUndo.idx >= 0 && lines[pendingUndo.idx] ? lines[pendingUndo.idx] : null;
+    if (at && at.parentNode) at.parentNode.insertBefore(row, at);
+    else if (pendingUndo.idx > 0 && lines.length && lines[lines.length - 1].parentNode) lines[lines.length - 1].parentNode.appendChild(row);
+    else host.insertBefore(row, host.firstChild);
+    if (host.scrollHeight > host.clientHeight + 1) {
+      if (pendingUndo.st != null && host.scrollTop === 0) host.scrollTop = pendingUndo.st;
+      var hr = host.getBoundingClientRect(), rr = row.getBoundingClientRect();
+      if (rr.top < hr.top + 8) host.scrollTop -= (hr.top + 8 - rr.top);
+      else if (rr.bottom > hr.bottom - 8) host.scrollTop += (rr.bottom - hr.bottom + 8);
+    }
     row.querySelector('button').addEventListener('click', function(e){
       e.preventDefault(); e.stopPropagation();
       var item = pendingUndo && pendingUndo.item; if (!item) return;
@@ -310,7 +321,9 @@
     var onCartPage = !a.closest('.mini-cart');
     if (!onCartPage) {
       /* drawer (desktop and mobile): Undo row right where the item was */
-      pendingUndo = {item: item, until: Date.now() + 10000};
+      var li = a.closest('.mini-cart__line-item'), ls = a.closest('.mini-cart__line-item-list'), idx = -1;
+      if (li && ls) idx = [].indexOf.call(ls.querySelectorAll('.mini-cart__line-item'), li);
+      pendingUndo = {item: item, until: Date.now() + 10000, idx: idx, st: ls ? ls.scrollTop : null};
       clearTimeout(undoTimer);
       undoTimer = setTimeout(function(){ pendingUndo = null; var r = doc.querySelector('.brf-mc__undo'); if (r) r.remove(); }, 10000);
       setTimeout(paintUndo, 150); setTimeout(paintUndo, 900);

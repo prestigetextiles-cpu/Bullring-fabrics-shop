@@ -1,0 +1,247 @@
+{%- comment -%}
+  Bull Ring: polish layer (rendered last in layout/theme.liquid)
+  1. Filter bar scrolls under the sticky header (panels still sit on top when open)
+  2. No grid lines between product cards
+  3. Cart drawer: no empty band under "Your cart"
+  4. "Estimate shipping" folded into a tab (like the other product tabs)
+  5. Pop-ups (e.g. Refund Policy): solid sheet, sticky bar + floating buttons hidden while open
+  6. "View all 48" pill stays on one line
+  7. Header search box: round button sits neatly inside the green outline
+  8. Phones: full-screen search with live suggestions, categories and compact product results
+{%- endcomment -%}
+<style>
+  /* 1 */
+  html .brf-fbar{z-index:4}
+  html .brf-fbar:has(.is-open),html .brf-fbar:has(.brf-panel:not([hidden])){z-index:1002}
+  /* 2 */
+  html .product-list .product-item::after,html .product-item::after{box-shadow:none!important;border:0!important}
+  /* 3 */
+  html .mini-cart__inner{justify-content:flex-start!important}
+  html .mini-cart__content{flex:1 1 auto}
+  html .mini-cart__recap{margin-top:auto}
+  /* 4 */
+  .brf-tab-min > .card > .card__section{display:none}
+  .brf-tab-min.is-open > .card > .card__section{display:block}
+  .brf-tab-min .brf-tab-toggle{display:flex;align-items:center;justify-content:space-between;gap:12px;width:100%;text-align:left}
+  .brf-tab-min .brf-tab-toggle__sub{display:block;margin-top:2px;font-size:13px;font-weight:400;color:#6B665F}
+  .brf-tab-min [data-brf-tab-title]{display:none!important}
+  /* 5 */
+  html .modal .modal__dialog{background:#FBFBFD!important;-webkit-backdrop-filter:none!important;backdrop-filter:none!important}
+  html.is-locked .brf-sticky-atc,html.brf-msearch-open .brf-sticky-atc{opacity:0!important;pointer-events:none!important}
+  html.is-locked,html.brf-msearch-open{--brf-float-op:0;--brf-float-vis:hidden;--brf-float-pe:none}
+  /* 6 */
+  html .brf-glass-pill{white-space:nowrap}
+  html .brf-upsell__head > div:first-child{flex:1 1 auto;min-width:0}
+  html .brf-upsell__nav{flex:0 0 auto}
+  /* 7 */
+  html .search-bar__top{overflow:hidden}
+  html .search-bar__submit{align-self:center;width:38px!important;min-width:38px;height:36px!important;margin:0 3px 0 0!important;padding:0!important;border-radius:999px!important;display:grid!important;place-items:center}
+
+  /* 8. Phone search */
+  html.brf-msearch-open,html.brf-msearch-open body{overflow:hidden!important}
+  .brf-ms{position:fixed;inset:0;z-index:2147483100;display:flex;flex-direction:column;background:#F6F3EE;
+    font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:#1D1D1F;
+    opacity:0;transform:translateY(12px);transition:opacity .22s ease,transform .28s cubic-bezier(.2,.8,.2,1)}
+  .brf-ms.is-in{opacity:1;transform:none}
+  .brf-ms[hidden]{display:none}
+  .brf-ms__bar{display:flex;align-items:center;gap:8px;padding:calc(10px + env(safe-area-inset-top)) 12px 10px;
+    background:rgba(246,243,238,.82);-webkit-backdrop-filter:saturate(180%) blur(20px);backdrop-filter:saturate(180%) blur(20px);border-bottom:1px solid rgba(29,29,31,.08)}
+  .brf-ms__field{position:relative;flex:1;display:flex;align-items:center;height:44px;border-radius:14px;background:#fff;box-shadow:0 0 0 1px rgba(29,29,31,.1),0 2px 8px -4px rgba(0,0,0,.15)}
+  .brf-ms__field:focus-within{box-shadow:0 0 0 2px #149954,0 2px 8px -4px rgba(0,0,0,.15)}
+  .brf-ms__icon{flex:0 0 36px;display:grid;place-items:center;color:#8C867D}
+  .brf-ms__input{flex:1;min-width:0;height:100%;border:0;background:transparent;outline:0;font:500 16px/1 inherit;color:#1D1D1F;-webkit-appearance:none;appearance:none}
+  .brf-ms__input::-webkit-search-cancel-button{display:none}
+  .brf-ms__x{flex:0 0 36px;height:36px;display:grid;place-items:center;border:0;background:none;color:#8C867D;cursor:pointer}
+  .brf-ms__x[hidden]{display:none}
+  .brf-ms__cancel{flex:0 0 40px;width:40px;height:40px;display:grid;place-items:center;border:0;border-radius:50%;padding:0;color:#1D1D1F;cursor:pointer;
+    background:rgba(255,255,255,.72);box-shadow:inset 0 0 0 1px rgba(29,29,31,.08),0 2px 8px -4px rgba(0,0,0,.18);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);transition:transform .2s ease}
+  .brf-ms__cancel:active{transform:scale(.92)}
+  .brf-ms__body{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;padding:14px 16px calc(96px + env(safe-area-inset-bottom))}
+  .brf-ms__h{margin:18px 0 10px;font-size:12px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#8C867D;display:flex;justify-content:space-between;align-items:center}
+  .brf-ms__h:first-child{margin-top:4px}
+  .brf-ms__h button{border:0;background:none;font:600 13px/1 inherit;letter-spacing:0;text-transform:none;color:#0F7A42;cursor:pointer}
+  .brf-ms__chips{display:flex;flex-wrap:wrap;gap:8px}
+  .brf-ms__chip{display:inline-flex;align-items:center;gap:6px;min-height:36px;padding:0 14px;border-radius:999px;border:1px solid rgba(29,29,31,.1);background:#fff;color:#1D1D1F!important;font-size:14px;text-decoration:none!important;cursor:pointer}
+  .brf-ms__chip mark,.brf-ms__row mark{background:none;color:inherit;font-weight:700}
+  .brf-ms__list{margin:0;padding:0;list-style:none;border-radius:16px;background:#fff;box-shadow:0 0 0 1px rgba(29,29,31,.06);overflow:hidden}
+  .brf-ms__row{display:flex;align-items:center;gap:12px;padding:10px 12px;color:#1D1D1F!important;text-decoration:none!important;border-top:1px solid rgba(29,29,31,.06)}
+  .brf-ms__list li:first-child .brf-ms__row{border-top:0}
+  .brf-ms__row:active{background:#F2EFE9}
+  .brf-ms__thumb{flex:0 0 56px;width:56px;height:56px;border-radius:12px;object-fit:cover;background:#EFEBE4}
+  .brf-ms__cat{flex:0 0 36px;width:36px;height:36px;border-radius:10px;display:grid;place-items:center;background:#E7F3EC;color:#0F7A42}
+  .brf-ms__meta{flex:1;min-width:0}
+  .brf-ms__title{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;font-size:14.5px;line-height:1.3}
+  .brf-ms__price{margin-top:3px;font-size:14px;font-weight:600}
+  .brf-ms__price.is-sale{color:#B42318}
+  .brf-ms__price s{margin-left:6px;font-weight:400;color:#8C867D}
+  .brf-ms__tag{margin-left:6px;font-size:12px;font-weight:600;color:#8C867D}
+  .brf-ms__chev{flex:0 0 auto;color:#B7B1A6}
+  .brf-ms__empty{padding:28px 8px;text-align:center;color:#5E5A52;font-size:15px}
+  .brf-ms__skel{height:76px;border-radius:12px;margin-bottom:8px;background:linear-gradient(90deg,#EDE9E2,#F7F4EF,#EDE9E2);background-size:200% 100%;animation:brfMsSk 1.1s linear infinite}
+  @keyframes brfMsSk{from{background-position:200% 0}to{background-position:-200% 0}}
+  .brf-ms__all{position:absolute;left:12px;right:12px;bottom:calc(12px + env(safe-area-inset-bottom));display:flex;align-items:center;justify-content:center;gap:8px;height:50px;border-radius:999px;
+    background:#149954;color:#fff!important;font:600 15px/1 inherit;text-decoration:none!important;box-shadow:0 10px 24px -10px rgba(20,153,84,.8)}
+  .brf-ms__all[hidden]{display:none}
+  /* idle panel re-used from the desktop search */
+  .brf-ms .brf-sp__cols,.brf-ms .brf-sp__main{display:block!important}
+  .brf-ms .brf-sp__side{display:none}
+  .brf-ms .brf-sp__block{margin-bottom:6px}
+  .brf-ms .brf-sp__h{margin:18px 0 10px;font-size:12px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#8C867D;display:flex;justify-content:space-between}
+  .brf-ms .brf-sp__chips{display:flex!important;flex-wrap:wrap!important;gap:8px;overflow:visible!important;margin:0!important;padding:0!important;-webkit-mask-image:none!important;mask-image:none!important}
+  @media (prefers-reduced-motion:reduce){.brf-ms{transition:none}.brf-ms__skel{animation:none}}
+</style>
+
+<script>
+(function(){
+  var root = document.documentElement;
+
+  /* ---------- 4. Fold "Estimate shipping" into a tab ---------- */
+  function foldTab(sel, title, sub){
+    var blk = document.querySelector(sel); if (!blk || blk.__brfTab) return;
+    var card = blk.querySelector(':scope > .card'); var sec = card && card.querySelector(':scope > .card__section');
+    if (!sec) return; blk.__brfTab = 1;
+    var head = [].slice.call(sec.querySelectorAll('h1,h2,h3,h4,.card__title,.heading')).filter(function(h){ return h.textContent.trim().toLowerCase() === title.toLowerCase(); })[0];
+    if (head) head.setAttribute('data-brf-tab-title', '');
+    sec.id = sec.id || ('brf-tab-' + Math.random().toString(36).slice(2, 8));
+    var btn = document.createElement('button');
+    btn.type = 'button'; btn.className = 'card__collapsible-button brf-tab-toggle';
+    btn.setAttribute('aria-expanded', 'false'); btn.setAttribute('aria-controls', sec.id);
+    btn.innerHTML = '<span><span class="card__title heading h3">' + title + '</span>' + (sub ? '<span class="brf-tab-toggle__sub">' + sub + '</span>' : '') + '</span><span class="plus-button plus-button--large"></span>';
+    btn.addEventListener('click', function(){ var o = !blk.classList.contains('is-open'); blk.classList.toggle('is-open', o); btn.setAttribute('aria-expanded', o ? 'true' : 'false'); });
+    card.insertBefore(btn, card.firstChild); blk.classList.add('brf-tab-min');
+  }
+  if (document.body.classList.contains('template-product')) {
+    foldTab('.product-block-list__item--shipping', 'Estimate shipping', 'Check delivery costs to your postcode');
+  }
+
+  /* ---------- 8. Phone search ---------- */
+  var phone = window.matchMedia('(max-width:767px)');
+  var ROOT = (window.Shopify && Shopify.routes && Shopify.routes.root) || '/';
+  var ms, input, body, allBtn, xBtn, ctrl, t, lastQ = '', pushed = false, opener = null, popGuard = 0;
+  function esc(s){ return String(s == null ? '' : s).replace(/[&<>"']/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); }
+  function mark(text, q){
+    var e = esc(text); if (!q) return e;
+    var words = q.trim().split(/\s+/).filter(Boolean).map(function(w){ return w.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); });
+    return words.length ? e.replace(new RegExp('(' + words.join('|') + ')', 'ig'), '<mark>$1</mark>') : e;
+  }
+  function searchUrl(q){ return ROOT.replace(/\/$/, '') + '/search?q=' + encodeURIComponent(q) + '&type=product&options%5Bprefix%5D=last'; }
+  function recent(add){
+    var list = []; try { list = JSON.parse(localStorage.getItem('brfRecent') || '[]') || []; } catch (e) {}
+    if (add) { list = list.filter(function(x){ return x.toLowerCase() !== add.toLowerCase(); }); list.unshift(add); list = list.slice(0, 6); try { localStorage.setItem('brfRecent', JSON.stringify(list)); } catch (e) {} }
+    return list;
+  }
+  function money(v){
+    var n = parseFloat(v); if (isNaN(n)) return '';
+    try { return new Intl.NumberFormat('en-GB', {style:'currency', currency:(window.Shopify && Shopify.currency && Shopify.currency.active) || 'GBP'}).format(n); } catch (e) { return '£' + n.toFixed(2); }
+  }
+  var ICON_SEARCH = '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>';
+  var ICON_CHEV = '<svg class="brf-ms__chev" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"/></svg>';
+  var ICON_GRID = '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="4" y="4" width="7" height="7" rx="2"/><rect x="13" y="4" width="7" height="7" rx="2"/><rect x="4" y="13" width="7" height="7" rx="2"/><rect x="13" y="13" width="7" height="7" rx="2"/></svg>';
+
+  function build(){
+    ms = document.createElement('div'); ms.className = 'brf-ms'; ms.hidden = true;
+    ms.setAttribute('role', 'dialog'); ms.setAttribute('aria-modal', 'true'); ms.setAttribute('aria-label', 'Search');
+    ms.innerHTML = '<form class="brf-ms__bar" role="search" action="' + ROOT.replace(/\/$/, '') + '/search" method="get">'
+      + '<div class="brf-ms__field"><span class="brf-ms__icon">' + ICON_SEARCH + '</span>'
+      + '<input class="brf-ms__input" type="search" name="q" placeholder="Search fabrics, colours, projects" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" enterkeyhint="search" aria-label="Search">'
+      + '<input type="hidden" name="type" value="product"><input type="hidden" name="options[prefix]" value="last">'
+      + '<button type="button" class="brf-ms__x" aria-label="Clear search" hidden><svg viewBox="0 0 24 24" width="18" height="18"><circle cx="12" cy="12" r="10" fill="currentColor" opacity=".35"/><path d="m9 9 6 6m0-6-6 6" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg></button></div>'
+      + '<button type="button" class="brf-ms__cancel" aria-label="Close search"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button></form>'
+      + '<div class="brf-ms__body" aria-live="polite"></div>'
+      + '<a class="brf-ms__all" hidden></a>';
+    document.body.appendChild(ms);
+    input = ms.querySelector('.brf-ms__input'); body = ms.querySelector('.brf-ms__body'); allBtn = ms.querySelector('.brf-ms__all'); xBtn = ms.querySelector('.brf-ms__x');
+    ms.querySelector('.brf-ms__cancel').addEventListener('click', function(){ close(); });
+    xBtn.addEventListener('click', function(){ input.value = ''; onInput(); input.focus(); });
+    input.addEventListener('input', onInput);
+    ms.querySelector('form').addEventListener('submit', function(e){ var q = input.value.trim(); if (!q) { e.preventDefault(); return; } recent(q); });
+    allBtn.addEventListener('click', function(){ recent(input.value.trim()); });
+    ms.addEventListener('keydown', function(e){ if (e.key === 'Escape') close(); });
+    body.addEventListener('click', function(e){
+      var term = e.target.closest('[data-brf-term]');
+      if (term) { e.preventDefault(); input.value = term.getAttribute('data-brf-term'); onInput(); input.focus(); return; }
+      var clr = e.target.closest('[data-brf-ms-clear]');
+      if (clr) { try { localStorage.setItem('brfRecent', '[]'); } catch (err) {} idle(); return; }
+      if (e.target.closest('a.brf-ms__row')) recent(input.value.trim());
+    });
+  }
+  function idle(){
+    allBtn.hidden = true; xBtn.hidden = true;
+    var rec = recent(), html = '';
+    if (rec.length) html += '<div class="brf-ms__h"><span>Recent searches</span><button type="button" data-brf-ms-clear>Clear</button></div><div class="brf-ms__chips">'
+      + rec.map(function(q){ return '<button type="button" class="brf-ms__chip" data-brf-term="' + esc(q) + '"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="8"/><path d="M12 8v4l3 2"/></svg>' + esc(q) + '</button>'; }).join('') + '</div>';
+    body.innerHTML = html;
+    var tpl = document.getElementById('brf-sp-idle');
+    if (tpl && tpl.content) {
+      var frag = tpl.content.cloneNode(true);
+      [].forEach.call(frag.querySelectorAll('[data-brf-recent]'), function(n){ n.remove(); });
+      body.appendChild(frag);
+    }
+  }
+  function skeleton(){ body.innerHTML = '<div class="brf-ms__h"><span>Searching…</span></div>' + new Array(5).join('<div class="brf-ms__skel"></div>'); }
+  function onInput(){
+    var q = input.value.trim(); xBtn.hidden = !q;
+    clearTimeout(t);
+    if (!q) { lastQ = ''; if (ctrl) ctrl.abort(); idle(); return; }
+    allBtn.hidden = false; allBtn.href = searchUrl(q);
+    allBtn.innerHTML = 'See all results for “' + esc(q) + '” <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14m-6-6 6 6-6 6"/></svg>';
+    if (q !== lastQ && !body.querySelector('.brf-ms__list')) skeleton();
+    t = setTimeout(function(){ fetchResults(q); }, 160);
+  }
+  function fetchResults(q){
+    lastQ = q; if (ctrl) ctrl.abort(); ctrl = ('AbortController' in window) ? new AbortController() : null;
+    var url = ROOT.replace(/\/$/, '') + '/search/suggest.json?q=' + encodeURIComponent(q)
+      + '&resources[type]=product,collection,query&resources[limit]=8&resources[limit_scope]=each&resources[options][unavailable_products]=last';
+    fetch(url, ctrl ? {signal: ctrl.signal} : {}).then(function(r){ return r.json(); }).then(function(d){
+      if (q !== input.value.trim()) return;
+      render(q, (d && d.resources && d.resources.results) || {});
+    }).catch(function(){});
+  }
+  function render(q, r){
+    var qs = (r.queries || []).filter(function(x){ return x.text && x.text.toLowerCase() !== q.toLowerCase(); }).slice(0, 4);
+    var cs = (r.collections || []).slice(0, 4), ps = r.products || [], h = '';
+    if (qs.length) h += '<div class="brf-ms__h"><span>Suggestions</span></div><div class="brf-ms__chips">' + qs.map(function(x){ return '<button type="button" class="brf-ms__chip" data-brf-term="' + esc(x.text) + '">' + ICON_SEARCH.replace('18','14').replace('18','14') + mark(x.text, q) + '</button>'; }).join('') + '</div>';
+    if (cs.length) h += '<div class="brf-ms__h"><span>Categories</span></div><ul class="brf-ms__list">' + cs.map(function(c){ return '<li><a class="brf-ms__row" href="' + esc(c.url) + '"><span class="brf-ms__cat">' + ICON_GRID + '</span><span class="brf-ms__meta"><span class="brf-ms__title">' + mark(c.title, q) + '</span></span>' + ICON_CHEV + '</a></li>'; }).join('') + '</ul>';
+    if (ps.length) h += '<div class="brf-ms__h"><span>Products</span></div><ul class="brf-ms__list">' + ps.map(function(p){
+      var img = (p.featured_image && p.featured_image.url) || p.image || '';
+      if (img) img = img + (img.indexOf('?') > -1 ? '&' : '?') + 'width=160';
+      var sale = parseFloat(p.compare_at_price_max) > parseFloat(p.price);
+      return '<li><a class="brf-ms__row" href="' + esc(p.url) + '">' + (img ? '<img class="brf-ms__thumb" src="' + esc(img) + '" alt="" loading="lazy">' : '<span class="brf-ms__thumb"></span>')
+        + '<span class="brf-ms__meta"><span class="brf-ms__title">' + mark(p.title, q) + '</span><span class="brf-ms__price' + (sale ? ' is-sale' : '') + '">' + (p.price_min !== p.price_max && p.price_max ? 'From ' : '') + money(p.price) + (sale ? '<s>' + money(p.compare_at_price_max) + '</s>' : '') + (p.available === false ? '<span class="brf-ms__tag">Sold out</span>' : '') + '</span></span>' + ICON_CHEV + '</a></li>';
+    }).join('') + '</ul>';
+    if (!h) h = '<div class="brf-ms__empty">No matches for “' + esc(q) + '”.<br>Try a fabric type like <button type="button" class="brf-ms__chip" data-brf-term="velvet" style="margin-top:12px">velvet</button> <button type="button" class="brf-ms__chip" data-brf-term="cotton">cotton</button> <button type="button" class="brf-ms__chip" data-brf-term="satin">satin</button></div>';
+    body.innerHTML = h; body.scrollTop = 0;
+  }
+  function open(from){
+    if (!ms) build();
+    opener = from || document.activeElement;
+    ms.hidden = false; root.classList.add('brf-msearch-open');
+    input.value = ''; idle();
+    requestAnimationFrame(function(){ ms.classList.add('is-in'); });
+    input.focus({preventScroll:true});
+    try { history.pushState({brfSearch:1}, ''); pushed = true; } catch (e) { pushed = false; }
+  }
+  function close(fromPop){
+    if (!ms || ms.hidden) return;
+    ms.classList.remove('is-in'); root.classList.remove('brf-msearch-open');
+    setTimeout(function(){ ms.hidden = true; }, 220);
+    if (input) input.blur();
+    if (pushed && !fromPop) { pushed = false; popGuard = Date.now() + 1500; try { history.back(); } catch (e) {} }
+    pushed = false;
+    if (opener && opener.focus) try { opener.focus({preventScroll:true}); } catch (e) {}
+  }
+  /* Closing search steps back one history entry. That popstate is ours alone: stop the theme and the
+     filter bar from treating it as a page change (they reload the products and lose the scroll spot). */
+  window.addEventListener('popstate', function(e){
+    if (!ms) return;
+    if (!ms.hidden || Date.now() < popGuard) { e.stopImmediatePropagation(); popGuard = 0; if (!ms.hidden) close(true); }
+  }, true);
+  document.addEventListener('click', function(e){
+    if (!phone.matches) return;
+    var trg = e.target.closest('[data-action="toggle-search"]');
+    if (!trg) return;
+    e.preventDefault(); e.stopImmediatePropagation();
+    open(trg);
+  }, true);
+})();
+</script>
