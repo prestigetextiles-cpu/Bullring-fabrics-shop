@@ -210,6 +210,8 @@
   function openDrawer(){
     /* the slim desktop header shows its own "In the bag!" note instead of the drawer */
     if (root.classList.contains('brf-hc')) { doc.dispatchEvent(new CustomEvent('brf:bag-added')); return; }
+    /* phones and tablets: no drawer, the button itself says "Added to bag" (brf-v5) */
+    if (window.matchMedia('(max-width:999px)').matches) { doc.dispatchEvent(new CustomEvent('brf:bag-added-mobile')); return; }
     if (!(window.theme && theme.cartType === 'drawer')) { location.href = '/cart'; return; }
     setTimeout(function(){
       if (root.classList.contains('brf-cart-open')) return;

@@ -1,0 +1,621 @@
+{%- comment -%}
+  Bull Ring Fabrics — v5 mobile round (October 2026), rendered last in layout/theme.liquid
+  1  Bag drawer: the page behind it no longer scrolls (iPhone-safe), the bag count hides under the X
+  2  Phones and tablets: Add to bag never opens the drawer; the button itself says "Added to bag ✓"
+  3  Product cards: one clean ring on the chosen colour swatch
+  4  "Save x" labels: red glass pills with white text, sitting on the photo
+  5  Live chat + Rewards: tuck away while you scroll down (nothing hides behind them), back when you scroll up
+  6  Fabric guide sidebar: no photo arrows on the small featured products, compact sale pill
+  7  No elastic scroll past the footer on iPhone
+  8  Rewards button hides while the live chat window is open
+  9  Phone search: no "Shop by category" block
+  10 Phone menu: no promo banners, narrower sheet, the page behind dims ("lights off")
+  11 Rewards panel always has a working close button (and tapping outside closes it)
+  13 Delivery options sheet: tidy rows, close button, floating buttons hidden behind it; cart page header fits
+  14 Product cards on phones: the quantity box sits inside the Add to bag button
+  15 Next / previous page: the first row of products lands just below the filter bar
+  16 Live chat + Rewards hidden while a filter or sort sheet is open
+  17 Filters on phones and tablets: tick several options, then "Show results"
+  18 (see 1)
+{%- endcomment -%}
+<style>
+  /* ---------- floating buttons: one switch hides chat + Rewards (see JS "floaters") ---------- */
+  html.brf-float-off,html.brf-float-tuck{--brf-float-op:0;--brf-float-vis:hidden;--brf-float-pe:none}
+  html.brf-chat-open body #smile-ui-lite-launcher-frame-container{opacity:0!important;visibility:hidden!important;pointer-events:none!important}
+  html.brf-smile-open body #smile-ui-lite-launcher-frame-container{opacity:1!important;visibility:visible!important;pointer-events:auto!important}
+
+  /* ---------- 11. Rewards panel: our own close button + tap-outside scrim ---------- */
+  .brf-smx,.brf-smscrim{display:none}
+  html.brf-smile-open .brf-smx{display:grid;place-items:center;position:fixed;z-index:2147483647;width:40px;height:40px;padding:0;border:0;border-radius:50%;cursor:pointer;color:#1D1D1F;
+    background:rgba(255,255,255,.86);-webkit-backdrop-filter:saturate(180%) blur(16px);backdrop-filter:saturate(180%) blur(16px);
+    box-shadow:inset 0 1px 0 #fff,0 0 0 .5px rgba(29,29,31,.12),0 8px 20px -8px rgba(29,29,31,.45);-webkit-tap-highlight-color:transparent}
+  html.brf-smile-open .brf-smx svg{width:16px;height:16px}
+  html.brf-smile-open .brf-smx:active{transform:scale(.92)}
+  @media (max-width:999px){
+    html.brf-smile-open .brf-smscrim{display:block;position:fixed;inset:0;background:rgba(10,10,12,.42);-webkit-tap-highlight-color:transparent}
+  }
+  html [data-brf-smile-hidden]{display:none!important}
+
+  /* ---------- 1 + 18. Bag drawer ---------- */
+  html.brf-lock,html.brf-lock body{overscroll-behavior:none}
+  html .mini-cart .mini-cart__line-item-list,html .mini-cart .mini-cart__content{overscroll-behavior:contain}
+  /* the X replaces the bag icon while the bag is open: the count bubble fades out instead of sitting on top of it */
+  html .header__cart-count{transition:opacity .2s ease,transform .25s cubic-bezier(.2,.8,.2,1)}
+  html .header__cart-icon[aria-expanded="true"] .header__cart-count,html.brf-cart-open .header__cart-toggle .header__cart-count{opacity:0!important;transform:scale(.4)!important;pointer-events:none}
+  .header__cart-count.brf-bump{animation:brf-bump .5s cubic-bezier(.2,1.6,.3,1)}
+  @keyframes brf-bump{35%{transform:scale(1.35)}}
+
+  /* ---------- 2. "Added to bag" inside the button ---------- */
+  html .brf-added,html button.brf-added[data-action="add-to-cart"],html .brf-sticky-atc__btn.brf-added{background:#0C6637!important;border-color:#0C6637!important;color:#fff!important}
+  .brf-added{animation:brf-qa-pop .45s cubic-bezier(.2,1.4,.3,1)}
+  .brf-added__tick{display:inline-block;margin-left:6px;font-weight:700}
+  @keyframes brf-qa-pop{40%{transform:scale(1.04)}}
+
+  /* ---------- 3. Colour swatches on product cards: a single centred ring ---------- */
+  html .product-item .color-swatch-list{gap:9px!important;padding:4px 3px!important;overflow:visible!important}
+  html .product-item .color-swatch{line-height:0}
+  html .product-item .color-swatch__item{box-sizing:border-box!important;border-radius:50%!important;flex:none;transform:none!important}
+  html .product-item .color-swatch__radio:checked+.color-swatch__item::after,html .product-item .color-swatch__item::after{display:none!important;content:none!important}
+  html .product-item .color-swatch__radio:checked+.color-swatch__item{box-shadow:0 0 0 2px #fff,0 0 0 3.5px #1D1D1F,inset 0 0 0 1px rgba(0,0,0,.14)!important}
+  html.brf-hw-page .product-item .color-swatch__radio:checked+.color-swatch__item{box-shadow:0 0 0 2px #221A2C,0 0 0 3.5px #F08A24!important}
+  @media (hover:hover) and (pointer:fine){html .product-item .color-swatch__item:hover{transform:scale(1.12)!important}}
+  @media (max-width:640px){html .product-item .color-swatch-list{gap:8px!important}}
+
+  /* ---------- 4. "Save x": red glass pill, white text, on the photo ---------- */
+  html body .product-label.product-label--on-sale,html body .brf-badge,html body .brf-ucard__badge,html body .brf-hw__badge{
+    display:inline-block;padding:5px 11px!important;border-radius:980px!important;
+    background:linear-gradient(135deg,rgba(234,56,50,.86) 0%,rgba(190,30,26,.8) 100%)!important;color:#fff!important;
+    -webkit-backdrop-filter:blur(14px) saturate(180%);backdrop-filter:blur(14px) saturate(180%);
+    border:1px solid rgba(255,255,255,.4)!important;
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.5),inset 0 -1px 0 rgba(120,10,10,.18),0 6px 16px -6px rgba(179,38,30,.6)!important;
+    font-weight:700!important;font-size:12px!important;line-height:1!important;letter-spacing:.01em;text-shadow:0 1px 1px rgba(90,0,0,.25)}
+  @supports not ((-webkit-backdrop-filter:blur(1px)) or (backdrop-filter:blur(1px))){
+    html body .product-label.product-label--on-sale,html body .brf-badge,html body .brf-ucard__badge{background:#D32F2A!important}
+  }
+  html .product-item .brf-pi-media>.product-item__label-list{position:absolute;top:10px!important;left:10px!important;right:auto;z-index:3;margin:0;pointer-events:none}
+  html .product-item .product-item__label-list>.product-label{border-radius:980px!important;margin-bottom:5px}
+  @media (max-width:640px){
+    html .product-item .brf-pi-media>.product-item__label-list{top:8px!important;left:8px!important}
+    html body .product-item .product-label.product-label--on-sale{padding:4px 9px!important;font-size:11px!important}
+  }
+
+  /* ---------- 6. Fabric guide sidebar (and any small side-by-side card) ---------- */
+  html .product-item--horizontal .brf-ci__arrow,html .product-item--horizontal .brf-ci__dots,html .blog-sidebar .brf-ci__arrow,html .blog-sidebar .brf-ci__dots{display:none!important}
+  html .product-item--horizontal .brf-pi-media>.product-item__label-list{top:5px!important;left:5px!important}
+  html body .product-item--horizontal .product-label.product-label--on-sale{padding:3px 7px!important;font-size:10px!important}
+  html .product-item--horizontal .brf-pi-media{flex:none}
+
+  /* ---------- 9. Phone search: no "Shop by category" ---------- */
+  .brf-ms .brf-sp__block--cats{display:none!important}
+  @media (max-width:767px){.brf-sp .brf-sp__block--cats{display:none!important}}
+
+  /* ---------- 10. Phone menu ---------- */
+  html .brf-md__promos{display:none!important}
+  html .brf-md__sheet{width:min(340px,84vw)!important}
+  html .brf-md__scrim{background:rgba(8,8,10,.62)!important;-webkit-backdrop-filter:blur(3px) saturate(90%);backdrop-filter:blur(3px) saturate(90%)}
+
+  /* ---------- 13. Delivery options sheet on phones/tablets + cart page header ---------- */
+  @media (max-width:999px){
+    html .brf-ship__card.is-sheet{z-index:2147483200!important;padding:18px 18px calc(16px + env(safe-area-inset-bottom))!important;box-shadow:0 30px 60px -20px rgba(15,15,20,.5)!important;max-height:min(78vh,560px)}
+    html .brf-ship__card.is-sheet .brf-ship__h{display:block;padding-right:44px;margin-bottom:8px;font-size:12px}
+    html .brf-ship__card.is-sheet .brf-ship__row{flex-wrap:wrap;gap:2px 12px;align-items:baseline;padding:9px 0}
+    html .brf-ship__card.is-sheet .brf-ship__row b{flex:1 1 auto;min-width:0}
+    html .brf-ship__card.is-sheet .brf-ship__row i{white-space:normal}
+    html .brf-ship__card.is-sheet::after{display:none!important}
+    .brf-shipx{position:absolute;top:10px;right:10px;display:grid;place-items:center;width:36px;height:36px;padding:0;border:0;border-radius:50%;background:rgba(29,29,31,.07);color:#1D1D1F;cursor:pointer}
+    .brf-shipx svg{width:14px;height:14px}
+    .brf-shipscrim{position:fixed;inset:0;z-index:2147483199;background:rgba(10,10,12,.42);-webkit-tap-highlight-color:transparent}
+  }
+  @media (min-width:1000px){.brf-shipx,.brf-shipscrim{display:none!important}}
+  @media (max-width:640px){
+    html .brf-cp__top{flex-wrap:wrap!important;align-items:center!important;row-gap:6px}
+    html .brf-cp__top .page__title{flex:0 1 auto;min-width:0;margin:0;font-size:clamp(24px,7.4vw,30px)!important;white-space:nowrap}
+    html .brf-cp__count{white-space:nowrap}
+    html .brf-cp__continue{flex:0 0 auto;max-width:100%;margin-left:auto;white-space:nowrap;padding:8px 12px!important;border-radius:980px;background:rgba(29,29,31,.06);font-size:13px!important;color:#1D1D1F!important;text-decoration:none!important}
+  }
+
+  /* ---------- 14. Product cards on phones: quantity box inside the Add to bag button ---------- */
+  @media (max-width:767px){
+    html .product-item .brf-qa-form.brf-qa-form--qty{display:flex!important;flex-wrap:nowrap!important;align-items:center;gap:0!important;height:44px;padding:3px!important;border-radius:980px;
+      background:#149954;box-shadow:inset 0 1px 0 rgba(255,255,255,.18),0 8px 18px -10px rgba(20,153,84,.85);transition:background .25s ease}
+    html .product-item .brf-qa-form--qty .brf-qa__qty,html .product-item .brf-qa-form--qty.is-compact .brf-qa__qty{flex:0 0 auto!important;width:auto;height:38px!important;margin:0;border-radius:980px;
+      background:rgba(255,255,255,.16);box-shadow:inset 0 0 0 1px rgba(255,255,255,.24)}
+    html .product-item .brf-qa-form--qty .brf-qa__qty:focus-within{box-shadow:inset 0 0 0 1.5px #fff}
+    html .product-item .brf-qa-form--qty .brf-qa__step{flex:0 0 28px;width:28px;color:#fff;font-size:17px;border-radius:980px}
+    html .product-item .brf-qa-form--qty .brf-qa__step:hover,html .product-item .brf-qa-form--qty .brf-qa__step:active{background:rgba(255,255,255,.16)}
+    html .product-item .brf-qa-form--qty .brf-qa__step:disabled{color:rgba(255,255,255,.4);background:transparent}
+    html .product-item .brf-qa-form--qty .brf-qa__in{flex:0 0 26px;width:26px;color:#fff;font-size:14.5px;caret-color:#fff}
+    html .product-item .brf-qa-form--qty>.brf-qa__add,html .product-item .brf-qa-form--qty.is-compact>.brf-qa__add{flex:1 1 auto!important;min-width:0;height:38px!important;margin:0!important;padding:0 6px 0 4px!important;
+      background:transparent!important;border:0!important;box-shadow:none!important;color:#fff!important;font-size:13.5px!important;gap:5px;border-radius:980px!important}
+    html .product-item .brf-qa-form--qty>.brf-qa__add:active{background:rgba(255,255,255,.14)!important;transform:none}
+    html .product-item .brf-qa-form--qty>.brf-qa__add.is-done{background:transparent!important;border:0!important}
+    html .product-item .brf-qa-form--qty>.brf-qa__add.is-done svg{display:none}
+    html .product-item .brf-qa-form--qty.brf-qa-noicon .brf-qa__add svg{display:none}
+    html .product-item .brf-qa-form--qty.is-added{background:#0C6637}
+  }
+  @media (max-width:374px){
+    html .product-item .brf-qa-form--qty{padding:3px 2px 3px 3px}
+    html .product-item .brf-qa-form--qty .brf-qa__step{flex-basis:23px;width:23px;font-size:16px}
+    html .product-item .brf-qa-form--qty .brf-qa__in{flex-basis:21px;width:21px;font-size:13.5px}
+    html .product-item .brf-qa-form--qty .brf-qa__add svg{display:none}
+    html .product-item .brf-qa-form--qty>.brf-qa__add,html .product-item .brf-qa-form--qty.is-compact>.brf-qa__add{padding:0 4px!important;font-size:13px!important}
+  }
+
+  /* ---------- 16 + 17. Filters: tick several options, then show results ---------- */
+  [data-brf-multi] .brf-opt__box{border-radius:6px!important}
+  .brf-panel__foot{display:none}
+  @media (max-width:999px){
+    html .brf-fbar .brf-panel[data-brf-multi]{padding-bottom:0!important}
+    .brf-panel[data-brf-multi] .brf-panel__foot{display:flex;gap:10px;position:-webkit-sticky;position:sticky;bottom:0;margin:8px -18px 0;padding:12px 18px calc(12px + env(safe-area-inset-bottom));
+      background:rgba(250,250,252,.94);-webkit-backdrop-filter:saturate(180%) blur(18px);backdrop-filter:saturate(180%) blur(18px);box-shadow:0 -.5px 0 rgba(29,29,31,.12);z-index:2}
+    .brf-panel__reset{flex:0 0 auto;height:48px;padding:0 18px;border:0;border-radius:980px;background:rgba(29,29,31,.07);color:#1D1D1F;font:600 15px/1 var(--text-font-family,Inter,sans-serif);cursor:pointer}
+    .brf-panel__reset:disabled{opacity:.45;cursor:default}
+    .brf-panel__apply{flex:1 1 auto;display:inline-flex;align-items:center;justify-content:center;gap:8px;height:48px;padding:0 20px!important;border:0;border-radius:980px!important;
+      background:#1D1D1F!important;color:#fff!important;font:600 15px/1 var(--text-font-family,Inter,sans-serif)!important;cursor:pointer;transition:background .2s,transform .15s}
+    .brf-panel__apply:active{transform:scale(.98)}
+    .brf-panel__apply.is-dirty{background:#149954!important}
+    .brf-panel__apply .brf-panel__n{display:inline-grid;place-items:center;min-width:22px;height:22px;padding:0 6px;border-radius:980px;background:rgba(255,255,255,.22);font-size:12.5px}
+    .brf-panel[data-brf-multi] .brf-opt{-webkit-tap-highlight-color:transparent;user-select:none}
+    .brf-panel[data-brf-multi] .brf-opt .brf-opt__box{transition:background .15s ease,border-color .15s ease,transform .2s cubic-bezier(.2,1.6,.3,1)}
+    .brf-panel[data-brf-multi] .brf-opt.is-on .brf-opt__box{transform:scale(1.08)}
+  }
+  @media (prefers-reduced-motion:reduce){.brf-added,.header__cart-count.brf-bump{animation:none}}
+</style>
+
+<script>
+(function(){
+  var doc = document, root = doc.documentElement;
+  if (root.__brfV5) return; root.__brfV5 = true;
+  var mobile = window.matchMedia('(max-width:999px)');
+  var phone = window.matchMedia('(max-width:767px)');
+  var reduce = window.matchMedia('(prefers-reduced-motion:reduce)').matches;
+  var X_SVG = '<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 3.5l9 9m0-9l-9 9" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>';
+  function vis(el){
+    if (!el || !el.getClientRects().length) return false;
+    var r = el.getBoundingClientRect();
+    if (r.bottom <= 0 || r.right <= 0 || r.top >= window.innerHeight || r.left >= window.innerWidth) return false;
+    for (var p = el; p && p.nodeType === 1 && p !== doc.body; p = p.parentElement) {
+      var cs = getComputedStyle(p);
+      if (cs.display === 'none' || cs.visibility === 'hidden' || parseFloat(cs.opacity) < 0.05) return false;
+    }
+    return true;
+  }
+  function setClass(name, on){ if (root.classList.contains(name) !== !!on) root.classList.toggle(name, !!on); }
+
+  /* ================= Rewards (Smile) and live chat (Shopify Inbox) ================= */
+  var LAUNCHER = '#smile-ui-lite-launcher-frame-container';
+  function smilePanel(){
+    var launcher = doc.querySelector(LAUNCHER);
+    var c = doc.querySelectorAll('[id^="smile-ui"],[class*="smile-ui"]');
+    for (var i = 0; i < c.length; i++) {
+      var el = c[i];
+      if (el.id === 'smile-ui-lite-launcher-frame-container' || (launcher && (el.contains(launcher) || launcher.contains(el)))) continue;
+      if (!el.querySelector('iframe') && el.tagName !== 'IFRAME') continue;
+      var r = el.getBoundingClientRect();
+      if (r.width < 200 || r.height < 240) continue;
+      if (!vis(el)) continue;
+      return el;
+    }
+    return null;
+  }
+  /* is the Inbox chat window open? look for a big visible box inside its shadow DOM */
+  function painted(cs, el){
+    if (el.tagName === 'IFRAME') return true;
+    if (cs.backgroundImage && cs.backgroundImage !== 'none') return true;
+    var m = /rgba?\(([^)]+)\)/.exec(cs.backgroundColor || '');
+    if (!m) return false;
+    var parts = m[1].split(/[\s,\/]+/).filter(Boolean);
+    return parts.length < 4 || parseFloat(parts[3]) > 0.2;
+  }
+  function bigInShadow(node, depth){
+    var sr = node && node.shadowRoot; if (!sr || depth > 4) return false;
+    var all = sr.querySelectorAll('*');
+    for (var i = 0; i < all.length; i++) {
+      var el = all[i];
+      if (el.shadowRoot && bigInShadow(el, depth + 1)) return true;
+      if (el.tagName === 'STYLE' || el.tagName === 'SCRIPT' || el.tagName === 'svg') continue;
+      var r = el.getBoundingClientRect();
+      if (r.width < 240 || r.height < 300) continue;
+      if (r.bottom <= 0 || r.top >= window.innerHeight || r.right <= 0 || r.left >= window.innerWidth) continue;
+      var ecs = getComputedStyle(el);
+      if (ecs.pointerEvents === 'none' || !painted(ecs, el)) continue;
+      var ok = true;
+      for (var p = el; p && p !== sr; p = p.parentNode) {
+        if (p.nodeType !== 1) break;
+        var cs = getComputedStyle(p);
+        if (cs.display === 'none' || cs.visibility === 'hidden' || parseFloat(cs.opacity) < 0.05) { ok = false; break; }
+      }
+      if (ok) return true;
+    }
+    return false;
+  }
+  function chatOpen(){
+    var sc = doc.querySelector('shopify-chat') || doc.querySelector('inbox-online-store-chat');
+    if (!sc) return false;
+    var r = sc.getBoundingClientRect();
+    if (r.width >= 240 && r.height >= 300 && vis(sc) && !sc.shadowRoot) return true;
+    return bigInShadow(sc, 0);
+  }
+
+  /* our own close button for the Rewards panel */
+  var smx = doc.createElement('button');
+  smx.type = 'button'; smx.className = 'brf-smx'; smx.setAttribute('aria-label', 'Close rewards'); smx.innerHTML = X_SVG;
+  var smscrim = doc.createElement('div'); smscrim.className = 'brf-smscrim'; smscrim.setAttribute('aria-hidden', 'true');
+  doc.body.appendChild(smscrim); doc.body.appendChild(smx);
+  var hiddenPanel = null;
+  function closeSmile(){
+    var p = smilePanel();
+    try { if (window.SmileUI && typeof SmileUI.closePanel === 'function') { SmileUI.closePanel(); } } catch (e) {}
+    /* if Smile didn't close it, hide it ourselves until the Rewards button is tapped again */
+    setTimeout(function(){
+      var still = smilePanel();
+      if (still) { still.setAttribute('data-brf-smile-hidden', ''); hiddenPanel = still; }
+      heavy();
+    }, 260);
+    if (!p) heavy();
+  }
+  smx.addEventListener('click', function(e){ e.preventDefault(); e.stopPropagation(); closeSmile(); });
+  smscrim.addEventListener('click', function(e){ e.preventDefault(); closeSmile(); });
+  /* tapping the Rewards button (an iframe) blurs the page: let Smile show its panel again */
+  window.addEventListener('blur', function(){
+    if (!hiddenPanel) return;
+    setTimeout(function(){ var a = doc.activeElement; if (a && a.tagName === 'IFRAME' && /smile/i.test((a.id || '') + ' ' + (a.className || '') + ' ' + (a.title || '') + ' ' + (a.src || ''))) { hiddenPanel.removeAttribute('data-brf-smile-hidden'); hiddenPanel = null; } }, 0);
+  });
+  doc.addEventListener('keydown', function(e){ if (e.key === 'Escape' && root.classList.contains('brf-smile-open')) closeSmile(); });
+  function placeSmx(p){
+    var r = p.getBoundingClientRect();
+    smx.style.top = Math.round(Math.max(r.top, 0) + 10) + 'px';
+    smx.style.right = Math.round(Math.max(window.innerWidth - r.right, 0) + 10) + 'px';
+  }
+
+  /* ================= floating buttons: when to hide them ================= */
+  var lastY = window.scrollY || 0;
+  function zOf(el){
+    for (var p = el; p && p.nodeType === 1 && p !== doc.body; p = p.parentElement) {
+      var z = parseInt(getComputedStyle(p).zIndex, 10);
+      if (!isNaN(z)) return z;
+    }
+    return NaN;
+  }
+  /* slower checks: is the Rewards panel or the chat window open? */
+  function heavy(){
+    var panel = smilePanel();
+    setClass('brf-smile-open', !!panel);
+    if (panel) {
+      if (smx.nextElementSibling) doc.body.appendChild(smx);
+      placeSmx(panel);
+      var z = zOf(panel);
+      if (isNaN(z)) smscrim.style.display = 'none'; else { smscrim.style.display = ''; smscrim.style.zIndex = String(Math.max(z - 1, 0)); }
+    }
+    var chat = chatOpen();
+    setClass('brf-chat-open', chat);
+    /* the chat button steps aside while the Rewards panel is open */
+    var sc = doc.querySelector('shopify-chat');
+    if (sc) {
+      if (panel && !chat) { sc.style.setProperty('--brf-float-op', '0'); sc.style.setProperty('--brf-float-vis', 'hidden'); sc.style.setProperty('--brf-float-pe', 'none'); }
+      else { sc.style.removeProperty('--brf-float-op'); sc.style.removeProperty('--brf-float-vis'); sc.style.removeProperty('--brf-float-pe'); }
+    }
+    lockState();
+  }
+  /* quick checks: sheets and drawers that should have the floating buttons out of the way */
+  function floaters(){
+    var b = doc.body;
+    var sheet = root.classList.contains('brf-sheet-open') || root.classList.contains('brf-ship-sheet') ||
+      (mobile.matches && !!doc.querySelector('[data-brf-fbar] .brf-panel:not([hidden])')) ||
+      (b && b.classList.contains('no-mobile-scroll')) ||
+      !!doc.querySelector('#mobile-collection-filters[aria-hidden="false"]');
+    setClass('brf-float-off', sheet);
+    lockState();
+  }
+  var fq = false;
+  function queueFloaters(){ if (fq) return; fq = true; requestAnimationFrame(function(){ fq = false; floaters(); }); }
+  new MutationObserver(queueFloaters).observe(doc.body, {childList: true, subtree: true, attributes: true, attributeFilter: ['class', 'aria-hidden', 'hidden']});
+  new MutationObserver(queueFloaters).observe(root, {attributes: true, attributeFilter: ['class']});
+  setInterval(function(){ if (!doc.hidden) heavy(); }, 700);
+  doc.addEventListener('click', function(){ setTimeout(heavy, 80); setTimeout(heavy, 500); }, true);
+  window.addEventListener('blur', function(){ setTimeout(heavy, 120); setTimeout(heavy, 600); });
+  floaters(); heavy();
+
+  /* 5. chat + Rewards tuck away while scrolling down on phones, so they never sit on a button you're about to tap */
+  window.addEventListener('scroll', function(){
+    var y = window.scrollY || 0, d = y - lastY;
+    if (Math.abs(d) < 6) return;
+    lastY = y;
+    if (!phone.matches || root.classList.contains('brf-chat-open') || root.classList.contains('brf-smile-open')) { setClass('brf-float-tuck', false); return; }
+    var nearTop = y < 120;
+    setClass('brf-float-tuck', d > 0 && !nearTop);
+  }, {passive: true});
+
+  /* ================= 1 + 7. Scrolling: lock the page behind open sheets, no bounce past the footer ================= */
+  function lockState(){
+    var b = doc.body;
+    var on = mobile.matches && (root.classList.contains('brf-cart-open') || root.classList.contains('brf-sheet-open') || root.classList.contains('brf-ship-sheet') ||
+      root.classList.contains('brf-md-open') || root.classList.contains('brf-msearch-open') || root.classList.contains('brf-smile-open') || (b && b.classList.contains('no-mobile-scroll')));
+    setClass('brf-lock', on);
+  }
+  function canScroll(el, dy){
+    /* dy > 0: finger moving down (content wants to scroll up) */
+    for (; el && el !== doc.body && el !== root; el = el.parentElement) {
+      if (el.nodeType !== 1) continue;
+      var oy = getComputedStyle(el).overflowY;
+      if ((oy === 'auto' || oy === 'scroll') && el.scrollHeight > el.clientHeight + 1) {
+        if (dy > 0 && el.scrollTop > 0) return true;
+        if (dy < 0 && el.scrollTop + el.clientHeight < el.scrollHeight - 1) return true;
+        if (dy === 0) return true;
+        return false; /* at its edge: don't hand the gesture to the page */
+      }
+    }
+    return null; /* nothing scrollable under the finger */
+  }
+  var tx = 0, ty = 0;
+  doc.addEventListener('touchstart', function(e){ if (e.touches.length !== 1) return; tx = e.touches[0].clientX; ty = e.touches[0].clientY; }, {passive: true});
+  doc.addEventListener('touchmove', function(e){
+    if (e.touches.length !== 1 || !mobile.matches) return;
+    var dx = e.touches[0].clientX - tx, dy = e.touches[0].clientY - ty;
+    if (Math.abs(dx) > Math.abs(dy)) return;
+    var t = e.target;
+    if (root.classList.contains('brf-lock')) {
+      var ok = canScroll(t, dy);
+      if (ok !== true && e.cancelable) e.preventDefault();
+      return;
+    }
+    /* 7. at the very bottom, pushing further up would only bounce the page past the footer */
+    if (dy < 0) {
+      var se = doc.scrollingElement || root;
+      if (window.scrollY + window.innerHeight >= se.scrollHeight - 1 && canScroll(t, dy) !== true && e.cancelable) e.preventDefault();
+    }
+  }, {passive: false});
+
+  /* 7. anything invisible that pokes out below the footer must not make the page longer */
+  function trimTail(){
+    if (!mobile.matches) return;
+    var end = doc.querySelector('.brf-flogo') || doc.querySelector('.footer');
+    if (!end) return;
+    var se = doc.scrollingElement || root;
+    var endY = end.getBoundingClientRect().bottom + window.scrollY;
+    if (se.scrollHeight - endY <= 2) return;
+    var all = doc.body.querySelectorAll('*');
+    for (var i = 0; i < all.length; i++) {
+      var el = all[i];
+      if (end.contains(el) || el.hasAttribute('data-brf-tail')) continue;
+      var r = el.getBoundingClientRect();
+      if (r.bottom + window.scrollY <= endY + 2 || (!r.width && !r.height)) continue;
+      var cs = getComputedStyle(el);
+      if (cs.position === 'fixed') continue;
+      var hidden = cs.visibility === 'hidden' || parseFloat(cs.opacity) === 0 || el.getAttribute('aria-hidden') === 'true';
+      if (cs.position === 'absolute' && hidden) { el.setAttribute('data-brf-tail', ''); el.style.setProperty('display', 'none', 'important'); }
+    }
+  }
+  window.addEventListener('load', function(){ setTimeout(trimTail, 600); setTimeout(trimTail, 3000); });
+
+  /* ================= 2. Add to bag on phones/tablets: no drawer, the button says so ================= */
+  var lastBtn = null, lastBtnAt = 0;
+  var ADD_SEL = '[data-action="add-to-cart"], .brf-sticky-atc__btn, form[action*="/cart/add"] [type="submit"], form[action*="/cart/add"] button:not([type="button"])';
+  doc.addEventListener('click', function(e){
+    var b = e.target.closest && e.target.closest(ADD_SEL);
+    if (b) { lastBtn = b; lastBtnAt = Date.now(); }
+  }, true);
+  doc.addEventListener('submit', function(e){
+    var f = e.target;
+    if (f && f.matches && f.matches('form[action*="/cart/add"]')) {
+      var b = e.submitter || f.querySelector('[type="submit"]');
+      if (b && (!lastBtn || Date.now() - lastBtnAt > 1500 || !f.contains(lastBtn))) { lastBtn = b; lastBtnAt = Date.now(); }
+    }
+  }, true);
+  function bump(){
+    var c = doc.querySelectorAll('.header__cart-count');
+    [].forEach.call(c, function(n){ n.classList.remove('brf-bump'); void n.offsetWidth; n.classList.add('brf-bump'); });
+  }
+  function labelAdded(btn){
+    if (!btn || !btn.isConnected) return;
+    /* product cards: brf-v4 handles the label ("Added ✓"); we tint the whole pill */
+    if (btn.classList.contains('brf-qa__add')) {
+      var f = btn.closest('.brf-qa-form');
+      if (f) { f.classList.add('is-added'); clearTimeout(f.__brfAddT); f.__brfAddT = setTimeout(function(){ f.classList.remove('is-added'); }, 1400); }
+      return;
+    }
+    var main = doc.querySelector('.product-block-list__item--info .product-form__add-button');
+    var sticky = doc.querySelector('.brf-sticky-atc__btn');
+    var targets = [btn];
+    if (btn === sticky && main) targets.push(main);
+    if (btn === main && sticky) targets.push(sticky);
+    targets.forEach(function(b){
+      if (!b || b.disabled && b !== btn) return;
+      if (!b.__brfOrig) b.__brfOrig = b.innerHTML;
+      clearTimeout(b.__brfT);
+      var set = function(){ b.innerHTML = 'Added to bag<span class="brf-added__tick" aria-hidden="true">✓</span>'; b.classList.add('brf-added'); b.setAttribute('aria-live', 'polite'); };
+      /* the sticky bar re-syncs its label from the main button, so set it just after */
+      if (b.classList.contains('brf-sticky-atc__btn')) setTimeout(set, 30); else set();
+      b.__brfT = setTimeout(function(){
+        b.classList.remove('brf-added');
+        if (b.__brfOrig != null) { b.innerHTML = b.__brfOrig; b.__brfOrig = null; }
+      }, 2200);
+    });
+  }
+  function onCartPage(){ return window.theme && theme.pageType === 'cart'; }
+  doc.body.addEventListener('product:added', function(e){
+    var btn = (lastBtn && Date.now() - lastBtnAt < 15000) ? lastBtn : null;
+    if (e.target && e.target.querySelector && !btn) btn = e.target.querySelector('[data-action="add-to-cart"]');
+    labelAdded(btn); lastBtn = null;
+    bump();
+    if (!mobile.matches || onCartPage()) return;
+    /* quick view adds keep their own flow (brf-v4 closes the window) but still skip the drawer */
+    e.stopPropagation();
+    root.dispatchEvent(new CustomEvent('cart:refresh', {bubbles: true, detail: {scrollToTop: false}}));
+  });
+  doc.addEventListener('brf:bag-added-mobile', function(){
+    var btn = (lastBtn && Date.now() - lastBtnAt < 15000) ? lastBtn : null;
+    labelAdded(btn); lastBtn = null; bump();
+  });
+
+  /* ================= 14. Card button label: "Add to bag" if it fits, otherwise "Add" ================= */
+  function fitQa(btn){
+    var f = btn && btn.closest('.brf-qa-form--qty'); if (!f) return;
+    var lbl = btn.querySelector('.brf-qa__lbl'); if (!lbl) return;
+    if (btn.classList.contains('is-done')) return;
+    if (!phone.matches) { if (lbl.getAttribute('data-brf-full') && !f.classList.contains('is-compact')) lbl.textContent = lbl.getAttribute('data-brf-full'); f.classList.remove('brf-qa-noicon'); return; }
+    var full = lbl.getAttribute('data-brf-full');
+    if (!full) { full = lbl.textContent.trim() || 'Add to bag'; if (full === 'Add') full = 'Add to bag'; lbl.setAttribute('data-brf-full', full); }
+    f.classList.remove('brf-qa-noicon'); lbl.textContent = full;
+    if (btn.scrollWidth > btn.clientWidth + 1) { f.classList.add('brf-qa-noicon'); }
+    if (btn.scrollWidth > btn.clientWidth + 1) { lbl.textContent = 'Add'; f.classList.remove('brf-qa-noicon'); if (btn.scrollWidth > btn.clientWidth + 1) f.classList.add('brf-qa-noicon'); }
+  }
+  window.brfFitQa = fitQa;
+  function fitAll(){ [].forEach.call(doc.querySelectorAll('.brf-qa-form--qty .brf-qa__add'), fitQa); }
+  fitAll();
+  window.addEventListener('load', fitAll);
+  var fitT = 0;
+  window.addEventListener('resize', function(){ clearTimeout(fitT); fitT = setTimeout(fitAll, 150); }, {passive: true});
+  doc.addEventListener('brf:filtered', function(){ setTimeout(fitAll, 30); });
+  doc.addEventListener('theme:loading:end', function(){ setTimeout(fitAll, 60); });
+  var fitMoT = 0;
+  new MutationObserver(function(muts){
+    for (var i = 0; i < muts.length; i++) for (var j = 0; j < muts[i].addedNodes.length; j++) {
+      var n = muts[i].addedNodes[j];
+      if (n.nodeType === 1 && (n.classList.contains('product-item') || (n.querySelector && n.querySelector('.brf-qa-form--qty')))) { clearTimeout(fitMoT); fitMoT = setTimeout(fitAll, 80); return; }
+    }
+  }).observe(doc.body, {childList: true, subtree: true});
+
+  /* ================= 13. Delivery options sheet: a close button and tap-outside ================= */
+  var shipScrim = null;
+  function shipWrap(){ return doc.querySelector('.brf-ship'); }
+  function closeShip(){ var w = shipWrap(); if (w) w.classList.remove('is-open'); var a = w && w.querySelector('a'); if (a) a.setAttribute('aria-expanded', 'false'); }
+  function shipSheet(){
+    var card = doc.querySelector('.brf-ship__card.is-sheet');
+    if (card && !card.querySelector('.brf-shipx')) {
+      var x = doc.createElement('button'); x.type = 'button'; x.className = 'brf-shipx'; x.setAttribute('aria-label', 'Close delivery options'); x.innerHTML = X_SVG;
+      x.addEventListener('click', function(e){ e.preventDefault(); e.stopPropagation(); closeShip(); });
+      card.appendChild(x);
+    }
+    var on = !!card && mobile.matches;
+    if (on && !shipScrim) {
+      shipScrim = doc.createElement('div'); shipScrim.className = 'brf-shipscrim';
+      shipScrim.addEventListener('click', function(e){ e.preventDefault(); e.stopPropagation(); closeShip(); });
+      doc.body.appendChild(shipScrim);
+    } else if (!on && shipScrim) { shipScrim.remove(); shipScrim = null; }
+  }
+  new MutationObserver(function(){ shipSheet(); }).observe(root, {attributes: true, attributeFilter: ['class']});
+
+  /* ================= 16 + 17. Filters: tick several, then "Show results" ================= */
+  function panelOf(el){ return el && el.closest && el.closest('.brf-panel[data-brf-multi]'); }
+  function chosen(p){ return [].map.call(p.querySelectorAll('.brf-opt.is-on[data-brf-v]'), function(a){ return a.getAttribute('data-brf-v'); }); }
+  function ensureFoot(p){
+    if (p.__brfFoot) return p.__brfFoot;
+    [].forEach.call(p.querySelectorAll('.brf-opt[data-brf-v]'), function(o){ o.__on0 = o.classList.contains('is-on'); });
+    p.__brfStart = chosen(p).sort().join('\u0001');
+    var foot = doc.createElement('div'); foot.className = 'brf-panel__foot';
+    foot.innerHTML = '<button type="button" class="brf-panel__reset" data-brf-reset>Clear</button><button type="button" class="brf-apply brf-panel__apply" data-brf-apply>Show results</button>';
+    p.appendChild(foot); p.__brfFoot = foot;
+    paintFoot(p);
+    return foot;
+  }
+  function dirty(p){ return chosen(p).sort().join('\u0001') !== p.__brfStart; }
+  function paintFoot(p){
+    var foot = p.__brfFoot; if (!foot) return;
+    var n = chosen(p).length, ap = foot.querySelector('[data-brf-apply]'), rs = foot.querySelector('[data-brf-reset]');
+    var d = dirty(p);
+    ap.classList.toggle('is-dirty', d);
+    ap.innerHTML = (d ? 'Show results' : 'Done') + (n ? ' <span class="brf-panel__n">' + n + '</span>' : '');
+    rs.disabled = n === 0;
+  }
+  function applyUrl(p){
+    var param = p.getAttribute('data-brf-multi');
+    var q = new URLSearchParams(location.search);
+    q.delete('page'); q.delete(param);
+    chosen(p).forEach(function(v){ q.append(param, v); });
+    var s = q.toString();
+    return location.pathname + (s ? '?' + s : '');
+  }
+  function closePanel(p){ var d = p.querySelector('[data-brf-close]'); if (d) { d.__brfPass = true; d.click(); } }
+  function apply(p){
+    if (!dirty(p)) { closePanel(p); return; }
+    var url = applyUrl(p);
+    try { sessionStorage.setItem('brfFilterNav', JSON.stringify({p: location.pathname, y: Math.round(window.scrollY), panel: '', t: Date.now()})); } catch (e) {}
+    root.classList.add('brf-filtering');
+    var ap = p.__brfFoot && p.__brfFoot.querySelector('[data-brf-apply]'); if (ap) ap.classList.add('is-loading');
+    /* a link inside the bar uses the in-place filtering (brf-v3-polish) where it is available, otherwise it simply loads the page */
+    var bar = p.closest('[data-brf-fbar]') || doc.body;
+    var a = doc.createElement('a'); a.href = url; a.hidden = true; a.rel = 'nofollow'; a.setAttribute('data-brf-v5-apply', '');
+    bar.appendChild(a);
+    setTimeout(function(){ a.click(); setTimeout(function(){ if (a.isConnected) a.remove(); }, 1000); }, 0);
+  }
+  doc.addEventListener('click', function(e){
+    if (!mobile.matches) return;
+    var t = e.target;
+    var p = panelOf(t); if (!p) return;
+    var opt = t.closest('.brf-opt[data-brf-v]');
+    if (opt) {
+      e.preventDefault(); e.stopPropagation();
+      ensureFoot(p);
+      var on = !opt.classList.contains('is-on');
+      opt.classList.toggle('is-on', on); opt.setAttribute('aria-checked', on ? 'true' : 'false');
+      paintFoot(p);
+      return;
+    }
+    if (t.closest('[data-brf-apply]')) { e.preventDefault(); e.stopPropagation(); apply(p); return; }
+    if (t.closest('[data-brf-reset]')) {
+      e.preventDefault(); e.stopPropagation();
+      [].forEach.call(p.querySelectorAll('.brf-opt.is-on[data-brf-v]'), function(o){ o.classList.remove('is-on'); o.setAttribute('aria-checked', 'false'); });
+      paintFoot(p); return;
+    }
+    var done = t.closest('[data-brf-close]');
+    if (done && !done.__brfPass && p.__brfFoot && dirty(p)) { e.preventDefault(); e.stopPropagation(); apply(p); return; }
+    if (done) done.__brfPass = false;
+  }, true);
+  /* show the footer as soon as a panel opens */
+  doc.addEventListener('click', function(e){
+    var o = e.target.closest && e.target.closest('[data-brf-open]'); if (!o || !mobile.matches) return;
+    setTimeout(function(){
+      var p = doc.querySelector('.brf-panel[data-brf-multi][data-brf-panel="' + o.getAttribute('data-brf-open') + '"]');
+      if (!p || p.hidden) return;
+      if (p.__brfFoot) {
+        /* a sheet closed without "Show results" starts again from what is really applied */
+        [].forEach.call(p.querySelectorAll('.brf-opt[data-brf-v]'), function(o){ o.classList.toggle('is-on', !!o.__on0); o.setAttribute('aria-checked', o.__on0 ? 'true' : 'false'); });
+        paintFoot(p);
+      } else ensureFoot(p);
+    }, 0);
+  }, true);
+
+  /* ================= 15. Next / previous page: first row lands below the filter bar ================= */
+  function alignResults(smooth){
+    var first = doc.querySelector('.collection__dynamic-part .product-item') || doc.querySelector('.product-list--collection .product-item');
+    if (!first) return;
+    var stick = doc.querySelector('.brf-fstick');
+    var hdr = doc.getElementById('shopify-section-header');
+    var off = 0;
+    if (stick) off = (parseFloat(getComputedStyle(root).getPropertyValue('--brf-stick-top')) || 0) + stick.offsetHeight;
+    else if (hdr) { var ps = getComputedStyle(hdr).position; if (ps === 'sticky' || ps === 'fixed') off = hdr.offsetHeight; }
+    var y = Math.max(0, Math.round(first.getBoundingClientRect().top + window.scrollY - off - 12));
+    window.scrollTo({top: y, behavior: smooth && !reduce ? 'smooth' : 'auto'});
+    /* the bar slims down once it sticks: settle the last few pixels */
+    setTimeout(function(){
+      var st = doc.querySelector('.brf-fstick');
+      var bottom = st ? st.getBoundingClientRect().bottom : (hdr ? Math.max(0, hdr.getBoundingClientRect().bottom) : 0);
+      var gap = first.getBoundingClientRect().top - bottom;
+      if (gap < 6 || gap > 24) window.scrollBy(0, gap - 12);
+    }, smooth && !reduce ? 650 : 60);
+  }
+  var pageAt = 0;
+  doc.addEventListener('click', function(e){
+    var a = e.target.closest && e.target.closest('.pagination a');
+    if (!a) return;
+    pageAt = Date.now();
+    try { sessionStorage.setItem('brfPageNav', String(Date.now())); } catch (x) {}
+  }, true);
+  doc.addEventListener('theme:loading:end', function(){
+    if (!pageAt || Date.now() - pageAt > 10000) return;
+    pageAt = 0;
+    try { sessionStorage.removeItem('brfPageNav'); } catch (x) {}
+    requestAnimationFrame(function(){ alignResults(true); });
+  });
+  /* the same when the next page loads as a whole new page */
+  (function(){
+    var at = 0; try { at = parseInt(sessionStorage.getItem('brfPageNav'), 10) || 0; } catch (x) {}
+    if (!at || Date.now() - at > 30000) return;
+    try { sessionStorage.removeItem('brfPageNav'); } catch (x) {}
+    if (!/[?&]page=\d+/.test(location.search) && !doc.querySelector('.pagination')) return;
+    var go = function(){ alignResults(false); };
+    if (doc.readyState === 'complete') setTimeout(go, 50); else window.addEventListener('load', function(){ setTimeout(go, 50); });
+  })();
+})();
+</script>

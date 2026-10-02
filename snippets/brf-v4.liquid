@@ -182,11 +182,12 @@
     var form = btn.closest('form'), lbl = btn.querySelector('.brf-qa__lbl');
     if (!lbl) return;
     clearTimeout(btn.__brfT);
-    btn.classList.add('is-done', 'is-pop'); lbl.textContent = 'Added!';
+    btn.classList.add('is-done', 'is-pop'); lbl.textContent = 'Added ✓';
     btn.__brfT = setTimeout(function(){
       btn.classList.remove('is-done', 'is-pop');
       lbl.textContent = 'Add';
       if (form) form.classList.add('is-compact');
+      if (window.brfFitQa) window.brfFitQa(btn);
       btn.setAttribute('aria-label', 'Add more to bag');
       var input = form && form.querySelector('.brf-qa__in'); if (input) clampQty(input, 1);
     }, 1400);

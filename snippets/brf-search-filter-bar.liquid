@@ -1,0 +1,163 @@
+{%- comment -%}
+  Bull Ring Fabrics — the collection filter bar, adapted for search results.
+  Uses Shopify's storefront filters on search (search.filters), Sort By, and an
+  "In stock only" switch driven by options[unavailable_products].
+{%- endcomment -%}
+{%- assign brf_sort = search.sort_by | default: search.default_sort_by | default: 'relevance' -%}
+{%- assign brf_sort_name = 'Relevance' -%}
+{%- for o in search.sort_options -%}{%- if o.value == brf_sort -%}{%- assign brf_sort_name = o.name -%}{%- endif -%}{%- endfor -%}
+{%- assign brf_terms = search.terms | split: ' AND ' | last -%}
+
+{%- capture brf_check -%}<svg viewBox="0 0 12 12" width="10" height="10" aria-hidden="true"><path d="M2.5 6.2 5 8.6l4.6-5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>{%- endcapture -%}
+{%- capture brf_chev -%}<svg class="brf-chev" viewBox="0 0 12 12" width="10" height="10" aria-hidden="true"><path d="m2.5 4.5 3.5 3.5 3.5-3.5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>{%- endcapture -%}
+
+<div class="brf-fbar brf-fbar--search" data-brf-fbar>
+  <div class="brf-fbar__row">
+    <div class="brf-fbar__pills" role="toolbar" aria-label="Filter results">
+      {%- for f in search.filters -%}
+        {%- if f.param_name == 'filter.v.availability' -%}{%- continue -%}{%- endif -%}
+        {%- if f.type == 'price_range' -%}
+          {%- assign p_on = false -%}
+          {%- if f.min_value.value != nil or f.max_value.value != nil -%}{%- assign p_on = true -%}{%- endif -%}
+          {%- if p_on -%}<span class="brf-pillgrp is-active"><button type="button" class="brf-pill{% if p_on %} is-active{% endif %}" data-brf-open="f{{ forloop.index }}" aria-expanded="false" aria-controls="brf-panel-f{{ forloop.index }}">{{ f.label | escape }}{% if p_on %}<span class="brf-pill__dot" aria-hidden="true"></span>{% endif %}</button><a class="brf-pill__x" href="{{ f.url_to_remove }}" rel="nofollow" aria-label="Clear {{ f.label | escape }} filter" title="Clear"><svg viewBox="0 0 12 12" width="10" height="10" aria-hidden="true"><path d="M3 3l6 6M9 3L3 9" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></a></span>{%- else -%}<button type="button" class="brf-pill{% if p_on %} is-active{% endif %}" data-brf-open="f{{ forloop.index }}" aria-expanded="false" aria-controls="brf-panel-f{{ forloop.index }}">{{ f.label | escape }}{% if p_on %}<span class="brf-pill__dot" aria-hidden="true"></span>{% endif %}</button>{%- endif -%}
+        {%- else -%}
+          {%- assign live = 0 -%}
+          {%- for v in f.values -%}{%- if v.count > 0 or v.active -%}{%- assign live = live | plus: 1 -%}{%- endif -%}{%- endfor -%}
+          {%- if live < 2 and f.active_values.size == 0 -%}{%- continue -%}{%- endif -%}
+          {%- if f.active_values.size > 0 -%}<span class="brf-pillgrp is-active"><button type="button" class="brf-pill{% if f.active_values.size > 0 %} is-active{% endif %}" data-brf-open="f{{ forloop.index }}" aria-expanded="false" aria-controls="brf-panel-f{{ forloop.index }}">{{ f.label | escape }}{% if f.active_values.size > 0 %}<span class="brf-pill__n">{{ f.active_values.size }}</span>{% endif %}</button><a class="brf-pill__x" href="{{ f.url_to_remove }}" rel="nofollow" aria-label="Clear {{ f.label | escape }} filter" title="Clear"><svg viewBox="0 0 12 12" width="10" height="10" aria-hidden="true"><path d="M3 3l6 6M9 3L3 9" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></a></span>{%- else -%}<button type="button" class="brf-pill{% if f.active_values.size > 0 %} is-active{% endif %}" data-brf-open="f{{ forloop.index }}" aria-expanded="false" aria-controls="brf-panel-f{{ forloop.index }}">{{ f.label | escape }}{% if f.active_values.size > 0 %}<span class="brf-pill__n">{{ f.active_values.size }}</span>{% endif %}</button>{%- endif -%}
+        {%- endif -%}
+      {%- endfor -%}
+    </div>
+
+    <div class="brf-fbar__meta">
+      <label class="brf-switch" title="Hide items that are currently sold out">
+        <input type="checkbox" role="switch" data-brf-search-stock>
+        <span class="brf-switch__track" aria-hidden="true"></span>
+        <span class="brf-switch__label">In stock only</span>
+      </label>
+      {%- assign brf_shown = brf_count | default: search.results_count -%}<span class="brf-fbar__count">{{ brf_shown }} {% if brf_shown == 1 %}result{% else %}results{% endif %}</span>
+      <button type="button" class="brf-sort" data-brf-open="sort" aria-expanded="false" aria-controls="brf-panel-sort">Sort By: <strong>{{ brf_sort_name | escape }}</strong>{{ brf_chev }}</button>
+    </div>
+  </div>
+
+  {%- for f in search.filters -%}
+    {%- if f.param_name == 'filter.v.availability' -%}{%- continue -%}{%- endif -%}
+    <div class="brf-panel" id="brf-panel-f{{ forloop.index }}" data-brf-panel="f{{ forloop.index }}"{% unless f.type == 'price_range' %} data-brf-multi="{{ f.param_name | escape }}"{% endunless %} hidden>
+      <div class="brf-panel__head"><span>{{ f.label | escape }}</span><button type="button" class="brf-panel__done" data-brf-close>Done</button></div>
+      {%- if f.type == 'price_range' -%}
+        <form class="brf-price" data-brf-price data-min-param="{{ f.min_value.param_name }}" data-max-param="{{ f.max_value.param_name }}">
+          <label><span>Min</span><span class="brf-price__field">£<input type="number" inputmode="decimal" min="0" step="1" name="min" placeholder="0" value="{% if f.min_value.value %}{{ f.min_value.value | money_without_currency | remove: ',' }}{% endif %}"></span></label>
+          <span class="brf-price__to">to</span>
+          <label><span>Max</span><span class="brf-price__field">£<input type="number" inputmode="decimal" min="0" step="1" name="max" placeholder="{{ f.range_max | money_without_currency | remove: ',' }}" value="{% if f.max_value.value %}{{ f.max_value.value | money_without_currency | remove: ',' }}{% endif %}"></span></label>
+          <button type="submit" class="brf-apply">Apply</button>
+        </form>
+      {%- else -%}
+        <div class="brf-panel__grid">
+          {%- for v in f.values -%}
+            {%- if v.count == 0 and v.active == false -%}{%- continue -%}{%- endif -%}
+            <a class="brf-opt{% if v.active %} is-on{% endif %}" href="{% if v.active %}{{ v.url_to_remove }}{% else %}{{ v.url_to_add }}{% endif %}" data-brf-v="{{ v.value | escape }}" role="checkbox" aria-checked="{{ v.active }}" rel="nofollow">
+              <span class="brf-opt__box">{{ brf_check }}</span>
+              <span class="brf-opt__label">{{ v.label | escape }}</span>
+              <span class="brf-opt__count">{{ v.count }}</span>
+            </a>
+          {%- endfor -%}
+        </div>
+      {%- endif -%}
+    </div>
+  {%- endfor -%}
+
+  <div class="brf-panel brf-panel--sort" id="brf-panel-sort" data-brf-panel="sort" hidden>
+    <div class="brf-panel__head"><span>Sort By</span><button type="button" class="brf-panel__done" data-brf-close>Done</button></div>
+    <div class="brf-panel__list">
+      {%- for o in search.sort_options -%}
+        <a class="brf-opt brf-opt--radio{% if o.value == brf_sort %} is-on{% endif %}" href="?sort_by={{ o.value }}" data-brf-sort="{{ o.value }}" rel="nofollow">
+          <span class="brf-opt__box">{{ brf_check }}</span>
+          <span class="brf-opt__label">{{ o.name | escape }}</span>
+        </a>
+      {%- endfor -%}
+    </div>
+  </div>
+
+  {%- assign brf_active = 0 -%}
+  {%- capture brf_chips -%}
+    {%- for f in search.filters -%}
+      {%- if f.type == 'price_range' -%}
+        {%- if f.min_value.value != nil or f.max_value.value != nil -%}
+          {%- assign brf_active = brf_active | plus: 1 -%}
+          <a class="brf-chip" href="{{ f.url_to_remove }}" rel="nofollow">
+            {%- if f.min_value.value -%}{{ f.min_value.value | money_without_trailing_zeros }}{%- else -%}£0{%- endif %} – {% if f.max_value.value -%}{{ f.max_value.value | money_without_trailing_zeros }}{%- else -%}{{ f.range_max | money_without_trailing_zeros }}{%- endif -%}
+            <span class="brf-chip__x" aria-label="Remove">×</span></a>
+        {%- endif -%}
+      {%- else -%}
+        {%- if f.param_name == 'filter.v.availability' -%}{%- continue -%}{%- endif -%}
+        {%- for v in f.active_values -%}
+          {%- assign brf_active = brf_active | plus: 1 -%}
+          <a class="brf-chip" href="{{ v.url_to_remove }}" rel="nofollow">{{ v.label | escape }}<span class="brf-chip__x" aria-label="Remove">×</span></a>
+        {%- endfor -%}
+      {%- endif -%}
+    {%- endfor -%}
+  {%- endcapture -%}
+  {%- if brf_active > 0 -%}
+    <div class="brf-fbar__chips">
+      {{ brf_chips }}
+      <a class="brf-clear" href="{{ routes.search_url }}?q={{ brf_terms | url_encode }}&type=product&options%5Bprefix%5D=last" rel="nofollow">Clear all</a>
+    </div>
+  {%- endif -%}
+  <div class="brf-scrim" data-brf-scrim hidden></div>
+</div>
+
+<script>
+(function(){
+  var bar = document.querySelector('[data-brf-fbar]');
+  if (!bar || bar.dataset.ready) return; bar.dataset.ready = '1';
+  var scrim = bar.querySelector('[data-brf-scrim]'), current = null;
+  function close(){
+    if (!current) return;
+    var p = bar.querySelector('[data-brf-panel="' + current + '"]'); if (p) p.hidden = true;
+    bar.querySelectorAll('[data-brf-open="' + current + '"]').forEach(function(b){ b.setAttribute('aria-expanded','false'); b.classList.remove('is-open'); });
+    scrim.hidden = true; document.documentElement.classList.remove('brf-sheet-open'); current = null;
+  }
+  function open(id){
+    if (current === id) { close(); return; }
+    close();
+    var p = bar.querySelector('[data-brf-panel="' + id + '"]'); if (!p) return;
+    p.hidden = false; current = id; scrim.hidden = false;
+    bar.querySelectorAll('[data-brf-open="' + id + '"]').forEach(function(b){ b.setAttribute('aria-expanded','true'); b.classList.add('is-open'); });
+    if (window.matchMedia('(max-width: 749px)').matches) document.documentElement.classList.add('brf-sheet-open');
+  }
+  bar.querySelectorAll('[data-brf-open]').forEach(function(b){ b.addEventListener('click', function(e){ e.stopPropagation(); open(b.dataset.brfOpen); }); });
+  bar.querySelectorAll('[data-brf-close]').forEach(function(b){ b.addEventListener('click', close); });
+  scrim.addEventListener('click', close);
+  document.addEventListener('click', function(e){ if (current && !e.target.closest('.brf-panel')) close(); });
+  document.addEventListener('keydown', function(e){ if (e.key === 'Escape') close(); });
+
+  function query(extra){
+    var q = new URLSearchParams(location.search); q.delete('page');
+    if (extra) Object.keys(extra).forEach(function(k){ extra[k] === null ? q.delete(k) : q.set(k, extra[k]); });
+    var s = q.toString(); return s ? '?' + s : '';
+  }
+  bar.querySelectorAll('[data-brf-sort]').forEach(function(a){ a.href = location.pathname + query({sort_by: a.dataset.brfSort}); });
+
+  var sw = bar.querySelector('[data-brf-search-stock]');
+  var cur = new URLSearchParams(location.search).get('options[unavailable_products]');
+  sw.checked = cur === 'hide';
+  sw.addEventListener('change', function(){
+    try { sw.checked ? sessionStorage.removeItem('brfShowSoldOut') : sessionStorage.setItem('brfShowSoldOut', '1'); } catch (e) {}
+    document.documentElement.classList.add('brf-filtering');
+    location.href = location.pathname + query({'options[unavailable_products]': sw.checked ? 'hide' : 'last'});
+  });
+
+  var pf = bar.querySelector('[data-brf-price]');
+  if (pf) pf.addEventListener('submit', function(e){
+    e.preventDefault();
+    var min = pf.elements.min.value.trim(), max = pf.elements.max.value.trim(), x = {};
+    x[pf.dataset.minParam] = min === '' ? null : min;
+    x[pf.dataset.maxParam] = max === '' ? null : max;
+    location.href = location.pathname + query(x);
+  });
+  bar.addEventListener('click', function(e){
+    var a = e.target.closest('.brf-opt, .brf-chip, .brf-clear, .brf-pill__x');
+    if (a) { a.classList.add('is-loading'); document.documentElement.classList.add('brf-filtering'); }
+  });
+})();
+</script>

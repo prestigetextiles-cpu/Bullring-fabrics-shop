@@ -28,13 +28,18 @@
     {%- endif -%}
   {%- endcapture -%}
 
-  {%- if product_labels != blank -%}
+  {%- if product_labels != blank and product.media.size == 0 -%}
     <div class="product-item__label-list">
       {{- product_labels -}}
     </div>
   {%- endif -%}
 
-  {%- if settings.show_secondary_image and product.media.size > 1 -%}
+  {%- comment -%} Bull Ring: the hover photo is the next real photo (a video's first frame can be blank) {%- endcomment -%}
+  {%- assign brf_second_media = nil -%}
+  {%- for m in product.media offset: 1 -%}
+    {%- if m.media_type == 'image' -%}{%- assign brf_second_media = m -%}{%- break -%}{%- endif -%}
+  {%- endfor -%}
+  {%- if settings.show_secondary_image and brf_second_media != nil -%}
     {%- assign show_secondary_media = true -%}
   {%- else -%}
     {%- assign show_secondary_media = false -%}
@@ -92,6 +97,11 @@
     {%- endif -%}
 
     <div class="brf-pi-media">
+    {%- if product_labels != blank -%}
+      <div class="product-item__label-list">
+        {{- product_labels -}}
+      </div>
+    {%- endif -%}
     <a href="{{ filtered_variant.url | default: product.url | within: collection }}" class="product-item__image-wrapper {% if show_secondary_media %}product-item__image-wrapper--with-secondary{% endif %}">
       {%- capture supported_sizes -%}{%- render 'image-size', sizes: '200,300,400,500,600,700,800', image: primary_media.preview_image -%}{%- endcapture -%}
       {%- assign image_url = primary_media | img_url: '1x1' | replace: '_1x1.', '_{width}x.' -%}
@@ -100,10 +110,10 @@
         <img loading="lazy" class="product-item__primary-image lazyload image--fade-in" data-media-id="{{ primary_media.id }}" data-src="{{ image_url }}" data-sizes="auto" data-widths="[{{ supported_sizes }}]" alt="{{ primary_media.alt | default: product.title | escape }}">
 
         {%- if show_secondary_media -%}
-          {%- capture supported_sizes -%}{%- render 'image-size', sizes: '200,300,400,500,600,700,800', image: product.media[1].preview_image -%}{%- endcapture -%}
-          {%- assign image_url = product.media[1] | img_url: '1x1' | replace: '_1x1.', '_{width}x.' -%}
+          {%- capture supported_sizes -%}{%- render 'image-size', sizes: '200,300,400,500,600,700,800', image: brf_second_media.preview_image -%}{%- endcapture -%}
+          {%- assign image_url = brf_second_media | img_url: '1x1' | replace: '_1x1.', '_{width}x.' -%}
 
-          <img loading="lazy" class="product-item__secondary-image lazyload image--fade-in" data-src="{{ image_url }}" data-sizes="auto" data-widths="[{{ supported_sizes }}]" alt="{{ product.media[1].alt | default: product.title | escape }}">
+          <img loading="lazy" class="product-item__secondary-image lazyload image--fade-in" data-src="{{ image_url }}" data-sizes="auto" data-widths="[{{ supported_sizes }}]" alt="{{ brf_second_media.alt | default: product.title | escape }}">
         {%- endif -%}
 
         <noscript>
@@ -307,6 +317,9 @@
       {%- assign form_id = 'product_form_id_' | append: product.id | append: '_' | append: section.id -%}
 
       {%- assign product_form_classes = product_form_classes | append: ' brf-qa-form' -%}
+      {%- if product.available and product.variants.size == 1 and product.template_suffix != 'pre-order' -%}
+        {%- assign product_form_classes = product_form_classes | append: ' brf-qa-form--qty' -%}
+      {%- endif -%}
       {%- form 'product', product, id: form_id, class: product_form_classes -%}
         {%- assign brf_v = product.selected_or_first_available_variant -%}
         {%- assign brf_max = '' -%}

@@ -1,0 +1,240 @@
+{%- comment -%}
+  Bull Ring Fabrics — Apple-style filter bar for collection pages.
+  Pills for each storefront filter (+ product tags as "Style"), frosted-glass
+  dropdown panels, "Sort By" on the right and removable active-filter chips.
+  Params: collection, current_tags, hide_filters (comma list of filter labels), show_tags
+{%- endcomment -%}
+{%- assign brf_hide = hide_filters | downcase | replace: ', ', ',' | split: ',' -%}
+{%- assign brf_sort = collection.sort_by | default: collection.default_sort_by -%}
+{%- assign brf_sort_name = '' -%}
+{%- for o in collection.sort_options -%}{%- if o.value == brf_sort -%}{%- assign brf_sort_name = o.name -%}{%- endif -%}{%- endfor -%}
+{%- if brf_sort == 'manual' -%}{%- assign brf_sort_name = 'Featured' -%}{%- endif -%}
+
+{%- comment -%} "In stock only" switch uses Shopify's Availability filter {%- endcomment -%}
+{%- assign brf_stock_on = false -%}
+{%- assign brf_stock_add = '' -%}
+{%- assign brf_stock_remove = '' -%}
+{%- for f in collection.filters -%}
+  {%- if f.param_name == 'filter.v.availability' -%}
+    {%- for v in f.values -%}
+      {%- if v.value == '1' -%}
+        {%- assign brf_stock_add = v.url_to_add -%}
+        {%- assign brf_stock_remove = v.url_to_remove -%}
+        {%- if v.active -%}{%- assign brf_stock_on = true -%}{%- endif -%}
+      {%- endif -%}
+    {%- endfor -%}
+  {%- endif -%}
+{%- endfor -%}
+
+{%- assign brf_tag_count = 0 -%}
+{%- if show_tags -%}
+  {%- for tag in collection.all_tags -%}
+    {%- unless tag contains '__' -%}{%- assign brf_tag_count = brf_tag_count | plus: 1 -%}{%- endunless -%}
+  {%- endfor -%}
+{%- endif -%}
+
+{%- capture brf_check -%}<svg viewBox="0 0 12 12" width="10" height="10" aria-hidden="true"><path d="M2.5 6.2 5 8.6l4.6-5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>{%- endcapture -%}
+{%- capture brf_chev -%}<svg class="brf-chev" viewBox="0 0 12 12" width="10" height="10" aria-hidden="true"><path d="m2.5 4.5 3.5 3.5 3.5-3.5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>{%- endcapture -%}
+
+<div class="brf-fbar" data-brf-fbar data-collection-url="{{ collection.url }}">
+  <div class="brf-fbar__row">
+    <div class="brf-fbar__pills" role="toolbar" aria-label="Filter products">
+      {%- for f in collection.filters -%}
+        {%- assign fl = f.label | downcase | strip -%}
+        {%- if brf_hide contains fl or f.param_name == 'filter.v.availability' -%}{%- continue -%}{%- endif -%}
+        {%- if f.type == 'price_range' -%}
+          {%- assign p_on = false -%}
+          {%- if f.min_value.value != nil or f.max_value.value != nil -%}{%- assign p_on = true -%}{%- endif -%}
+          {%- if p_on -%}<span class="brf-pillgrp is-active"><button type="button" class="brf-pill{% if p_on %} is-active{% endif %}" data-brf-open="f{{ forloop.index }}" aria-expanded="false" aria-controls="brf-panel-f{{ forloop.index }}">{{ f.label | escape }}{% if p_on %}<span class="brf-pill__dot" aria-hidden="true"></span>{% endif %}</button><a class="brf-pill__x" href="{{ f.url_to_remove }}" rel="nofollow" aria-label="Clear {{ f.label | escape }} filter" title="Clear"><svg viewBox="0 0 12 12" width="10" height="10" aria-hidden="true"><path d="M3 3l6 6M9 3L3 9" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></a></span>{%- else -%}<button type="button" class="brf-pill{% if p_on %} is-active{% endif %}" data-brf-open="f{{ forloop.index }}" aria-expanded="false" aria-controls="brf-panel-f{{ forloop.index }}">{{ f.label | escape }}{% if p_on %}<span class="brf-pill__dot" aria-hidden="true"></span>{% endif %}</button>{%- endif -%}
+        {%- else -%}
+          {%- assign live = 0 -%}
+          {%- for v in f.values -%}{%- if v.count > 0 or v.active -%}{%- assign live = live | plus: 1 -%}{%- endif -%}{%- endfor -%}
+          {%- if live < 2 and f.active_values.size == 0 -%}{%- continue -%}{%- endif -%}
+          {%- if f.active_values.size > 0 -%}<span class="brf-pillgrp is-active"><button type="button" class="brf-pill{% if f.active_values.size > 0 %} is-active{% endif %}" data-brf-open="f{{ forloop.index }}" aria-expanded="false" aria-controls="brf-panel-f{{ forloop.index }}">{{ f.label | escape }}{% if f.active_values.size > 0 %}<span class="brf-pill__n">{{ f.active_values.size }}</span>{% endif %}</button><a class="brf-pill__x" href="{{ f.url_to_remove }}" rel="nofollow" aria-label="Clear {{ f.label | escape }} filter" title="Clear"><svg viewBox="0 0 12 12" width="10" height="10" aria-hidden="true"><path d="M3 3l6 6M9 3L3 9" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></a></span>{%- else -%}<button type="button" class="brf-pill{% if f.active_values.size > 0 %} is-active{% endif %}" data-brf-open="f{{ forloop.index }}" aria-expanded="false" aria-controls="brf-panel-f{{ forloop.index }}">{{ f.label | escape }}{% if f.active_values.size > 0 %}<span class="brf-pill__n">{{ f.active_values.size }}</span>{% endif %}</button>{%- endif -%}
+        {%- endif -%}
+      {%- endfor -%}
+      {%- if brf_tag_count > 1 -%}
+        {%- if current_tags.size > 0 -%}<span class="brf-pillgrp is-active"><button type="button" class="brf-pill{% if current_tags.size > 0 %} is-active{% endif %}" data-brf-open="tags" aria-expanded="false" aria-controls="brf-panel-tags">Style{% if current_tags.size > 0 %}<span class="brf-pill__n">{{ current_tags.size }}</span>{% endif %}</button><a class="brf-pill__x" href="{{ collection.url }}" rel="nofollow" data-brf-keepquery aria-label="Clear Style filter" title="Clear"><svg viewBox="0 0 12 12" width="10" height="10" aria-hidden="true"><path d="M3 3l6 6M9 3L3 9" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></a></span>{%- else -%}<button type="button" class="brf-pill{% if current_tags.size > 0 %} is-active{% endif %}" data-brf-open="tags" aria-expanded="false" aria-controls="brf-panel-tags">Style{% if current_tags.size > 0 %}<span class="brf-pill__n">{{ current_tags.size }}</span>{% endif %}</button>{%- endif -%}
+      {%- endif -%}
+    </div>
+
+    <div class="brf-fbar__meta">
+      {%- if brf_stock_add != blank -%}
+        <label class="brf-switch" title="Hide items that are currently sold out">
+          <input type="checkbox" role="switch" data-brf-stock data-on="{{ brf_stock_add }}" data-off="{{ brf_stock_remove }}"{% if brf_stock_on %} checked{% endif %}>
+          <span class="brf-switch__track" aria-hidden="true"></span>
+          <span class="brf-switch__label">In stock only</span>
+        </label>
+      {%- endif -%}
+      <span class="brf-fbar__count">{{ collection.products_count }} {% if collection.products_count == 1 %}product{% else %}products{% endif %}</span>
+      <button type="button" class="brf-sort" data-brf-open="sort" aria-expanded="false" aria-controls="brf-panel-sort">Sort By: <strong>{{ brf_sort_name | escape }}</strong>{{ brf_chev }}</button>
+    </div>
+  </div>
+
+  {%- comment -%} Dropdown panels {%- endcomment -%}
+  {%- for f in collection.filters -%}
+    {%- assign fl = f.label | downcase | strip -%}
+    {%- if brf_hide contains fl or f.param_name == 'filter.v.availability' -%}{%- continue -%}{%- endif -%}
+    <div class="brf-panel" id="brf-panel-f{{ forloop.index }}" data-brf-panel="f{{ forloop.index }}"{% unless f.type == 'price_range' %} data-brf-multi="{{ f.param_name | escape }}"{% endunless %} hidden>
+      <div class="brf-panel__head"><span>{{ f.label | escape }}</span><button type="button" class="brf-panel__done" data-brf-close>Done</button></div>
+      {%- if f.type == 'price_range' -%}
+        <form class="brf-price" data-brf-price data-min-param="{{ f.min_value.param_name }}" data-max-param="{{ f.max_value.param_name }}">
+          <label><span>Min</span><span class="brf-price__field">£<input type="number" inputmode="decimal" min="0" step="1" name="min" placeholder="0" value="{% if f.min_value.value %}{{ f.min_value.value | money_without_currency | remove: ',' }}{% endif %}"></span></label>
+          <span class="brf-price__to">to</span>
+          <label><span>Max</span><span class="brf-price__field">£<input type="number" inputmode="decimal" min="0" step="1" name="max" placeholder="{{ f.range_max | money_without_currency | remove: ',' }}" value="{% if f.max_value.value %}{{ f.max_value.value | money_without_currency | remove: ',' }}{% endif %}"></span></label>
+          <button type="submit" class="brf-apply">Apply</button>
+        </form>
+      {%- else -%}
+        <div class="brf-panel__grid">
+          {%- for v in f.values -%}
+            {%- if v.count == 0 and v.active == false -%}{%- continue -%}{%- endif -%}
+            <a class="brf-opt{% if v.active %} is-on{% endif %}" href="{% if v.active %}{{ v.url_to_remove }}{% else %}{{ v.url_to_add }}{% endif %}" data-brf-v="{{ v.value | escape }}" role="checkbox" aria-checked="{{ v.active }}" rel="nofollow">
+              <span class="brf-opt__box">{{ brf_check }}</span>
+              <span class="brf-opt__label">{{ v.label | escape }}</span>
+              <span class="brf-opt__count">{{ v.count }}</span>
+            </a>
+          {%- endfor -%}
+        </div>
+      {%- endif -%}
+    </div>
+  {%- endfor -%}
+
+  {%- if brf_tag_count > 1 -%}
+    <div class="brf-panel" id="brf-panel-tags" data-brf-panel="tags" hidden>
+      <div class="brf-panel__head"><span>Style</span><button type="button" class="brf-panel__done" data-brf-close>Done</button></div>
+      <div class="brf-panel__grid">
+        {%- for tag in collection.all_tags -%}
+          {%- if tag contains '__' -%}{%- continue -%}{%- endif -%}
+          {%- assign on = false -%}
+          {%- if current_tags contains tag -%}{%- assign on = true -%}{%- endif -%}
+          <a class="brf-opt brf-opt--radio{% if on %} is-on{% endif %}" href="{% if on %}{{ collection.url }}{% else %}{{ collection.url }}/{{ tag | handle }}{% endif %}" data-brf-keepquery rel="nofollow">
+            <span class="brf-opt__box">{{ brf_check }}</span>
+            <span class="brf-opt__label">{{ tag | capitalize | escape }}</span>
+          </a>
+        {%- endfor -%}
+      </div>
+    </div>
+  {%- endif -%}
+
+  <div class="brf-panel brf-panel--sort" id="brf-panel-sort" data-brf-panel="sort" hidden>
+    <div class="brf-panel__head"><span>Sort By</span><button type="button" class="brf-panel__done" data-brf-close>Done</button></div>
+    <div class="brf-panel__list">
+      {%- for o in collection.sort_options -%}
+        {%- if o.value == 'most-relevant' -%}{%- continue -%}{%- endif -%}
+        <a class="brf-opt brf-opt--radio{% if o.value == brf_sort %} is-on{% endif %}" href="?sort_by={{ o.value }}" data-brf-sort="{{ o.value }}" rel="nofollow">
+          <span class="brf-opt__box">{{ brf_check }}</span>
+          <span class="brf-opt__label">{% if o.value == 'manual' %}Featured{% else %}{{ o.name | escape }}{% endif %}</span>
+        </a>
+      {%- endfor -%}
+    </div>
+  </div>
+
+  {%- comment -%} Active filter chips {%- endcomment -%}
+  {%- assign brf_active = 0 -%}
+  {%- capture brf_chips -%}
+    {%- for f in collection.filters -%}
+      {%- if f.type == 'price_range' -%}
+        {%- if f.min_value.value != nil or f.max_value.value != nil -%}
+          {%- assign brf_active = brf_active | plus: 1 -%}
+          <a class="brf-chip" href="{{ f.url_to_remove }}" rel="nofollow">
+            {%- if f.min_value.value -%}{{ f.min_value.value | money_without_trailing_zeros }}{%- else -%}£0{%- endif %} – {% if f.max_value.value -%}{{ f.max_value.value | money_without_trailing_zeros }}{%- else -%}{{ f.range_max | money_without_trailing_zeros }}{%- endif -%}
+            <span class="brf-chip__x" aria-label="Remove">×</span></a>
+        {%- endif -%}
+      {%- else -%}
+        {%- if f.param_name == 'filter.v.availability' -%}{%- continue -%}{%- endif -%}
+        {%- for v in f.active_values -%}
+          {%- assign brf_active = brf_active | plus: 1 -%}
+          <a class="brf-chip" href="{{ v.url_to_remove }}" rel="nofollow">{{ v.label | escape }}<span class="brf-chip__x" aria-label="Remove">×</span></a>
+        {%- endfor -%}
+      {%- endif -%}
+    {%- endfor -%}
+    {%- for tag in current_tags -%}
+      {%- assign brf_active = brf_active | plus: 1 -%}
+      <a class="brf-chip" href="{{ collection.url }}" data-brf-keepquery rel="nofollow">{{ tag | capitalize | escape }}<span class="brf-chip__x" aria-label="Remove">×</span></a>
+    {%- endfor -%}
+  {%- endcapture -%}
+  {%- if brf_active > 0 -%}
+    <div class="brf-fbar__chips">
+      {{ brf_chips }}
+      <a class="brf-clear" href="{{ collection.url }}?filter.v.availability=1{% if collection.sort_by != blank %}&sort_by={{ collection.sort_by }}{% endif %}" data-brf-instock-clear rel="nofollow">Clear all</a>
+    </div>
+  {%- endif -%}
+  <div class="brf-scrim" data-brf-scrim hidden></div>
+</div>
+
+<style>
+  .brf-switch{display:inline-flex;align-items:center;gap:8px;cursor:pointer;font-size:14px;color:#1D1D1F;white-space:nowrap;user-select:none}
+  .brf-switch input{position:absolute;opacity:0;width:1px;height:1px}
+  .brf-switch__track{position:relative;width:38px;height:23px;border-radius:999px;background:rgba(120,120,128,.24);transition:background .25s ease;flex:0 0 auto}
+  .brf-switch__track::after{content:"";position:absolute;top:2px;left:2px;width:19px;height:19px;border-radius:50%;background:#fff;box-shadow:0 2px 6px rgba(0,0,0,.2),0 0 0 .5px rgba(0,0,0,.04);transition:transform .25s cubic-bezier(.2,.8,.2,1)}
+  .brf-switch input:checked+.brf-switch__track{background:#1D1D1F}
+  .brf-switch input:checked+.brf-switch__track::after{transform:translateX(15px)}
+  .brf-switch input:focus-visible+.brf-switch__track{box-shadow:0 0 0 3px rgba(29,29,31,.2)}
+</style>
+
+<script>
+(function(){
+  var bar = document.querySelector('[data-brf-fbar]');
+  if (!bar || bar.dataset.ready) return; bar.dataset.ready = '1';
+  var openers = bar.querySelectorAll('[data-brf-open]');
+  var scrim = bar.querySelector('[data-brf-scrim]');
+  var current = null;
+
+  function close(){
+    if (!current) return;
+    var p = bar.querySelector('[data-brf-panel="' + current + '"]');
+    if (p) p.hidden = true;
+    bar.querySelectorAll('[data-brf-open="' + current + '"]').forEach(function(b){ b.setAttribute('aria-expanded','false'); b.classList.remove('is-open'); });
+    scrim.hidden = true; document.documentElement.classList.remove('brf-sheet-open'); current = null;
+  }
+  function open(id){
+    if (current === id) { close(); return; }
+    close();
+    var p = bar.querySelector('[data-brf-panel="' + id + '"]'); if (!p) return;
+    p.hidden = false; current = id; scrim.hidden = false;
+    bar.querySelectorAll('[data-brf-open="' + id + '"]').forEach(function(b){ b.setAttribute('aria-expanded','true'); b.classList.add('is-open'); });
+    if (window.matchMedia('(max-width: 749px)').matches) document.documentElement.classList.add('brf-sheet-open');
+    var first = p.querySelector('a, input, button:not([data-brf-close])'); if (first) first.focus({preventScroll:true});
+  }
+  openers.forEach(function(b){ b.addEventListener('click', function(e){ e.stopPropagation(); open(b.dataset.brfOpen); }); });
+  bar.querySelectorAll('[data-brf-close]').forEach(function(b){ b.addEventListener('click', close); });
+  scrim.addEventListener('click', close);
+  document.addEventListener('click', function(e){ if (current && !e.target.closest('.brf-panel')) close(); });
+  document.addEventListener('keydown', function(e){ if (e.key === 'Escape') close(); });
+
+  // Keep filters + sort when switching tag; drop page number
+  function query(extra){
+    var q = new URLSearchParams(location.search); q.delete('page');
+    if (extra) Object.keys(extra).forEach(function(k){ extra[k] === null ? q.delete(k) : q.set(k, extra[k]); });
+    var s = q.toString(); return s ? '?' + s : '';
+  }
+  bar.querySelectorAll('[data-brf-keepquery]').forEach(function(a){ a.href = a.getAttribute('href') + query(); });
+  bar.querySelectorAll('[data-brf-sort]').forEach(function(a){ a.href = location.pathname + query({sort_by: a.dataset.brfSort}); });
+
+  // "In stock only" switch
+  var sw = bar.querySelector('[data-brf-stock]');
+  if (sw) sw.addEventListener('change', function(){
+    try { sw.checked ? sessionStorage.removeItem('brfShowSoldOut') : sessionStorage.setItem('brfShowSoldOut', '1'); } catch (e) {}
+    document.documentElement.classList.add('brf-filtering');
+    location.href = sw.checked ? sw.dataset.on : sw.dataset.off;
+  });
+  var clr = bar.querySelector('[data-brf-instock-clear]');
+  if (clr) clr.addEventListener('click', function(){ try { sessionStorage.removeItem('brfShowSoldOut'); } catch (e) {} });
+
+  // Price range
+  var pf = bar.querySelector('[data-brf-price]');
+  if (pf) pf.addEventListener('submit', function(e){
+    e.preventDefault();
+    var min = pf.elements.min.value.trim(), max = pf.elements.max.value.trim(), x = {};
+    x[pf.dataset.minParam] = min === '' ? null : min;
+    x[pf.dataset.maxParam] = max === '' ? null : max;
+    location.href = location.pathname + query(x);
+  });
+
+  // Soft feedback while the next page loads
+  bar.addEventListener('click', function(e){
+    var a = e.target.closest('.brf-opt, .brf-chip, .brf-clear, .brf-pill__x');
+    if (a) { a.classList.add('is-loading'); document.documentElement.classList.add('brf-filtering'); }
+  });
+})();
+</script>
