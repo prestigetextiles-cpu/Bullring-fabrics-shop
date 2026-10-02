@@ -161,6 +161,10 @@
   html .brf-undo__bar::after{background:rgba(214,40,32,.65)!important}
   html .brf-mc__undo-bar{background:rgba(214,40,32,.55)!important}
 
+  /* ---------- R4. Card add: a short note under the button when stock runs out ---------- */
+  .brf-qa__note{margin:6px 2px 0;font-size:12px;line-height:1.3;font-weight:600;color:#B3261E;text-align:center}
+  html .product-item .brf-qa-form.brf-qa-full{opacity:.7}
+
   /* ---------- R2. Filter sheets: no "Done" up top (the sheet has Clear and Show results); single-choice sheets get a small round X ---------- */
   @media (max-width:999px){
     html .brf-panel[data-brf-multi] .brf-panel__done{display:none!important}
@@ -706,5 +710,90 @@
     var go = function(){ alignResults(false); };
     if (doc.readyState === 'complete') setTimeout(go, 50); else window.addEventListener('load', function(){ setTimeout(go, 50); });
   })();
+
+  /* ================= R4. Card "Add" knows how many are left ================= */
+  /* The theme's own card add says nothing when the bag refuses (more than we have in stock).
+     Cards now add by themselves: what's already in the bag counts against the stock, the box can't ask for more
+     than is left, and if the bag still says no the shopper sees why. */
+  var bagQty = {}, bagAt = 0;
+  function readBag(){
+    return fetch('/cart.js', {credentials: 'same-origin', headers: {'Accept': 'application/json'}})
+      .then(function(r){ return r.json(); })
+      .then(function(c){ bagQty = {}; (c.items || []).forEach(function(it){ bagQty[it.variant_id] = (bagQty[it.variant_id] || 0) + it.quantity; }); bagAt = Date.now(); syncRoom(); return c; })
+      .catch(function(){});
+  }
+  function stockMax(input){
+    var m = input.getAttribute('data-brf-stock');
+    if (m == null) { m = input.getAttribute('max') || ''; input.setAttribute('data-brf-stock', m); }
+    m = parseInt(m, 10); return isNaN(m) ? null : m;
+  }
+  function roomFor(form){
+    var input = form.querySelector('.brf-qa__in'), idEl = form.querySelector('[name="id"]');
+    if (!input || !idEl) return null;
+    var m = stockMax(input); if (m == null) return null;
+    return Math.max(0, m - (bagQty[idEl.value] || 0));
+  }
+  function note(form, msg){
+    var host = form.parentNode, n = host.querySelector('.brf-qa__note');
+    if (!msg) { if (n) n.remove(); return; }
+    if (!n) { n = doc.createElement('p'); n.className = 'brf-qa__note'; n.setAttribute('role', 'status'); form.insertAdjacentElement('afterend', n); }
+    n.textContent = msg; clearTimeout(n.__t); n.__t = setTimeout(function(){ if (n.isConnected) n.remove(); }, 6000);
+  }
+  function syncRoom(){
+    [].forEach.call(doc.querySelectorAll('.brf-qa-form--qty'), function(form){
+      var input = form.querySelector('.brf-qa__in'), add = form.querySelector('.brf-qa__add'); if (!input || !add) return;
+      var room = roomFor(form); if (room == null) return;
+      if (room > 0) {
+        input.setAttribute('max', room); input.disabled = false; add.disabled = false; form.classList.remove('brf-qa-full');
+        var l2 = add.querySelector('.brf-qa__lbl'); if (l2 && l2.textContent === 'All in bag') { l2.textContent = l2.getAttribute('data-brf-full') || 'Add to bag'; if (window.brfFitQa) window.brfFitQa(add); }
+        if ((parseInt(input.value, 10) || 1) > room) input.value = room;
+        var plus = form.querySelector('.brf-qa__step[data-d="1"]'); if (plus) plus.disabled = (parseInt(input.value, 10) || 1) >= room;
+      } else {
+        form.classList.add('brf-qa-full'); add.disabled = true; input.disabled = true;
+        var lbl = add.querySelector('.brf-qa__lbl'); if (lbl && !add.classList.contains('is-done')) lbl.textContent = 'All in bag';
+      }
+    });
+  }
+  window.addEventListener('load', function(){ if (doc.querySelector('.brf-qa-form--qty')) readBag(); });
+  doc.addEventListener('cart:rerendered', function(){ readBag(); }, true);
+  root.addEventListener('cart:refresh', function(){ setTimeout(readBag, 600); });
+  /* cards that arrive later ("You may also like" loads after the page) */
+  new MutationObserver(function(muts){
+    for (var i = 0; i < muts.length; i++) for (var j = 0; j < muts[i].addedNodes.length; j++) {
+      var n = muts[i].addedNodes[j];
+      if (n.nodeType === 1 && (n.matches('.brf-qa-form--qty') || n.querySelector('.brf-qa-form--qty'))) { if (Date.now() - bagAt < 15000) syncRoom(); else readBag(); return; }
+    }
+  }).observe(doc.body, {childList: true, subtree: true});
+
+  doc.addEventListener('click', function(e){
+    var btn = e.target.closest && e.target.closest('.brf-qa-form .brf-qa__add'); if (!btn) return;
+    var form = btn.closest('form'); if (!form || (window.theme && theme.cartType === 'page')) return;
+    e.preventDefault(); e.stopImmediatePropagation();
+    if (btn.disabled || btn.__brfBusy) return;
+    var input = form.querySelector('.brf-qa__in'), idEl = form.querySelector('[name="id"]');
+    var want = input ? Math.max(1, parseInt(input.value, 10) || 1) : 1;
+    var room = roomFor(form);
+    var q = room == null ? want : Math.min(want, room);
+    if (room === 0) { note(form, 'You’ve already got every last one in your bag! 🧵'); syncRoom(); return; }
+    btn.__brfBusy = true; btn.disabled = true; note(form, '');
+    doc.dispatchEvent(new CustomEvent('theme:loading:start'));
+    var fd = new FormData(form); fd.set('quantity', q);
+    fetch('/cart/add.js', {method: 'POST', body: fd, credentials: 'same-origin', headers: {'Accept': 'application/json', 'X-Requested-With': 'XMLHttpRequest'}})
+      .then(function(r){ return r.json().then(function(j){ return {ok: r.ok, j: j}; }); })
+      .then(function(res){
+        btn.__brfBusy = false; btn.disabled = false;
+        if (res.ok) {
+          if (idEl) bagQty[idEl.value] = (bagQty[idEl.value] || 0) + q;
+          if (q < want) note(form, 'We only had ' + q + ' more, so ' + q + ' went in your bag 🎉');
+          form.dispatchEvent(new CustomEvent('product:added', {bubbles: true, detail: {variant: null, quantity: q}}));
+          setTimeout(syncRoom, 1500);
+        } else {
+          doc.dispatchEvent(new CustomEvent('theme:loading:end'));
+          note(form, (res.j && (res.j.description || res.j.message)) || 'That didn’t go in. Please try again.');
+          readBag();
+        }
+      })
+      .catch(function(){ btn.__brfBusy = false; btn.disabled = false; doc.dispatchEvent(new CustomEvent('theme:loading:end')); note(form, 'That didn’t go in. Please check your connection and try again.'); });
+  }, true);
 })();
 </script>
