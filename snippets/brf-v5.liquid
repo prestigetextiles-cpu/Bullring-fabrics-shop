@@ -161,6 +161,16 @@
     html .product-item .brf-qa-form--qty>.brf-qa__add,html .product-item .brf-qa-form--qty.is-compact>.brf-qa__add{padding:0 4px!important;font-size:13px!important}
   }
 
+  /* ---------- R3. Undo / restore pill: red glass rim with a soft red glow ---------- */
+  html .brf-undo,html .brf-mc__undo{
+    background:linear-gradient(180deg,rgba(255,250,249,.84) 0%,rgba(255,238,236,.76) 100%)!important;
+    -webkit-backdrop-filter:saturate(180%) blur(22px);backdrop-filter:saturate(180%) blur(22px);
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.95),inset 0 0 0 1px rgba(226,48,40,.42),inset 0 -1px 2px rgba(214,40,32,.10),
+      0 0 0 3px rgba(226,48,40,.10),0 16px 36px -12px rgba(200,28,22,.55),0 4px 12px -4px rgba(200,28,22,.28)!important}
+  html .brf-undo__bar{background:rgba(214,40,32,.14)!important}
+  html .brf-undo__bar::after{background:rgba(214,40,32,.65)!important}
+  html .brf-mc__undo-bar{background:rgba(214,40,32,.55)!important}
+
   /* ---------- R2. Filter sheets: no "Done" up top (the sheet has Clear and Show results); single-choice sheets get a small round X ---------- */
   @media (max-width:999px){
     html .brf-panel[data-brf-multi] .brf-panel__done{display:none!important}
@@ -402,6 +412,30 @@
       if (window.scrollY + window.innerHeight >= se.scrollHeight - 1 && canScroll(t, dy) !== true && e.cancelable) e.preventDefault();
     }
   }, {passive: false});
+
+  /* R3. Bag page "Continue shopping": back to the page they came from, not the default collection */
+  var LAST_KEY = 'brfLastShopPage';
+  function isShopPage(u){ try { var x = new URL(u, location.href); return x.origin === location.origin && !/^\/(cart|checkout|checkouts|account|challenge|password)(\/|$)/.test(x.pathname); } catch (e) { return false; } }
+  if (!/^\/cart\/?$/.test(location.pathname)) {
+    if (isShopPage(location.href)) try { sessionStorage.setItem(LAST_KEY, location.href); } catch (e) {}
+  } else {
+    var lastShop = null;
+    try { lastShop = sessionStorage.getItem(LAST_KEY); } catch (e) {}
+    if (!lastShop && doc.referrer && isShopPage(doc.referrer)) lastShop = doc.referrer;
+    if (!lastShop) lastShop = '{{ routes.root_url }}'; /* nothing to go back to: the home page, never a sale landing page */
+    var fixContinue = function(){
+      [].forEach.call(doc.querySelectorAll('a.brf-cp__continue'), function(a){ if (lastShop && a.getAttribute('href') !== lastShop) a.setAttribute('href', lastShop); });
+    };
+    fixContinue();
+    doc.addEventListener('DOMContentLoaded', fixContinue);
+    doc.addEventListener('click', function(e){
+      var a = e.target.closest && e.target.closest('a.brf-cp__continue'); if (!a || !lastShop) return;
+      /* came straight from that page: step back so the browser restores the scroll spot too */
+      if (doc.referrer && doc.referrer.split('#')[0] === lastShop.split('#')[0] && history.length > 1) { e.preventDefault(); history.back(); }
+    }, true);
+    /* the bag re-renders after changes: keep the link pointing back */
+    new MutationObserver(fixContinue).observe(doc.body || root, {childList: true, subtree: true});
+  }
 
   /* 7. the page bounce past the footer shows the footer's colour */
   var endTick = false;
