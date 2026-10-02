@@ -61,23 +61,13 @@
   @media (hover:hover) and (pointer:fine){html .product-item .color-swatch__item:hover{transform:scale(1.12)!important}}
   @media (max-width:640px){html .product-item .color-swatch-list{gap:8px!important}}
 
-  /* ---------- 4. "Save x": red glass pill, white text, on the photo ---------- */
-  /* Liquid Glass: a see-through red lens with a bright rim and a soft sheen, the photo shows through */
+  /* ---------- 4. "Save x": flat red pill, white text, on the photo (Abid: no glass) ---------- */
   html body .product-label.product-label--on-sale,html body .brf-badge,html body .brf-ucard__badge,html body .brf-hw__badge{
-    display:inline-block;isolation:isolate;overflow:hidden;white-space:nowrap;padding:5px 11px!important;border-radius:980px!important;
-    background:linear-gradient(180deg,rgba(248,78,66,.80) 0%,rgba(220,36,30,.74) 55%,rgba(182,20,16,.80) 100%)!important;color:#fff!important;
-    -webkit-backdrop-filter:blur(10px) saturate(120%);backdrop-filter:blur(10px) saturate(120%);
-    border:1px solid rgba(255,255,255,.55)!important;
-    box-shadow:inset 0 1px 1px rgba(255,255,255,.85),inset 0 -1.5px 3px rgba(255,190,180,.35),inset 0 0 0 .5px rgba(255,255,255,.3),0 4px 14px -4px rgba(140,12,10,.5),0 1px 2px rgba(80,0,0,.18)!important;
-    font-weight:700!important;font-size:12px!important;line-height:1!important;letter-spacing:.01em;text-shadow:0 1px 2px rgba(90,0,0,.45)}
-  /* the photo badges are placed absolutely by their own sections; only the card label list needs a positioned pill */
-  html body .product-label.product-label--on-sale{position:relative}
-  html body .product-label.product-label--on-sale::before,html body .brf-badge::before,html body .brf-ucard__badge::before,html body .brf-hw__badge::before{
-    content:"";position:absolute;z-index:-1;left:6%;right:6%;top:1px;height:48%;border-radius:980px;pointer-events:none;
-    background:linear-gradient(180deg,rgba(255,255,255,.55),rgba(255,255,255,.06))}
-  @supports not ((-webkit-backdrop-filter:blur(1px)) or (backdrop-filter:blur(1px))){
-    html body .product-label.product-label--on-sale,html body .brf-badge,html body .brf-ucard__badge{background:#D32F2A!important}
-  }
+    display:inline-block;white-space:nowrap;padding:5px 11px!important;border-radius:980px!important;
+    background:#D32F2A!important;color:#fff!important;border:0!important;box-shadow:none!important;
+    -webkit-backdrop-filter:none!important;backdrop-filter:none!important;text-shadow:none!important;
+    font-weight:700!important;font-size:12px!important;line-height:1!important;letter-spacing:.01em}
+  html body .product-label.product-label--on-sale::before,html body .brf-badge::before,html body .brf-ucard__badge::before,html body .brf-hw__badge::before{content:none!important}
   html .product-item .brf-pi-media>.product-item__label-list{position:absolute;top:10px!important;left:10px!important;right:auto;z-index:3;margin:0;pointer-events:none}
   html .product-item .product-item__label-list>.product-label{border-radius:980px!important;margin-bottom:5px}
   @media (max-width:640px){
@@ -412,6 +402,24 @@
       if (window.scrollY + window.innerHeight >= se.scrollHeight - 1 && canScroll(t, dy) !== true && e.cancelable) e.preventDefault();
     }
   }, {passive: false});
+
+  /* R4. Typed a quantity on a card, then tapped Add: on iPhones that tap first closes the keyboard, the page shifts
+     and the tap is lost (worst in the sliding "You may also like" row). Treat that tap as the Add itself. */
+  var qaTouch = null;
+  doc.addEventListener('touchstart', function(e){
+    qaTouch = null;
+    var b = e.target.closest && e.target.closest('.brf-qa__add'), ae = doc.activeElement;
+    if (!b || b.disabled || !ae || !ae.classList || !ae.classList.contains('brf-qa__in') || e.touches.length !== 1) return;
+    qaTouch = {b: b, x: e.touches[0].clientX, y: e.touches[0].clientY};
+  }, {capture: true, passive: true});
+  doc.addEventListener('touchend', function(e){
+    var q = qaTouch; qaTouch = null; if (!q) return;
+    var t = e.changedTouches && e.changedTouches[0];
+    if (!t || Math.abs(t.clientX - q.x) > 12 || Math.abs(t.clientY - q.y) > 12) return;
+    if (e.cancelable) e.preventDefault(); /* no second, late click */
+    var ae = doc.activeElement; if (ae && ae.blur) ae.blur();
+    setTimeout(function(){ if (q.b.isConnected && !q.b.disabled) q.b.click(); }, 0);
+  }, {capture: true, passive: false});
 
   /* R3. Bag page "Continue shopping": back to the page they came from, not the default collection */
   var LAST_KEY = 'brfLastShopPage';
