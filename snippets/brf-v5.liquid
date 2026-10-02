@@ -319,7 +319,22 @@
     return NaN;
   }
   /* slower checks: is the Rewards panel or the chat window open? */
+  /* R5. After the Rewards panel closes, Smile re-places its button with its own inline position (to the right, over
+     the chat button). On phones keep it pinned bottom-left, whatever Smile writes. */
+  var LAUNCHERS = '#smile-ui-lite-launcher-frame-container,[id^="smile-ui"][id*="launcher-frame-container"]';
+  function pinLauncher(){
+    if (!phone.matches) return;
+    [].forEach.call(doc.querySelectorAll(LAUNCHERS), function(el){
+      var st = el.style;
+      if (st.getPropertyValue('left') !== '14px' || st.getPropertyPriority('left') !== 'important') st.setProperty('left', '14px', 'important');
+      if (st.getPropertyValue('right') !== 'auto' || st.getPropertyPriority('right') !== 'important') st.setProperty('right', 'auto', 'important');
+      var bt = 'calc(14px + env(safe-area-inset-bottom) + var(--brf-float-lift))';
+      if (st.getPropertyPriority('bottom') !== 'important' || st.getPropertyValue('bottom').indexOf('--brf-float-lift') < 0) st.setProperty('bottom', bt, 'important');
+      if (!el.__brfPin) { el.__brfPin = true; new MutationObserver(pinLauncher).observe(el, {attributes: true, attributeFilter: ['style', 'class']}); }
+    });
+  }
   function heavy(){
+    pinLauncher();
     var panel = smilePanel();
     setClass('brf-smile-open', !!panel);
     if (panel) {
