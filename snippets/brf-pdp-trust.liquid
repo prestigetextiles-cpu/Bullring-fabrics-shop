@@ -16,7 +16,15 @@
     <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-5.6-7-11a7 7 0 0 1 14 0c0 5.4-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/></svg>
     Birmingham fabric specialists
   </li>
+  <li class="brf-glass-chip brf-gift-chip">
+    <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="9" width="17" height="11.5" rx="1.5"/><path d="M2.5 9h19v-3h-19z"/><path d="M12 6v14.5"/><path d="M12 6c-1.6-3.2-5.6-3.4-5.6-1 0 1.5 2.6 1 5.6 1zM12 6c1.6-3.2 5.6-3.4 5.6-1 0 1.5-2.6 1-5.6 1z"/></svg>
+    <span><b>No prices or packing slips in the parcel.</b> Sending it to someone else? Our lips are sealed.</span>
+  </li>
 </ul>
+<style>
+  .brf-trust-chips .brf-gift-chip{grid-column:1/-1;font-weight:500;color:#3A3835}
+  .brf-trust-chips .brf-gift-chip b{font-weight:700;color:#1C1B19}
+</style>
 
 {%- if template.name == 'product' -%}<script>window.brfIsHL = {% if product.tags contains 'home-lifestyle' %}true{% else %}false{% endif %};</script>{%- endif -%}
 {%- if template.name == 'product' and template != 'product.quick-view' and product.template_suffix != 'contact' -%}
@@ -70,6 +78,10 @@
       background:linear-gradient(180deg,#1DAE65 0%,#149954 52%,#0F884A 100%)!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.3),0 8px 18px -10px rgba(20,153,84,.9)!important;transition:transform .15s ease}
     html body .brf-sab .brf-sab__add:active{transform:scale(.97)}
     html body .brf-sab .brf-sab__add.brf-added{background:#0C6637!important}
+    .brf-sab__lbl.is-added::after{content:"\2713";display:inline-block;margin-left:6px;animation:brf-sab-tick .4s cubic-bezier(.2,1.6,.3,1)}
+    html body .brf-sab .brf-sab__add.is-pop{animation:brf-sab-pop .45s cubic-bezier(.2,1.4,.3,1)}
+    @keyframes brf-sab-pop{0%{transform:scale(.94)}60%{transform:scale(1.04)}100%{transform:none}}
+    @keyframes brf-sab-tick{0%{transform:scale(0)}100%{transform:none}}
     html body .brf-sab .brf-sab__add:disabled{background:#ECE6DC!important;color:#8C867D!important;box-shadow:none!important;cursor:default}
     .brf-sab__lbl{font-size:15px;font-weight:700;letter-spacing:-.005em}
     .brf-sab__price{font-size:12px;font-weight:500;opacity:.88}
@@ -99,11 +111,14 @@
     .brf-sab-sheet__o em{margin-left:auto;flex:0 0 auto;font-style:normal;font-size:10.5px;font-weight:600;letter-spacing:.02em;color:#B3261E}
     @media (min-width:768px){
       /* desktop: a compact bar with a smaller green button, like River Island's */
-      html body .brf-sab .brf-sab__bar{width:auto;height:58px;padding:5px!important;border-radius:16px!important}
-      .brf-sab__thumb{flex-basis:48px;width:48px;height:48px;border-radius:12px}
-      html body .brf-sab .brf-sab__add{flex:0 0 auto;min-width:0;padding:0 26px!important;border-radius:12px!important}
-      .brf-sab__lbl{font-size:14px}
-      .brf-sab__seg{max-width:180px;padding:0 16px}
+      html body .brf-sab .brf-sab__bar{width:auto;height:66px;padding:6px!important;border-radius:18px!important}
+      .brf-sab__thumb{flex-basis:54px;width:54px;height:54px;border-radius:13px}
+      html body .brf-sab .brf-sab__add{flex:0 0 auto;min-width:182px;padding:0 30px!important;border-radius:13px!important}
+      .brf-sab__lbl{font-size:15px}
+      .brf-sab__price{font-size:12.5px}
+      .brf-sab__seg{max-width:200px;padding:0 18px}
+      .brf-sab__v{font-size:14px}
+      .brf-sab__cap{font-size:11.5px}
     }
     @media (min-width:768px){
       .brf-sab-sheet{left:50%;right:auto;bottom:96px;width:min(560px,calc(100% - 40px));border-radius:22px;transform:translate(-50%,20px);opacity:0;pointer-events:none;transition:transform .3s cubic-bezier(.2,.9,.25,1),opacity .2s ease}
@@ -258,13 +273,19 @@
     });
 
     /* ---- keep everything in step with the page ---- */
-    var lastId = null;
+    var lastId = null, addedUntil = 0, pendingAt = 0;
     function sync(){
       var p = priceList ? priceList.querySelector('.price') : null;
       priceSlot.textContent = p ? p.textContent.trim() : '';
       btn.disabled = !!mainBtn.disabled;
       var lbl = btn.querySelector('.brf-sab__lbl');
-      if (lbl) lbl.textContent = mainBtn.disabled ? (mainBtn.textContent.trim() || 'Sold out') : 'Add to bag';
+      var done = Date.now() < addedUntil;
+      btn.classList.toggle('brf-added', done);
+      if (lbl) {
+        var t = done ? 'Added to bag' : mainBtn.disabled ? (mainBtn.textContent.trim() || 'Sold out') : 'Add to bag';
+        if (lbl.textContent !== t) lbl.textContent = t;
+        lbl.classList.toggle('is-added', done);
+      }
       var id = idEl && idEl.value;
       if (id && id !== lastId) {
         var src = imgs[id];
@@ -297,7 +318,25 @@
       if (!past) closeSheet();
     }, {threshold: 0});
     io.observe(mainBtn);
-    btn.addEventListener('click', function(){ if (!mainBtn.disabled) mainBtn.click(); });
+    btn.addEventListener('click', function(){ if (!mainBtn.disabled) { pendingAt = Date.now(); mainBtn.click(); } });
+    mainBtn.addEventListener('click', function(){ pendingAt = Date.now(); });
+
+    /* R7. The bar's button says "Added to bag ✓" for a moment after an add (phones and desktop) */
+    function markAdded(){
+      if (!pendingAt || Date.now() - pendingAt > 10000) return;
+      pendingAt = 0; addedUntil = Date.now() + 2200;
+      sync(); btn.classList.remove('is-pop'); void btn.offsetWidth; btn.classList.add('is-pop');
+      setTimeout(sync, 2250);
+    }
+    window.addEventListener('product:added', markAdded, true);
+    doc.addEventListener('brf:bag-added-mobile', markAdded);
+    /* fallback: the bag count goes up */
+    var cnt = doc.querySelector('.header__cart-count');
+    if (cnt && window.MutationObserver) {
+      var lastN = parseInt(cnt.textContent, 10) || 0;
+      new MutationObserver(function(){ var n = parseInt(cnt.textContent, 10) || 0; if (n > lastN) markAdded(); lastN = n; })
+        .observe(cnt, {childList: true, characterData: true, subtree: true});
+    }
   })();
   </script>
 {%- endif -%}

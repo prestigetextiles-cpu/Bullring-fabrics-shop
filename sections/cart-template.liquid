@@ -434,6 +434,12 @@
                   <li><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l8 3v6c0 4.5-3.4 8.3-8 9-4.6-.7-8-4.5-8-9V6l8-3z"/><path d="M9 12l2 2 4-4"/></svg><span><b>Secure checkout</b> Apple Pay, PayPal &amp; cards</span></li>
                 </ul>
 
+                <div class="brf-cp__gift">
+                  <div class="brf-cp__gift-h"><span class="brf-cp__gift-ico" aria-hidden="true">🎁</span><b>Sending it to someone else? Your secret's safe.</b></div>
+                  <p>We never pop prices, invoices or packing slips in the parcel. Just lovely fabric, packed up snug. Whoever opens it won't have a clue where it came from (unless you tell them, and we won't).</p>
+                  <p>Your receipt goes to your inbox, not in the box. Perfect for gifts, and for businesses and drop shippers sending straight to their own customers. Just pop their address in as the delivery address at checkout.</p>
+                </div>
+
                 {%- if section.settings.show_payment_icons -%}
                   <div class="cart-recap__secure-payment">
                     <p class="cart-recap__secure-payment-title">{% render 'icon', icon: 'lock-2' %} {{ 'cart.general.secure_payments' | t }}</p>

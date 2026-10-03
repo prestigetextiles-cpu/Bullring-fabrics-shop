@@ -353,11 +353,10 @@
   }
   /* slower checks: is the Rewards panel or the chat window open? */
   /* R5. After the Rewards panel closes, Smile re-places its button with its own inline position (to the right, over
-     the chat button). On phones keep it pinned bottom-left, whatever Smile writes. */
+     the chat button). Keep it pinned bottom-left, whatever Smile writes. */
   var LAUNCHERS = '#smile-ui-lite-launcher-frame-container,[id^="smile-ui"][id*="launcher-frame-container"],[class*="smile-launcher-frame-container"]';
   function imp(st, prop, val){ if (st.getPropertyValue(prop) !== val || st.getPropertyPriority(prop) !== 'important') st.setProperty(prop, val, 'important'); }
   function pinLauncher(){
-    if (!phone.matches) return;
     var hosts = [].slice.call(doc.querySelectorAll(LAUNCHERS));
     /* any other Smile launcher frame: pin its outermost fixed box */
     smileFrames().forEach(function(f){
@@ -368,9 +367,12 @@
     });
     hosts.forEach(function(el){
       var st = el.style;
-      imp(st, 'left', '14px'); imp(st, 'right', 'auto');
-      var bt = 'calc(14px + env(safe-area-inset-bottom) + var(--brf-float-lift))';
-      if (st.getPropertyPriority('bottom') !== 'important' || st.getPropertyValue('bottom').indexOf('--brf-float-lift') < 0) st.setProperty('bottom', bt, 'important');
+      /* R7. Desktop too: bottom-left, clear of the chat button on the right (lifted over the Add to bag bar when it's showing) */
+      var ph = phone.matches;
+      imp(st, 'left', ph ? '14px' : '20px'); imp(st, 'right', 'auto');
+      var key = ph ? '--brf-float-lift' : '--brf-dlift';
+      var bt = ph ? 'calc(14px + env(safe-area-inset-bottom) + var(--brf-float-lift))' : 'calc(20px + var(--brf-dlift, 0px))';
+      if (st.getPropertyPriority('bottom') !== 'important' || st.getPropertyValue('bottom').indexOf(key) < 0) st.setProperty('bottom', bt, 'important');
       /* anything positioned inside it (the launcher frame itself) hugs the left edge too */
       [].forEach.call(el.querySelectorAll('iframe'), function(c){
         var cs = getComputedStyle(c);
@@ -379,6 +381,7 @@
       if (!el.__brfPin) { el.__brfPin = true; new MutationObserver(pinLauncher).observe(el, {attributes: true, subtree: true, attributeFilter: ['style', 'class']}); }
     });
   }
+  if (phone.addEventListener) phone.addEventListener('change', pinLauncher);
   function heavy(){
     pinLauncher();
     var panel = smilePanel();
@@ -575,6 +578,8 @@
     if (btn === main && sticky) targets.push(sticky);
     targets.forEach(function(b){
       if (!b || b.disabled && b !== btn) return;
+      /* R7. the River Island bar labels itself (brf-pdp-trust); swapping its HTML here lost the price slot */
+      if (b.classList.contains('brf-sab__add')) return;
       if (!b.__brfOrig) b.__brfOrig = b.innerHTML;
       clearTimeout(b.__brfT);
       var set = function(){ b.innerHTML = 'Added to bag<span class="brf-added__tick" aria-hidden="true">✓</span>'; b.classList.add('brf-added'); b.setAttribute('aria-live', 'polite'); };

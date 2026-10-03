@@ -1,0 +1,76 @@
+/* Bull Ring Fabrics — cart page, matching the cart drawer (brand green #149954) */
+.template-cart{background:#F6F3EE}
+.brf-cp-section .page__header{margin:28px 0 18px;text-align:left;display:block}
+.brf-cp__top{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.brf-cp-section .page__title{margin:0!important;font-size:34px!important;letter-spacing:-.03em;text-align:left}
+.brf-cp__count{margin-left:8px;font-size:15px;font-weight:500;letter-spacing:0;color:#8C867D;vertical-align:middle}
+.brf-cp__continue{font-size:14px;font-weight:600;color:#1D1D1F;text-decoration:none;padding:8px 0}
+.brf-cp__continue:hover{color:#0F7A42;text-decoration:underline;text-underline-offset:3px}
+.brf-cp-section .brf-cp__perks{margin-top:16px;border-radius:18px;background:#fff;box-shadow:0 0 0 1px rgba(29,29,31,.06);padding:16px 20px}
+@media (min-width:1000px){ .brf-cp-section .brf-cp__perks{max-width:calc(100% - 420px)} }
+.brf-cp-section .page__button-action{margin-top:14px;border-radius:14px!important;min-height:52px}
+
+/* Line items */
+.brf-cp-section .cart-wrapper .card{border-radius:20px!important;border:0!important;background:#fff!important;box-shadow:0 0 0 1px rgba(29,29,31,.06),0 18px 40px -28px rgba(29,29,31,.25)!important;overflow:hidden}
+.brf-cp-section .line-item-table thead th{font-size:11px!important;font-weight:700!important;letter-spacing:.1em!important;text-transform:uppercase;color:#8C867D!important;background:#FBFAF7;border-bottom:1px solid #EFEAE2!important;padding-top:14px!important;padding-bottom:14px!important}
+.brf-cp-section .line-item{border-top:1px solid #EFEAE2}
+.brf-cp-section .line-item:first-child{border-top:0}
+.brf-cp-section .line-item td{vertical-align:middle;padding-top:20px!important;padding-bottom:20px!important}
+.brf-cp-section .line-item__image-wrapper{width:96px!important;min-width:96px;margin-right:18px!important;border-radius:14px;overflow:hidden;background:#ECE6DC}
+.brf-cp-section .line-item__image-wrapper .aspect-ratio{padding-bottom:100%!important}
+.brf-cp-section .line-item__image-wrapper img{object-fit:cover;width:100%;height:100%}
+.brf-cp-section .line-item__title{font-size:15px!important;font-weight:600!important;line-height:1.35;color:#1D1D1F!important}
+.brf-cp-section .line-item__title:hover{color:#0F7A42!important}
+.brf-cp-section .line-item__vendor{font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:#8C867D!important}
+.brf-cp-section .line-item__price-list{margin-top:6px}
+.brf-cp-section .line-item__price{font-size:14px;font-weight:600;color:#1D1D1F}
+.brf-cp-section .line-item__price--highlight{color:#B3261E!important}
+.brf-cp-section .line-item__price--compare{font-weight:400;color:#8C867D!important}
+.brf-cp-section .line-item__line-price{font-size:16px;font-weight:700;color:#1D1D1F}
+.brf-cp-section .quantity-selector{display:inline-flex;align-items:center;height:38px;border:1px solid #DDD5C8!important;border-radius:980px!important;overflow:hidden;background:#fff}
+.brf-cp-section .quantity-selector__button{width:38px;height:38px;display:grid;place-items:center;border:0;background:none;color:#1D1D1F}
+.brf-cp-section .quantity-selector__button:hover{background:#F6F3EE}
+.brf-cp-section .quantity-selector__button svg{width:10px;height:10px}
+.brf-cp-section .quantity-selector__value{width:34px;height:38px;border:0!important;text-align:center;font-weight:600;font-size:15px;background:none;padding:0}
+.brf-cp-section .line-item__quantity-remove{display:inline-block;margin-top:8px;font-size:12.5px;color:#6B665F!important;text-decoration:underline;text-underline-offset:3px}
+.brf-cp-section .line-item__quantity-remove:hover{color:#B3261E!important}
+@media (max-width:640px){
+  .brf-cp-section .page__title{font-size:28px!important}
+  .brf-cp-section .line-item__image-wrapper{width:84px!important;min-width:84px;margin-right:14px!important}
+  .brf-cp-section .line-item__quantity{display:flex;align-items:center;gap:14px;margin-top:10px}
+  .brf-cp-section .line-item__quantity-remove{margin-top:0}
+}
+
+/* Shipping estimator + gift wrap cards */
+.brf-cp-section .estimate-shipping__toggle{font-weight:600}
+.brf-cp-section .estimate-shipping__icon svg,.brf-cp-section .gift-wrap__icon svg{color:#149954}
+
+/* Recap */
+.brf-cp-section .cart-recap .card{border-radius:20px!important}
+.brf-cp-section .cart-recap .card__section{padding:22px!important}
+.brf-cp-section .cart-recap__price-line{font-size:18px;font-weight:700;color:#1D1D1F;margin-bottom:6px}
+.brf-cp-section .cart-recap__price-line-price{font-size:22px;letter-spacing:-.02em}
+.brf-cp-section .cart-recap__amount-saved{display:inline-block;margin:2px 0 8px;padding:4px 10px;border-radius:980px;background:rgba(179,38,30,.08);color:#B3261E!important;font-size:13px;font-weight:600}
+.brf-cp-section .cart-recap__note-button{font-weight:600;color:#1D1D1F}
+.brf-cp-section .cart-recap__note textarea{border-radius:12px}
+.brf-cp-section .cart-recap__notices{font-size:12.5px;color:#6B665F}
+.brf-cp-section .cart-recap__checkout{display:flex!important;align-items:center;justify-content:center;gap:8px;min-height:56px;border-radius:14px!important;font-size:17px!important}
+.brf-cp__trust{list-style:none;margin:14px 0 0;padding:14px 16px;display:grid;gap:10px;border-radius:18px;background:#fff;box-shadow:0 0 0 1px rgba(29,29,31,.06)}
+.brf-cp__trust li{display:flex;align-items:center;gap:10px;font-size:13px;line-height:1.35;color:#3A3835}
+.brf-cp__trust li svg{flex:0 0 18px;color:#149954}
+.brf-cp__trust b{color:#1D1D1F}
+.brf-cp__gift{margin:12px 0 0;padding:14px 16px;border-radius:18px;background:linear-gradient(180deg,#F1F8F3 0%,#fff 100%);box-shadow:0 0 0 1px rgba(20,153,84,.18)}
+.brf-cp__gift-h{display:flex;align-items:center;gap:8px;margin:0 0 6px;font-size:14px;line-height:1.3;color:#1D1D1F}
+.brf-cp__gift-ico{flex:0 0 auto;display:inline-block;font-size:18px;line-height:1;transform-origin:50% 90%;animation:brf-cp-gift 3.2s ease-in-out 1s infinite}
+.brf-cp__gift p{margin:6px 0 0;font-size:13px;line-height:1.45;color:#3A3835}
+@keyframes brf-cp-gift{0%,82%,100%{transform:none}86%{transform:rotate(-12deg)}90%{transform:rotate(10deg)}94%{transform:rotate(-6deg)}}
+@media (prefers-reduced-motion:reduce){.brf-cp__gift-ico{animation:none}}
+.brf-cp-section .cart-recap__secure-payment-title{font-size:12px;color:#8C867D}
+
+/* Empty cart page */
+.brf-cp__emptywrap{max-width:520px;margin:48px auto 64px;border-radius:24px;background:#fff;box-shadow:0 0 0 1px rgba(29,29,31,.06),0 30px 60px -36px rgba(29,29,31,.35);overflow:hidden}
+.brf-cp__emptywrap .brf-mc__empty{padding:34px 28px 0;text-align:center}
+.brf-cp__emptywrap .brf-mc__empty-art svg{width:230px}
+.brf-cp__emptywrap .brf-mc__empty-q{font-size:24px}
+.brf-cp__emptywrap .brf-mc__cta{min-height:52px;border-radius:14px!important;font-size:16px!important;display:flex;align-items:center;justify-content:center}
+.brf-cp__emptywrap .brf-mc__perks{margin:0 -28px;text-align:left;border-radius:0}
