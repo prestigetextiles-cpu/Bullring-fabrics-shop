@@ -51,6 +51,11 @@
         {%- if brf_sab_im -%}<img class="brf-sticky-atc__img" src="{{ brf_sab_im | img_url: '160x160', crop: 'center' }}" alt="" width="52" height="52">{%- endif -%}
       </button>
       <div class="brf-sab__opts" data-brf-sab-opts></div>
+      <div class="brf-sab__qty" data-brf-sab-qty>
+        <button type="button" class="brf-sab__step" data-d="-1" aria-label="One less">&minus;</button>
+        <input class="brf-sab__in" type="number" inputmode="numeric" pattern="[0-9]*" min="1" value="1" aria-label="Quantity">
+        <button type="button" class="brf-sab__step" data-d="1" aria-label="One more">+</button>
+      </div>
       <button type="button" class="brf-sticky-atc__btn brf-sab__add" data-brf-sticky-btn><span class="brf-sab__lbl">Add to bag</span><span class="brf-sab__price" data-brf-sticky-price></span></button>
     </div>
   </div>
@@ -97,7 +102,26 @@
     .brf-sab__lbl{font-size:15px;font-weight:700;letter-spacing:-.005em}
     .brf-sab__price{font-size:12px;font-weight:500;opacity:.88}
     .brf-sab__price:empty{display:none}
-    @media (max-width:374px){.brf-sab__seg{padding:0 9px;max-width:104px}.brf-sab__add{min-width:96px}.brf-sab__lbl{font-size:14px}}
+    /* quantity box */
+    .brf-sab__qty{flex:0 0 auto;display:flex;align-items:center;align-self:center;height:44px;margin:0 0 0 6px;padding:0 2px;border-radius:12px;background:#F6F3EE;box-shadow:inset 0 0 0 1px #E4DDD2}
+    .brf-sab__step{display:grid;place-items:center;width:30px;height:40px;padding:0;border:0;border-radius:10px;background:transparent;color:#1D1D1F;font:500 19px/1 inherit;cursor:pointer;-webkit-tap-highlight-color:transparent}
+    .brf-sab__step:active{background:rgba(29,29,31,.08)}
+    .brf-sab__step:disabled{color:#C9C2B7;cursor:default;background:transparent}
+    html body .brf-sab .brf-sab__in{width:34px;height:40px;min-height:0;margin:0;padding:0;border:0!important;border-radius:0;background:transparent!important;box-shadow:none!important;color:#1D1D1F;font:700 15px/1 inherit;text-align:center;-moz-appearance:textfield;appearance:textfield}
+    .brf-sab__in::-webkit-outer-spin-button,.brf-sab__in::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+    .brf-sab__in:focus{outline:none}
+    .brf-sab__qty:focus-within{box-shadow:inset 0 0 0 2px #149954}
+    @media (max-width:767px){
+      .brf-sab__thumb{flex-basis:46px;width:46px;height:46px;align-self:center;margin-right:2px}
+      .brf-sab__qty{height:42px;margin-left:4px}
+      .brf-sab__step{width:26px}
+      html body .brf-sab .brf-sab__in{width:28px;font-size:14.5px}
+      html body .brf-sab .brf-sab__add{min-width:0;padding:0 10px!important}
+      .brf-sab__seg{flex:1 1 auto;max-width:none;padding:0 8px}
+      .brf-sab__opts{flex:1 1 auto}
+    }
+    @media (max-width:767px){.brf-sab__n{display:none}}
+    @media (max-width:374px){.brf-sab__thumb{flex-basis:40px;width:40px;height:40px}.brf-sab__seg{padding:0 6px}.brf-sab__step{width:21px}html body .brf-sab .brf-sab__in{width:24px}html body .brf-sab .brf-sab__add{padding:0 8px!important}.brf-sab__add{min-width:96px}.brf-sab__lbl{font-size:14px}}
 
     /* option sheet */
     .brf-sab-scrim{position:fixed;inset:0;z-index:2147483300;background:rgba(10,10,12,.4);opacity:0;transition:opacity .25s ease;-webkit-tap-highlight-color:transparent}
@@ -122,7 +146,12 @@
     .brf-sab-sheet__o em{margin-left:auto;flex:0 0 auto;font-style:normal;font-size:10.5px;font-weight:600;letter-spacing:.02em;color:#B3261E}
     @media (min-width:768px){
       /* desktop: a compact bar with a smaller green button, like River Island's */
-      html body .brf-sab .brf-sab__bar{width:auto;height:66px;padding:6px!important;border-radius:18px!important}
+      html body .brf-sab .brf-sab__bar{width:min(900px,100%);max-width:900px;height:66px;padding:6px!important;border-radius:18px!important}
+      .brf-sab__opts{flex:1 1 auto}
+      html body .brf-sab .brf-sab__seg{flex:1 1 0;max-width:none}
+      .brf-sab__qty{height:50px;margin-left:8px}
+      .brf-sab__step{width:34px;height:46px}
+      html body .brf-sab .brf-sab__in{width:38px;height:46px;font-size:16px}
       .brf-sab__thumb{flex-basis:54px;width:54px;height:54px;border-radius:13px}
       html body .brf-sab .brf-sab__add{flex:0 0 auto;min-width:182px;padding:0 30px!important;border-radius:13px!important}
       .brf-sab__lbl{font-size:15px}
@@ -212,7 +241,7 @@
     var lastSig = '';
     function paintOpts(){
       var gs = groups();
-      var show = gs.slice(0, phone.matches ? (window.innerWidth < 375 ? 1 : 2) : 3);
+      var show = gs.slice(0, phone.matches ? 1 : 3);
       var sig = show.map(function(g){ var s = g.values.filter(function(v){ return v.on; })[0]; return g.name + '=' + (s ? s.v : ''); }).join('|') + '|' + window.innerWidth;
       if (sig === lastSig) return; lastSig = sig;
       opts.innerHTML = show.map(function(g, i){
@@ -329,7 +358,56 @@
       if (!past) closeSheet();
     }, {threshold: 0});
     io.observe(mainBtn);
-    btn.addEventListener('click', function(){ if (!mainBtn.disabled) { pendingAt = Date.now(); mainBtn.click(); } });
+    /* ---- quantity box: kept in step with the page's own quantity (select 1–10+, or a box after "10+") ---- */
+    var qWrap = bar.querySelector('[data-brf-sab-qty]'), qIn = qWrap && qWrap.querySelector('.brf-sab__in');
+    var stock = {}; try { stock = JSON.parse((doc.getElementById('brf-v3-stock') || {}).textContent || '{}'); } catch (e) {}
+    function mainQ(){ return form.querySelector('[name="quantity"]'); }
+    function capQ(){ var m = idEl && stock[idEl.value]; return m != null && m > 0 ? m : 999; }
+    function getMain(){ var q = mainQ(); return q ? Math.max(1, parseInt(q.value, 10) || 1) : 1; }
+    function setMain(v){
+      var q = mainQ(); if (!q || q.type === 'hidden' && q.value == v) return;
+      if (q.tagName === 'SELECT') {
+        var has = [].some.call(q.options, function(o){ return o.value === String(v) && o.textContent.indexOf('+') < 0; });
+        if (has) { q.value = String(v); q.dispatchEvent(new Event('change', {bubbles: true})); return; }
+        /* more than the list holds: pick "10+" so the theme swaps in its own box, then fill it */
+        if ([].some.call(q.options, function(o){ return o.value === '10'; })) { q.value = '10'; q.dispatchEvent(new Event('change', {bubbles: true})); q = mainQ(); }
+        if (!q || q.tagName === 'SELECT') return;
+      }
+      q.value = String(v); q.dispatchEvent(new Event('input', {bubbles: true}));
+    }
+    var lastMainQ = getMain();
+    function paintQ(){
+      if (!qIn) return;
+      var cap = capQ(), v = Math.min(Math.max(1, parseInt(qIn.value, 10) || 1), cap);
+      qWrap.querySelector('[data-d="-1"]').disabled = v <= 1;
+      qWrap.querySelector('[data-d="1"]').disabled = v >= cap;
+      return v;
+    }
+    function setBarQ(v, push){
+      if (!qIn) return;
+      v = Math.min(Math.max(1, v || 1), capQ());
+      if (doc.activeElement !== qIn || push) qIn.value = String(v);
+      paintQ();
+      if (push) { setMain(v); lastMainQ = getMain(); }
+    }
+    if (qIn) {
+      qWrap.addEventListener('click', function(e){
+        var b = e.target.closest('.brf-sab__step'); if (!b || b.disabled) return;
+        setBarQ((parseInt(qIn.value, 10) || 1) + (+b.getAttribute('data-d')), true);
+      });
+      qIn.addEventListener('input', function(){ var v = parseInt(qIn.value, 10); if (v > 0) { if (v > capQ()) qIn.value = String(capQ()); setMain(Math.min(v, capQ())); lastMainQ = getMain(); } paintQ(); });
+      qIn.addEventListener('blur', function(){ setBarQ(parseInt(qIn.value, 10) || 1, true); });
+      qIn.addEventListener('keydown', function(e){ if (e.key === 'Enter') { e.preventDefault(); qIn.blur(); } });
+      /* the page's quantity changed (or the variant's stock cap did): follow it */
+      setInterval(function(){ if (doc.hidden || doc.activeElement === qIn) return; var m = getMain(); if (m !== lastMainQ) { lastMainQ = m; setBarQ(m); } else paintQ(); }, 400);
+      setBarQ(lastMainQ);
+    }
+
+    btn.addEventListener('click', function(){
+      if (mainBtn.disabled) return;
+      if (qIn) { setBarQ(parseInt(qIn.value, 10) || 1, true); }
+      pendingAt = Date.now(); mainBtn.click();
+    });
     mainBtn.addEventListener('click', function(){ pendingAt = Date.now(); });
 
     /* R7. The bar's button says "Added to bag ✓" for a moment after an add (phones and desktop) */
