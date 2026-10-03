@@ -222,8 +222,8 @@
   .brf-scary__stone span{display:block;margin-top:6px;font-size:10.5px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:#A89DB3}
   .brf-scary__here{margin:8px 0 0;font-family:Creepster,Georgia,serif;font-size:34px;color:#F5A04A}
   .brf-scary__quotes{position:relative;min-height:84px;margin:30px auto 26px;max-width:620px}
-  .brf-scary__q{position:absolute;inset:0;margin:0;opacity:0;transform:translateY(8px);transition:opacity .9s ease,transform .9s ease}
-  .brf-scary__q.is-on{opacity:1;transform:none}
+  .brf-scary__q{position:absolute;inset:0;margin:0;opacity:0;transform:translateY(8px);transition:opacity .45s ease,transform .45s ease;pointer-events:none}
+  .brf-scary__q.is-on{opacity:1;transform:none;transition-delay:.5s;pointer-events:auto}
   .brf-scary__q p{margin:0;font-family:Fraunces,Georgia,serif;font-style:italic;font-size:20px;line-height:1.45;color:#E6DCEB}
   .brf-scary__q cite{display:block;margin-top:6px;font-style:normal;font-size:12px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:#8E819C}
   .brf-scary__cta{display:inline-flex;align-items:center;gap:10px;padding:16px 30px;border-radius:99px;background:#F08A24;color:#16121B!important;font-weight:800;font-size:16px;text-decoration:none;box-shadow:0 0 0 0 rgba(240,138,36,.6);animation:brfPulse 2.4s infinite}
@@ -401,7 +401,7 @@
   {%- assign hs_hw = section.settings.halloween_collection -%}{%- if hs_hw.handle == blank -%}{%- assign hs_hw = collections[section.settings.halloween_collection] -%}{%- endif -%}
   {%- if hs_hw.handle == blank -%}{%- assign hs_hw = collections['halloween'] -%}{%- endif -%}
   {%- assign hs_hd = collections['halloween-home-decor'] -%}
-  <div class="brf-hs" data-brf-hs>
+  <div class="brf-hs" data-brf-hs data-brf-nofx>
     <div class="brf-hs__track" data-brf-hs-track tabindex="-1">
     {%- if section.settings.hl_enable and hl_items.size > 0 -%}
     <div class="brf-hs__slide" role="group" aria-roledescription="slide" aria-label="Home &amp; Lifestyle">
