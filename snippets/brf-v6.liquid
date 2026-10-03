@@ -215,4 +215,17 @@
   mo.observe(doc.body, {attributes: true, attributeFilter: ['class']});
   setH(); setFs();
 })();
+/* R10. Bag page: after lines are removed the page redraws itself, but the bag count in the header could be left
+   showing the old number. Re-read the real count whenever the bag section changes. */
+(function(){
+  var sec = document.querySelector('.brf-cp-section'); if (!sec || !window.fetch) return;
+  var host = sec.closest('.shopify-section') || sec.parentNode, t = 0;
+  function sync(){
+    fetch('/cart.js', {credentials: 'same-origin', headers: {Accept: 'application/json'}}).then(function(r){ return r.json(); }).then(function(c){
+      var n = String(c.item_count);
+      [].forEach.call(document.querySelectorAll('.header__cart-count'), function(el){ if (el.textContent.trim() !== n) el.textContent = n; });
+    }).catch(function(){});
+  }
+  new MutationObserver(function(){ clearTimeout(t); t = setTimeout(sync, 250); }).observe(host, {childList: true, subtree: true});
+})();
 </script>

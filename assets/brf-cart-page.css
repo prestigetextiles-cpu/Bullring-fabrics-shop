@@ -74,3 +74,5 @@
 .brf-cp__emptywrap .brf-mc__empty-q{font-size:24px}
 .brf-cp__emptywrap .brf-mc__cta{min-height:52px;border-radius:14px!important;font-size:16px!important;display:flex;align-items:center;justify-content:center}
 .brf-cp__emptywrap .brf-mc__perks{margin:0 -28px;text-align:left;border-radius:0}
+/* R10. the full-bag rule above (max-width:calc(100% - 420px) on wide screens) squeezed this into a sliver once the bag emptied */
+html .brf-cp__emptywrap .brf-cp__perks{max-width:none;width:auto;margin:22px -28px 0;padding:16px 28px 20px;border-radius:0;box-shadow:none;background:#F6F3EE}
