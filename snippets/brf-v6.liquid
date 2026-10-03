@@ -51,6 +51,24 @@
     html .product-item .brf-qa-form:not(.brf-qa-form--qty)>.product-item__action-button.button--primary{height:44px!important;border:0!important;color:#fff!important;
       background:linear-gradient(180deg,#1DAE65 0%,#149954 52%,#0F884A 100%)!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.3),0 8px 18px -12px rgba(20,153,84,.8)!important}
   }
+  /* Search results: the quantity pill sits in a row (a search-only rule stacked it in a column, pushing Add out of sight) */
+  html body.template-search .product-item .brf-qa-form{flex-direction:row!important}
+  html body.template-search .product-item .brf-qa-form:not(.brf-qa-form--qty){flex-wrap:nowrap!important}
+  /* ...and on phones it gets the same white quantity + green Add pill as desktop */
+  @media (max-width:767px){
+    html body.template-search .product-item .brf-qa-form.brf-qa-form--qty{background:#fff!important;box-shadow:inset 0 0 0 1px #DDD5C8,0 8px 18px -14px rgba(29,29,31,.4)!important}
+    html body.template-search .product-item .brf-qa-form--qty .brf-qa__qty{background:transparent!important;-webkit-backdrop-filter:none!important;backdrop-filter:none!important;box-shadow:none!important}
+    html body.template-search .product-item .brf-qa-form--qty .brf-qa__qty::before{content:none!important}
+    html body.template-search .product-item .brf-qa-form--qty .brf-qa__step,html body.template-search .product-item .brf-qa-form--qty .brf-qa__in{color:#1D1D1F!important;caret-color:#1D1D1F}
+    html body.template-search .product-item .brf-qa-form--qty .brf-qa__step:hover,html body.template-search .product-item .brf-qa-form--qty .brf-qa__step:active{background:rgba(29,29,31,.06)!important}
+    html body.template-search .product-item .brf-qa-form--qty .brf-qa__step:disabled{color:#C9C2B7!important;background:transparent!important}
+    html body.template-search .product-item .brf-qa-form--qty>.brf-qa__add{color:#fff!important;background:linear-gradient(180deg,#1DAE65 0%,#149954 52%,#0F884A 100%)!important;
+      box-shadow:inset 0 1px 0 rgba(255,255,255,.3),inset 0 -1px 0 rgba(0,60,28,.22)!important;padding:0 10px!important}
+    html body.template-search .product-item .brf-qa-form--qty>.brf-qa__add.is-done{background:#0C6637!important}
+    html body.template-search .product-item .brf-qa-form--qty>.brf-qa__add:disabled{background:#ECE6DC!important;color:#8C867D!important;box-shadow:none!important}
+    html body.template-search .product-item .brf-qa-form--qty.is-added{background:#fff!important}
+  }
+
   /* "2 in bag" under the button */
   .brf-qa__inbag{display:flex;align-items:center;justify-content:center;gap:4px;margin:7px 0 0;font-size:12.5px;line-height:1.2;font-weight:600;color:#0C6637;text-align:center}
   .brf-qa__inbag svg{flex:0 0 auto}
@@ -68,8 +86,8 @@
     html #shopify-section-header .header__logo-image{max-height:48px;width:auto}
     html #shopify-section-header#shopify-section-header{transition:top .34s cubic-bezier(.2,.8,.2,1),background-color .24s ease}
     html.brf-hdr-hide #shopify-section-header#shopify-section-header{top:calc(-2px - var(--brf-hdr-h,90px))!important}
-    html.brf-hdr-hide body .brf-fstick.brf-fstick{top:0!important}
-    html body .brf-fstick.brf-fstick{transition:top .34s cubic-bezier(.2,.8,.2,1)}
+    /* the filter bar follows the header: right under it when it's showing, at the very top when it's tucked away */
+    html body .brf-fstick.brf-fstick{top:var(--brf-fs-top,var(--brf-stick-top,0px))!important;transition:top .34s cubic-bezier(.2,.8,.2,1)}
   }
   @media (prefers-reduced-motion:reduce){html #shopify-section-header#shopify-section-header,html body .brf-fstick.brf-fstick{transition:none}}
 
@@ -104,6 +122,20 @@
     html .template-cart .line-item__title{overflow-wrap:anywhere}
   }
   html.brf-cartpg #main,html.brf-cartpg main{overflow-x:clip}
+  /* ---------- Bag icon: the sewing button spins and the bag hops when something goes in ---------- */
+  .brf-bagx{overflow:visible;transform-origin:50% 92%}
+  .brf-bagx .brf-bagx__btn{transform-box:fill-box;transform-origin:center;transition:transform .7s cubic-bezier(.3,1.5,.4,1)}
+  .brf-bagx .brf-bagx__h{transform-box:fill-box;transform-origin:50% 100%}
+  @media (hover:hover){
+    .header__cart-toggle:hover .brf-bagx__btn,.brf-hc__btn--cart:hover .brf-bagx__btn,a:hover>.brf-bagx .brf-bagx__btn{transform:rotate(180deg)}
+  }
+  .brf-bagx.is-wow{animation:brf-bagx-hop .8s cubic-bezier(.3,1.3,.4,1)}
+  .brf-bagx.is-wow .brf-bagx__btn{animation:brf-bagx-spin .9s cubic-bezier(.3,1.4,.4,1)}
+  .brf-bagx.is-wow .brf-bagx__h{animation:brf-bagx-swing .9s ease}
+  @keyframes brf-bagx-hop{0%{transform:none}22%{transform:translateY(-4px) scale(.94,1.08)}44%{transform:translateY(0) scale(1.12,.88)}64%{transform:scale(.96,1.05)}82%{transform:scale(1.02,.98)}100%{transform:none}}
+  @keyframes brf-bagx-spin{0%{transform:rotate(0)}100%{transform:rotate(360deg)}}
+  @keyframes brf-bagx-swing{0%,100%{transform:none}25%{transform:rotate(-14deg)}55%{transform:rotate(9deg)}80%{transform:rotate(-4deg)}}
+  @media (prefers-reduced-motion:reduce){.brf-bagx.is-wow,.brf-bagx.is-wow .brf-bagx__btn,.brf-bagx.is-wow .brf-bagx__h{animation:none}.brf-bagx .brf-bagx__btn{transition:none}}
 </style>
 <script>
 (function(){
@@ -111,6 +143,23 @@
 
   /* 19. tag the bag page so its sideways lock only applies there */
   if (doc.body && doc.body.classList.contains('template-cart')) root.classList.add('brf-cartpg');
+
+  /* bag icon "wow" whenever the bag count goes up or something is added */
+  var wowAt = 0;
+  function wow(){
+    if (Date.now() - wowAt < 600) return; wowAt = Date.now();
+    [].forEach.call(doc.querySelectorAll('.brf-bagx'), function(ic){ ic.classList.remove('is-wow'); void ic.getBoundingClientRect(); ic.classList.add('is-wow'); clearTimeout(ic.__w); ic.__w = setTimeout(function(){ ic.classList.remove('is-wow'); }, 1000); });
+  }
+  doc.addEventListener('product:added', function(){ setTimeout(wow, 250); });
+  var counts = {};
+  function countWatch(){
+    [].forEach.call(doc.querySelectorAll('.header__cart-count,.brf-hc__count'), function(el, i){
+      if (el.__brfWow) return; el.__brfWow = true;
+      var key = 'c' + i; counts[key] = parseInt(el.textContent, 10) || 0;
+      new MutationObserver(function(){ var n = parseInt(el.textContent, 10) || 0; if (n > counts[key] && performance.now() > 3000) wow(); counts[key] = n; }).observe(el, {childList: true, characterData: true, subtree: true});
+    });
+  }
+  countWatch(); setTimeout(countWatch, 1500);
 
   /* 12. phones/tablets: header slides away while scrolling down, back on the first scroll up */
   var hdr = doc.getElementById('shopify-section-header');
@@ -125,8 +174,13 @@
     if (ae && hdr.contains(ae) && /^(INPUT|TEXTAREA|SELECT)$/.test(ae.tagName)) return true;
     return !!hdr.querySelector('[aria-expanded="true"]');
   }
-  function show(){ if (hidden) { hidden = false; root.classList.remove('brf-hdr-hide'); } }
-  function hide(){ if (!hidden) { setH(); hidden = true; root.classList.add('brf-hdr-hide'); } }
+  /* where the sticky filter bar should sit (its own value, so a resize while the header is tucked away can't leave it under the header) */
+  function setFs(){
+    var pos = getComputedStyle(hdr).position, h = (pos === 'sticky' || pos === 'fixed') ? hdr.offsetHeight : 0;
+    root.style.setProperty('--brf-fs-top', (mq.matches && hidden ? 0 : h) + 'px');
+  }
+  function show(){ if (hidden) { hidden = false; root.classList.remove('brf-hdr-hide'); setFs(); } }
+  function hide(){ if (!hidden) { setH(); hidden = true; root.classList.add('brf-hdr-hide'); setFs(); } }
   function run(){
     ticking = false;
     var y = Math.max(0, window.pageYOffset || 0), d = y - lastY; lastY = y;
@@ -136,11 +190,12 @@
     if (acc > 28) hide(); else if (acc < -10) show();
   }
   window.addEventListener('scroll', function(){ if (!ticking) { ticking = true; requestAnimationFrame(run); } }, {passive: true});
-  window.addEventListener('resize', function(){ setH(); if (!mq.matches) show(); }, {passive: true});
+  window.addEventListener('resize', function(){ setH(); if (!mq.matches) show(); setFs(); }, {passive: true});
+  if (window.ResizeObserver) new ResizeObserver(function(){ setH(); setFs(); }).observe(hdr);
   /* a drawer, menu or search opening always brings the header back */
   var mo = new MutationObserver(function(){ if (hidden && busy()) show(); });
   mo.observe(root, {attributes: true, attributeFilter: ['class']});
   mo.observe(doc.body, {attributes: true, attributeFilter: ['class']});
-  setH();
+  setH(); setFs();
 })();
 </script>

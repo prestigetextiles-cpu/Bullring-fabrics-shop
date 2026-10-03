@@ -284,16 +284,49 @@
   var smscrim = doc.createElement('div'); smscrim.className = 'brf-smscrim'; smscrim.setAttribute('aria-hidden', 'true');
   doc.body.appendChild(smscrim); doc.body.appendChild(smx);
   var hiddenPanel = null;
+  /* Close the Rewards panel the way Smile itself would, so its button goes back to its resting state
+     (hiding the panel ourselves left Smile thinking it was still open, and on phones its "open" button sits on the right) */
+  function smileFrames(){
+    return [].filter.call(doc.querySelectorAll('iframe'), function(f){ return /smile/i.test((f.id || '') + ' ' + (f.className || '') + ' ' + (f.title || '') + ' ' + (f.name || '') + ' ' + (f.getAttribute('src') || '')); });
+  }
+  function frameDoc(f){ try { return f.contentDocument || (f.contentWindow && f.contentWindow.document) || null; } catch (e) { return null; } }
+  function clickInside(f, sel){
+    var d = frameDoc(f); if (!d) return false;
+    var els = d.querySelectorAll(sel);
+    for (var i = 0; i < els.length; i++) { var r = els[i].getBoundingClientRect(); if (r.width && r.height) { els[i].click(); return true; } }
+    return false;
+  }
+  function smileApiClose(){
+    var S = window.SmileUI; if (!S) return false;
+    var fns = [S.closePanel, S.close, S.ui && S.ui.closePanel];
+    for (var i = 0; i < fns.length; i++) if (typeof fns[i] === 'function') { try { fns[i].call(fns[i] === (S.ui && S.ui.closePanel) ? S.ui : S); return true; } catch (e) {} }
+    return false;
+  }
   function closeSmile(){
     var p = smilePanel();
-    try { if (window.SmileUI && typeof SmileUI.closePanel === 'function') { SmileUI.closePanel(); } } catch (e) {}
-    /* if Smile didn't close it, hide it ourselves until the Rewards button is tapped again */
-    setTimeout(function(){
+    if (!p) { heavy(); return; }
+    var steps = [
+      smileApiClose,
+      function(){ /* the panel's own close button */
+        var fr = p.tagName === 'IFRAME' ? [p] : [].slice.call(p.querySelectorAll('iframe'));
+        for (var i = 0; i < fr.length; i++) if (clickInside(fr[i], '[aria-label*="lose"],[aria-label*="LOSE"],[title*="lose"],.close-button,[class*="close-btn"],[class*="CloseButton"],[class*="close"] button,button[class*="close"]')) return true;
+        return false;
+      },
+      function(){ /* tap Smile's own launcher, which toggles the panel shut */
+        var fr = smileFrames().filter(function(f){ return /launcher/i.test((f.id || '') + ' ' + (f.className || '') + ' ' + (f.title || '')); });
+        for (var i = 0; i < fr.length; i++) if (clickInside(fr[i], 'button,[role="button"],a,.smile-launcher,body>div')) return true;
+        return false;
+      }
+    ];
+    var k = 0;
+    (function next(){
+      if (!smilePanel()) { heavy(); return; }
+      if (k < steps.length) { var did = false; try { did = steps[k++](); } catch (e) {} setTimeout(next, did ? 320 : 0); return; }
+      /* last resort: hide it ourselves until the Rewards button is tapped again */
       var still = smilePanel();
       if (still) { still.setAttribute('data-brf-smile-hidden', ''); hiddenPanel = still; }
       heavy();
-    }, 260);
-    if (!p) heavy();
+    })();
   }
   smx.addEventListener('click', function(e){ e.preventDefault(); e.stopPropagation(); closeSmile(); });
   smscrim.addEventListener('click', function(e){ e.preventDefault(); closeSmile(); });
@@ -321,16 +354,29 @@
   /* slower checks: is the Rewards panel or the chat window open? */
   /* R5. After the Rewards panel closes, Smile re-places its button with its own inline position (to the right, over
      the chat button). On phones keep it pinned bottom-left, whatever Smile writes. */
-  var LAUNCHERS = '#smile-ui-lite-launcher-frame-container,[id^="smile-ui"][id*="launcher-frame-container"]';
+  var LAUNCHERS = '#smile-ui-lite-launcher-frame-container,[id^="smile-ui"][id*="launcher-frame-container"],[class*="smile-launcher-frame-container"]';
+  function imp(st, prop, val){ if (st.getPropertyValue(prop) !== val || st.getPropertyPriority(prop) !== 'important') st.setProperty(prop, val, 'important'); }
   function pinLauncher(){
     if (!phone.matches) return;
-    [].forEach.call(doc.querySelectorAll(LAUNCHERS), function(el){
+    var hosts = [].slice.call(doc.querySelectorAll(LAUNCHERS));
+    /* any other Smile launcher frame: pin its outermost fixed box */
+    smileFrames().forEach(function(f){
+      if (!/launcher/i.test((f.id || '') + ' ' + (f.className || '') + ' ' + (f.title || ''))) return;
+      var host = null;
+      for (var e = f; e && e !== doc.body; e = e.parentElement) if (getComputedStyle(e).position === 'fixed') host = e;
+      if (host && hosts.indexOf(host) < 0) hosts.push(host);
+    });
+    hosts.forEach(function(el){
       var st = el.style;
-      if (st.getPropertyValue('left') !== '14px' || st.getPropertyPriority('left') !== 'important') st.setProperty('left', '14px', 'important');
-      if (st.getPropertyValue('right') !== 'auto' || st.getPropertyPriority('right') !== 'important') st.setProperty('right', 'auto', 'important');
+      imp(st, 'left', '14px'); imp(st, 'right', 'auto');
       var bt = 'calc(14px + env(safe-area-inset-bottom) + var(--brf-float-lift))';
       if (st.getPropertyPriority('bottom') !== 'important' || st.getPropertyValue('bottom').indexOf('--brf-float-lift') < 0) st.setProperty('bottom', bt, 'important');
-      if (!el.__brfPin) { el.__brfPin = true; new MutationObserver(pinLauncher).observe(el, {attributes: true, attributeFilter: ['style', 'class']}); }
+      /* anything positioned inside it (the launcher frame itself) hugs the left edge too */
+      [].forEach.call(el.querySelectorAll('iframe'), function(c){
+        var cs = getComputedStyle(c);
+        if (cs.position === 'absolute' || cs.position === 'fixed') { imp(c.style, 'left', '0px'); imp(c.style, 'right', 'auto'); }
+      });
+      if (!el.__brfPin) { el.__brfPin = true; new MutationObserver(pinLauncher).observe(el, {attributes: true, subtree: true, attributeFilter: ['style', 'class']}); }
     });
   }
   function heavy(){
