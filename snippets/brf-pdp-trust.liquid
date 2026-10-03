@@ -423,16 +423,23 @@
       clearTimeout(tipT); tipT = setTimeout(function(){ tip.classList.remove('is-on'); qWrap.classList.remove('is-max'); }, 2600);
     }
     function getMain(){ var q = mainQ(); return q ? Math.max(1, parseInt(q.value, 10) || 1) : 1; }
+    /* R9. Only touch the page's quantity when the number really differs, never re-trigger ourselves,
+       and never leave the page's box focused (that popped the phone keyboard up on its own). */
+    var syncing = false;
+    function fire(el, type){ syncing = true; try { el.dispatchEvent(new Event(type, {bubbles: true})); } finally { syncing = false; } }
     function setMain(v){
-      var q = mainQ(); if (!q || q.type === 'hidden' && q.value == v) return;
+      var q = mainQ(); if (!q || String(q.value) === String(v)) return;
       if (q.tagName === 'SELECT') {
         var has = [].some.call(q.options, function(o){ return o.value === String(v) && o.textContent.indexOf('+') < 0; });
-        if (has) { q.value = String(v); q.dispatchEvent(new Event('change', {bubbles: true})); return; }
+        if (has) { q.value = String(v); fire(q, 'change'); return; }
         /* more than the list holds: pick "10+" so the theme swaps in its own box, then fill it */
-        if ([].some.call(q.options, function(o){ return o.value === '10'; })) { q.value = '10'; q.dispatchEvent(new Event('change', {bubbles: true})); q = mainQ(); }
+        if (![].some.call(q.options, function(o){ return o.value === '10'; })) return;
+        var had = doc.activeElement;
+        q.value = '10'; fire(q, 'change'); q = mainQ();
+        if (q && doc.activeElement === q && had !== q) { q.blur(); if (had === qIn) try { qIn.focus({preventScroll: true}); } catch (e) {} }
         if (!q || q.tagName === 'SELECT') return;
       }
-      q.value = String(v); q.dispatchEvent(new Event('input', {bubbles: true}));
+      q.value = String(v); fire(q, 'input');
     }
     var lastMainQ = getMain();
     function paintQ(){
@@ -468,7 +475,10 @@
       window.addEventListener('product:added', function(){ setTimeout(loadBag, 400); }, true);
       doc.addEventListener('brf:bag-added-mobile', function(){ setTimeout(loadBag, 400); });
       /* the variant changed: re-check the cap */
-      form.addEventListener('change', function(){ setTimeout(function(){ setBarQ(parseInt(qIn.value, 10) || 1, true); }, 60); });
+      form.addEventListener('change', function(e){
+        if (syncing || (e.target && e.target.name === 'quantity')) return;
+        setTimeout(function(){ var v = parseInt(qIn.value, 10) || 1; if (v > capQ()) setBarQ(v, true); else paintQ(); }, 60);
+      });
     }
 
     btn.addEventListener('click', function(){
