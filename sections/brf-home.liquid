@@ -254,6 +254,52 @@
     .brf-scary__desk{display:none}
     .brf-scary__trees{height:70px}
   }
+  @media (max-width:640px){
+    /* phones: no dark side vignettes or edge shadows on the banner slides */
+    .brf-hs__slide--spooky{background:linear-gradient(180deg,#1A1020 0%,#2A1527 45%,#0B080E 100%)}
+    .brf-hs__slide--xmas{background:linear-gradient(180deg,#14503C 0%,#0F3B2E 60%,#0A2A20 100%)}
+    .brf-hs .brf-hl-tile,.brf-xmas__media .brf-hl-tile{box-shadow:none}
+    .brf-xmas__media .brf-hl-tile{outline:2px solid rgba(227,179,65,.55);outline-offset:-2px}
+    .brf-scary__stone{box-shadow:inset 0 2px 0 rgba(255,255,255,.12),inset 0 -8px 16px rgba(0,0,0,.35)}
+    .brf-scary__moon{filter:none}
+  }
+  @media (max-width:640px){
+    /* phones: compact banner */
+    .brf-hs__slide .brf-hero{padding-top:14px;padding-bottom:12px;gap:14px}
+    .brf-hs__slide .brf-hero__media{height:170px;gap:6px}
+    .brf-hs__slide .brf-hero h1,.brf-hs__slide .brf-hero__title,.brf-hs__h{font-size:28px!important;line-height:1.08;margin-bottom:8px!important}
+    .brf-hs__slide .brf-hero__h1 .brf-eyebrow,.brf-hs__h .brf-eyebrow{font-size:10.5px;letter-spacing:.14em;margin-bottom:6px}
+    .brf-hs__slide .brf-hero p{display:none}
+    .brf-hs__h,.brf-hs__slide .brf-hero__h1{margin-bottom:12px!important}
+    .brf-hs__chips{margin-bottom:12px}
+    .brf-hs__chips a{padding:5px 10px;font-size:12.5px}
+    .brf-hs__slide .brf-hero__ctas{flex-direction:row;gap:8px}
+    .brf-hs__slide .brf-hero__ctas .brf-btn{flex:1 1 auto;width:auto;min-width:0;padding:11px 14px;font-size:14px;text-align:center;white-space:nowrap}
+    .brf-hs__slide .brf-hero__ctas .brf-btn--line{flex:0 1 auto}
+    .brf-hs__nav{padding:10px 0 18px}
+    .brf-hs__slide--xmas>.brf-hero{padding-top:44px}
+    .brf-scary{padding:22px 16px 46px}
+    .brf-scary__eyebrow{font-size:10.5px}
+    .brf-scary__title{font-size:40px;margin:6px 0 2px}
+    .brf-scary__count-lbl{margin:8px 0 8px;font-size:10px}
+    .brf-scary__stone{width:60px;padding:11px 0 7px;border-radius:30px 30px 5px 5px}
+    .brf-scary__stone b{font-size:26px}
+    .brf-scary__stone span{font-size:8.5px;margin-top:3px}
+    .brf-scary__quotes{min-height:64px;margin:12px auto 10px}
+    .brf-scary__q p{font-size:14.5px}
+    .brf-scary__q cite{font-size:10px;margin-top:3px}
+    .brf-scary__cta{padding:12px 22px;font-size:14.5px}
+    .brf-scary__sub{display:none}
+    .brf-scary__trees{height:44px}
+    .brf-scary__moon{width:40px;height:40px;top:12px}
+  }
+  @media (max-width:374px){
+    .brf-hs__slide .brf-hero__ctas .brf-btn{font-size:13px;padding:10px 10px}
+    .brf-hs__slide:first-child .brf-hero__ctas .brf-btn--line{display:none}
+    .brf-hs__slide .brf-hero__ctas{flex-wrap:nowrap}
+    .brf-hs__h .brf-eyebrow{font-size:0;letter-spacing:0}
+    .brf-hs__h .brf-eyebrow .brf-hs__new{font-size:10px;letter-spacing:.12em}
+  }
   @media (prefers-reduced-motion:reduce){.brf-scary__title,.brf-scary__cta,.brf-scary__flash,.brf-scary__eyes i{animation:none}}
   /* christmas slide */
   .brf-hs__slide--xmas{position:relative;overflow:hidden;color:#F4EFE6;background:radial-gradient(ellipse 70% 90% at 75% 40%,#1D5C45 0%,#0F3B2E 50%,#0A2A20 100%)}
@@ -501,7 +547,7 @@
     var t;track.addEventListener('scroll',function(){clearTimeout(t);t=setTimeout(function(){var i=Math.round(track.scrollLeft/track.clientWidth);if(i!==cur)mark(Math.max(0,Math.min(n-1,i)));},80);},{passive:true});
     root.querySelector('[data-brf-hs-prev]').onclick=function(){go(cur-1);restart();};
     root.querySelector('[data-brf-hs-next]').onclick=function(){go(cur+1);restart();};
-    function start(){if(reduce||timer)return;timer=setInterval(function(){if(!paused&&!document.hidden)go(cur+1);},{{ section.settings.hl_autoplay | default: 5 | times: 1000 }});}
+    function start(){if(reduce||timer)return;timer=setInterval(function(){if(!paused&&!document.hidden)go(cur+1);},{{ section.settings.hl_autoplay | default: 7 | times: 1000 }});}
     function stop(){clearInterval(timer);timer=null;}
     function restart(){stop();start();}
     track.addEventListener('focusin',function(e){if(e.target.matches&&e.target.matches(':focus-visible'))paused=true;});track.addEventListener('focusout',function(){paused=false;});
@@ -848,7 +894,7 @@
     { "type": "text", "id": "hl_heading", "label": "Heading", "default": "Big-brand bits for every room." },
     { "type": "textarea", "id": "hl_text", "label": "Text", "default": "Our new department: homeware, garden, furniture, tech, toys and more, at the same friendly prices as our fabrics. New curtains deserve a comfy new sofa, right?" },
     { "type": "text", "id": "hl_btn_label", "label": "Button label", "default": "Shop Home & Lifestyle" },
-    { "type": "range", "id": "hl_autoplay", "label": "Seconds per slide", "min": 3, "max": 12, "step": 1, "default": 5 },
+    { "type": "range", "id": "hl_autoplay", "label": "Seconds per slide", "min": 3, "max": 12, "step": 1, "default": 7 },
     { "type": "checkbox", "id": "hs_halloween", "label": "Show Halloween slide", "info": "Hides itself after the Halloween end date below", "default": true },
     { "type": "text", "id": "hs_hw_eyebrow", "label": "Halloween slide label", "default": "Spooky season" },
     { "type": "textarea", "id": "hs_hw_quotes", "label": "Halloween slide quotes", "info": "One per line. Add the author after a | sign", "default": "Double, double toil and trouble; fire burn and cauldron bubble.|William Shakespeare, Macbeth\nDeep into that darkness peering, long I stood there, wondering, fearing.|Edgar Allan Poe, The Raven\nWhen witches go riding and black cats are seen, the moon laughs and whispers, 'tis near Halloween.|Traditional rhyme\nThe needle is sharp, the thread is black, once you sew a cape there's no turning back.|The Bull Ring cutting table" },
