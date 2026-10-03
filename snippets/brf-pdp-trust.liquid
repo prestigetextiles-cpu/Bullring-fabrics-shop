@@ -22,8 +22,19 @@
   </li>
 </ul>
 <style>
-  .brf-trust-chips .brf-gift-chip{grid-column:1/-1;font-weight:500;color:#3A3835}
-  .brf-trust-chips .brf-gift-chip b{font-weight:700;color:#1C1B19}
+  /* Frosted glass tiles (Control Center style): soft grey glass, bright white rim, green icon dot */
+  html .brf-trust-chips{gap:10px}
+  html .brf-trust-chips .brf-glass-chip{position:relative;isolation:isolate;gap:10px;min-height:52px;padding:8px 14px 8px 8px;border:0;border-radius:20px;overflow:hidden;font-size:13px;font-weight:600;color:#1D1D1F!important;
+    background:linear-gradient(180deg,rgba(255,255,255,.66) 0%,rgba(226,221,213,.58) 100%);-webkit-backdrop-filter:saturate(170%) blur(22px);backdrop-filter:saturate(170%) blur(22px);
+    box-shadow:inset 0 1.5px 0 #fff,inset 1.5px 0 0 rgba(255,255,255,.8),inset 0 0 0 1px rgba(255,255,255,.5),0 0 0 1px rgba(29,29,31,.08),0 12px 26px -16px rgba(29,29,31,.38),0 2px 6px -3px rgba(29,29,31,.12)!important}
+  html .brf-trust-chips .brf-glass-chip::before{content:"";position:absolute;left:10%;right:10%;top:0;height:42%;z-index:-1;border-radius:0 0 50% 50%/0 0 100% 100%;pointer-events:none;background:linear-gradient(180deg,rgba(255,255,255,.55),rgba(255,255,255,0))}
+  html .brf-trust-chips .brf-glass-chip svg{position:relative;flex:0 0 32px;width:32px;height:32px;padding:7px;border-radius:50%;color:#fff!important;
+    background:linear-gradient(180deg,#1DAE65 0%,#149954 55%,#0F884A 100%);box-shadow:inset 0 1px 0 rgba(255,255,255,.4),inset 0 -1px 0 rgba(0,60,28,.25),0 4px 10px -4px rgba(20,153,84,.7)}
+  html .brf-trust-chips .brf-glass-chip span{position:relative}
+  html .brf-trust-chips .brf-gift-chip{grid-column:1/-1;font-weight:500;color:#3A3835!important}
+  html .brf-trust-chips .brf-gift-chip b{font-weight:700;color:#1D1D1F}
+  @media (max-width:767px){html .brf-trust-chips .brf-glass-chip{gap:8px;min-height:48px;padding:7px 10px 7px 7px;border-radius:18px;font-size:12.5px}html .brf-trust-chips .brf-glass-chip svg{flex-basis:28px;width:28px;height:28px;padding:6px}}
+  @media (prefers-reduced-transparency:reduce){html .brf-trust-chips .brf-glass-chip{background:#fff;-webkit-backdrop-filter:none;backdrop-filter:none}}
 </style>
 
 {%- if template.name == 'product' -%}<script>window.brfIsHL = {% if product.tags contains 'home-lifestyle' %}true{% else %}false{% endif %};</script>{%- endif -%}
