@@ -191,10 +191,10 @@
     .brf-sab-sheet__grab{width:38px;height:5px;margin:2px auto 10px;border-radius:5px;background:#DDD5C8}
     .brf-sab-sheet__h{display:flex;align-items:center;justify-content:space-between;margin:0 0 12px;font-size:17px;font-weight:700;color:#1D1D1F}
     .brf-sab-sheet__x{display:grid;place-items:center;width:34px;height:34px;padding:0;border:0;border-radius:50%;background:rgba(29,29,31,.07);color:#1D1D1F;font-size:20px;line-height:1;cursor:pointer}
-    .brf-sab-sheet__body{overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;padding:2px}
+    .brf-sab-sheet__body{overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;padding:12px 2px 2px}
     .brf-sab-sheet__g{margin:14px 2px 8px;font-size:12px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:#8C867D}
     .brf-sab-sheet__g:first-child{margin-top:0}
-    .brf-sab-sheet__list{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:8px}
+    .brf-sab-sheet__list{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px}
     .brf-sab-sheet__o{display:flex;align-items:center;gap:10px;min-width:0;padding:10px 12px;border:0;border-radius:14px;background:#F6F3EE;color:#1D1D1F;font:500 14px/1.2 inherit;text-align:left;cursor:pointer;box-shadow:inset 0 0 0 1px transparent;transition:box-shadow .15s,background .15s}
     .brf-sab-sheet__o span{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
     .brf-sab-sheet__o .brf-sab__dot{width:18px;height:18px}
@@ -202,6 +202,17 @@
     .brf-sab-sheet__o.is-oos{color:#9A948B}
     .brf-sab-sheet__o.is-oos span{text-decoration:line-through;text-decoration-thickness:1.5px;text-decoration-color:#B3261E}
     .brf-sab-sheet__o.is-oos .brf-sab__dot{opacity:.45;background-image:linear-gradient(135deg,transparent 46%,#B3261E 46%,#B3261E 54%,transparent 54%)!important}
+    .brf-sab-sheet__g b{margin-left:6px;font-weight:700;letter-spacing:0;text-transform:none;color:#1D1D1F}
+    .brf-sab-sheet__list.is-sw{grid-template-columns:repeat(auto-fill,minmax(68px,1fr));gap:8px}
+    .brf-sab-sheet__o.is-sw{position:relative;flex-direction:column;justify-content:center;gap:6px;min-height:72px;padding:10px 4px 8px;overflow:visible;text-align:center}
+    .brf-sab-sheet__o.is-sw .brf-sab__dot{width:30px;height:30px;box-shadow:inset 0 0 0 1px rgba(0,0,0,.14),0 1px 3px rgba(0,0,0,.12)}
+    html body .brf-sab-sheet__o.is-sw em{margin:0;font-size:10.5px;line-height:1.15;white-space:nowrap}
+    .brf-sab-sheet__o.is-sw.is-sel{box-shadow:inset 0 0 0 2px #1D1D1F}
+    /* the colour name: a little bubble on hover (desktop) or on tap (phones) */
+    .brf-sab-sheet__o.is-sw::after{content:attr(data-name);position:absolute;left:50%;bottom:calc(100% + 6px);z-index:3;padding:5px 9px;border-radius:8px;background:#1D1D1F;color:#fff;font-size:12px;font-weight:600;line-height:1.2;white-space:nowrap;
+      transform:translate(-50%,4px);opacity:0;pointer-events:none;transition:opacity .15s ease,transform .2s ease}
+    .brf-sab-sheet__o.is-sw.is-tip::after{opacity:1;transform:translate(-50%,0)}
+    @media (hover:hover){.brf-sab-sheet__o.is-sw:hover::after{opacity:1;transform:translate(-50%,0)}}
     .brf-sab-sheet__o em{margin-left:auto;flex:0 0 auto;font-style:normal;font-size:10.5px;font-weight:600;letter-spacing:.02em;color:#B3261E}
     @media (min-width:768px){
       .brf-sab-sheet{left:50%;right:auto;bottom:96px;width:min(560px,calc(100% - 40px));border-radius:22px;transform:translate(-50%,20px);opacity:0;pointer-events:none;transition:transform .3s cubic-bezier(.2,.9,.25,1),opacity .2s ease}
@@ -328,9 +339,13 @@
       sheet.setAttribute('aria-label', title);
       var html = '<div class="brf-sab-sheet__grab"></div><div class="brf-sab-sheet__h"><span>' + esc(title) + '</span><button type="button" class="brf-sab-sheet__x" aria-label="Close">&times;</button></div><div class="brf-sab-sheet__body">';
       gs.forEach(function(g, gi){
-        html += (gs.length > 1 ? '<p class="brf-sab-sheet__g" data-g="' + gi + '">' + esc(g.name) + '</p>' : '') + '<div class="brf-sab-sheet__list" data-g="' + gi + '">' + g.values.map(function(v, k){
-          var dot = isSwatch(g) ? swatchStyle(v) : '', oos = soldOut(gs, g, v);
-          return '<button type="button" class="brf-sab-sheet__o' + (v.on ? ' is-sel' : '') + (oos ? ' is-oos' : '') + '" data-k="' + k + '" aria-pressed="' + v.on + '"' + (oos ? ' aria-label="' + esc(v.label) + ', sold out"' : '') + '>' + (dot ? '<i class="brf-sab__dot" style="' + esc(dot) + '"></i>' : '') + '<span>' + esc(v.label) + '</span>' + badge(gs, g, v) + '</button>';
+        var sw = isSwatch(g), cur = g.values.filter(function(v){ return v.on; })[0];
+        /* R10. colours are swatches only (the name shows on hover, or on tap on phones) so the stock line has room */
+        html += (gs.length > 1 || sw ? '<p class="brf-sab-sheet__g" data-g="' + gi + '">' + esc(g.name) + (sw ? ' <b data-sel>' + esc(cur ? cur.label : '') + '</b>' : '') + '</p>' : '') +
+          '<div class="brf-sab-sheet__list' + (sw ? ' is-sw' : '') + '" data-g="' + gi + '">' + g.values.map(function(v, k){
+          var dot = sw ? swatchStyle(v) : '', oos = soldOut(gs, g, v);
+          return '<button type="button" class="brf-sab-sheet__o' + (sw ? ' is-sw' : '') + (v.on ? ' is-sel' : '') + (oos ? ' is-oos' : '') + '" data-k="' + k + '" data-name="' + esc(v.label) + '" aria-pressed="' + v.on + '" aria-label="' + esc(v.label) + (oos ? ', sold out' : '') + '">' +
+            (dot ? '<i class="brf-sab__dot" style="' + esc(dot) + '"></i>' : '') + (sw ? '' : '<span>' + esc(v.label) + '</span>') + badge(gs, g, v) + '</button>';
         }).join('') + '</div>';
       });
       sheet.innerHTML = html + '</div>';
@@ -346,6 +361,11 @@
         var v = g.values[+o.getAttribute('data-k')]; if (!v) return;
         [].forEach.call(list.querySelectorAll('.brf-sab-sheet__o'), function(x){ x.classList.toggle('is-sel', x === o); x.setAttribute('aria-pressed', x === o); });
         v.pick();
+        if (o.classList.contains('is-sw')) {
+          [].forEach.call(list.querySelectorAll('.is-tip'), function(x){ x.classList.remove('is-tip'); });
+          o.classList.add('is-tip'); clearTimeout(o.__tipT); o.__tipT = setTimeout(function(){ o.classList.remove('is-tip'); }, 1600);
+          var hd = sheet.querySelector('.brf-sab-sheet__g[data-g="' + list.getAttribute('data-g') + '"] [data-sel]'); if (hd) hd.textContent = v.label;
+        }
         setTimeout(function(){
           sync();
           if (gs.length === 1) { closeSheet(); return; }
