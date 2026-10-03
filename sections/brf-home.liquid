@@ -173,7 +173,7 @@
   .brf-hs__slide{flex:0 0 100%;min-width:0;display:flex;align-items:center;scroll-snap-align:start;scroll-snap-stop:always}
   .brf-hs__slide>.brf-hero{flex:1 1 auto;min-width:0}
   .brf-hs__slide .brf-hero{padding-bottom:40px}
-  .brf-hs__nav{display:flex;align-items:center;justify-content:center;gap:14px;padding:0 0 36px}
+  .brf-hs__nav{display:flex;align-items:center;justify-content:center;gap:14px;padding:16px 0 36px}
   .brf-hs__dots{display:flex;gap:8px}
   .brf-hs__dot{width:8px;height:8px;padding:0;border:0;border-radius:99px;background:rgba(28,27,25,.22);cursor:pointer;transition:width .35s ease,background .35s ease}
   .brf-hs__dot[aria-current="true"]{width:28px;background:#1C1B19}
@@ -208,6 +208,22 @@
     .brf-hl-tile span{font-size:12px;padding:5px 9px;left:8px;bottom:8px}
   }
   @media (prefers-reduced-motion:reduce){.brf-hs__track{scroll-behavior:auto}}
+  /* halloween slide */
+  .brf-hs__slide--spooky{position:relative;overflow:hidden;background:#16121B;color:#EDE6DA}
+  .brf-hs__slide--spooky>.brf-hero{position:relative;z-index:1}
+  .brf-hs__slide--spooky .brf-eyebrow{color:#F08A24}
+  .brf-hs__slide--spooky .brf-hs__h .brf-serif{color:#FBF6EE}
+  .brf-hs__slide--spooky .brf-hero p{color:#C9C0D3}
+  .brf-hs__slide--spooky .brf-hs__new{background:#F08A24;color:#16121B}
+  .brf-hs__slide--spooky .brf-btn--solid{background:#F08A24!important;border-color:#F08A24!important;color:#16121B!important}
+  .brf-hs__slide--spooky .brf-btn--line{border-color:rgba(237,230,218,.55)!important;color:#EDE6DA!important;background:transparent!important}
+  .brf-hs__slide--spooky .brf-btn--line:hover{background:#EDE6DA!important;color:#16121B!important}
+  .brf-hs__slide--spooky .brf-hs__chips a{background:rgba(255,255,255,.06);border-color:rgba(237,230,218,.22);color:#F3EDE4}
+  .brf-hs__slide--spooky .brf-hs__chips a:hover{border-color:#F08A24}
+  .brf-hs__slide--spooky .brf-hl-tile{background:#2A2233;box-shadow:0 0 0 1px rgba(237,230,218,.08)}
+  .brf-hs__slide--spooky .brf-hl-tile span{background:rgba(22,18,27,.82);color:#F3EDE4;box-shadow:0 2px 10px rgba(0,0,0,.4)}
+  .brf-hs__moon{position:absolute;top:36px;right:40%;width:84px;height:84px;z-index:0;opacity:.9;pointer-events:none}
+  @media (max-width:1023px){.brf-hs__moon{display:none}}
   @media (max-width:1023px){
     .brf-wrap{padding:0 32px}
     .brf-hero{grid-template-columns:1fr;gap:40px}
@@ -269,6 +285,13 @@
   {%- assign hl_items = nil -%}
   {%- for l in linklists['main-menu-2026'].links -%}{%- assign lt = l.title | strip | handleize -%}{%- if lt == 'home-lifestyle' -%}{%- assign hl_items = l.links -%}{%- endif -%}{%- endfor -%}
   {%- assign hl_col = collections['home-lifestyle'] -%}
+  {%- assign hs_today = 'now' | date: '%Y%m%d' | plus: 0 -%}
+  {%- assign hs_end = section.settings.halloween_end | remove: '-' | strip | plus: 0 -%}
+  {%- assign hs_hw_show = section.settings.hs_halloween -%}
+  {%- if hs_end > 0 and hs_today > hs_end -%}{%- assign hs_hw_show = false -%}{%- endif -%}
+  {%- assign hs_hw = section.settings.halloween_collection -%}{%- if hs_hw.handle == blank -%}{%- assign hs_hw = collections[section.settings.halloween_collection] -%}{%- endif -%}
+  {%- if hs_hw.handle == blank -%}{%- assign hs_hw = collections['halloween'] -%}{%- endif -%}
+  {%- assign hs_hd = collections['halloween-home-decor'] -%}
   <div class="brf-hs" data-brf-hs>
     <div class="brf-hs__track" data-brf-hs-track tabindex="-1">
     {%- if section.settings.hl_enable and hl_items.size > 0 -%}
@@ -328,6 +351,45 @@
       </div>
     </section>
     </div>
+    {%- if hs_hw_show and hs_hw.handle != blank and hs_hw.products_count > 0 -%}
+    <div class="brf-hs__slide brf-hs__slide--spooky" role="group" aria-roledescription="slide" aria-label="Halloween">
+    {%- render 'brf-spooky-layer' -%}
+    <svg class="brf-hs__moon" viewBox="0 0 120 120" aria-hidden="true"><circle cx="60" cy="60" r="52" fill="#F3E3B8"/><circle cx="44" cy="46" r="8" fill="#E2CE98"/><circle cx="74" cy="72" r="11" fill="#E2CE98"/><circle cx="78" cy="38" r="5" fill="#E2CE98"/></svg>
+    <section class="brf-wrap brf-hero">
+      <div>
+        <h2 class="brf-hs__h"><span class="brf-eyebrow"><span class="brf-hs__new">Boo!</span>{{ section.settings.hs_hw_eyebrow }}</span> <span class="brf-serif">{{ section.settings.hs_hw_heading }}</span></h2>
+        <p>{{ section.settings.hs_hw_text }}</p>
+        <ul class="brf-hs__chips" aria-label="Halloween shortcuts">
+          <li><a href="{{ hs_hw.url }}">All Halloween fabric</a></li>
+          {%- if hs_hd.products_count > 0 -%}<li><a href="{{ hs_hd.url }}">Spooky home décor</a></li>{%- endif -%}
+          {%- assign hs_words = 'skull,spider,pumpkin,ghost,witch,bat,cobweb,velvet,glitter,tulle,orange,black' | split: ',' -%}{%- assign hs_c = 0 -%}
+          {%- for w in hs_words -%}{%- if hs_c >= 5 -%}{%- break -%}{%- endif -%}
+            {%- for t in hs_hw.all_tags -%}{%- assign td = t | downcase -%}{%- if td == w -%}<li><a href="{{ hs_hw.url }}/{{ t | handleize }}">{{ t | capitalize }}</a></li>{%- assign hs_c = hs_c | plus: 1 -%}{%- break -%}{%- endif -%}{%- endfor -%}
+          {%- endfor -%}
+        </ul>
+        <div class="brf-hero__ctas">
+          <a class="brf-btn brf-btn--solid" href="{{ hs_hw.url }}">Shop Halloween</a>
+          {%- if hs_hd.products_count > 0 -%}<a class="brf-btn brf-btn--line" href="{{ hs_hd.url }}">Halloween décor</a>{%- endif -%}
+        </div>
+      </div>
+      <div class="brf-hero__media brf-hero__media--hl">
+        {%- assign shown = 0 -%}
+        {%- for pr in hs_hw.products limit: 30 -%}
+          {%- if shown >= 4 -%}{%- break -%}{%- endif -%}
+          {%- unless pr.available and pr.featured_image -%}{%- continue -%}{%- endunless -%}
+          <a class="brf-hl-tile is-photo" href="{{ pr.url }}"><img src="{{ pr.featured_image | img_url: '700x' }}" alt="" loading="lazy"><span>{{ pr.title | split: ' - ' | first | truncate: 28 }}</span></a>
+          {%- assign shown = shown | plus: 1 -%}
+        {%- endfor -%}
+        {%- for pr in hs_hd.products limit: 10 -%}
+          {%- if shown >= 5 -%}{%- break -%}{%- endif -%}
+          {%- unless pr.available and pr.featured_image -%}{%- continue -%}{%- endunless -%}
+          <a class="brf-hl-tile" href="{{ pr.url }}" style="background:#fff"><img src="{{ pr.featured_image | img_url: '700x' }}" alt="" loading="lazy"><span>{{ pr.title | truncate: 28 }}</span></a>
+          {%- assign shown = shown | plus: 1 -%}
+        {%- endfor -%}
+      </div>
+    </section>
+    </div>
+    {%- endif -%}
     </div>
     <div class="brf-hs__nav" data-brf-hs-nav hidden>
       <button type="button" class="brf-hs__arrow" data-brf-hs-prev aria-label="Previous slide"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg></button>
@@ -685,6 +747,10 @@
     { "type": "textarea", "id": "hl_text", "label": "Text", "default": "Our new department: homeware, garden, furniture, tech, toys and more, at the same friendly prices as our fabrics. New curtains deserve a comfy new sofa, right?" },
     { "type": "text", "id": "hl_btn_label", "label": "Button label", "default": "Shop Home & Lifestyle" },
     { "type": "range", "id": "hl_autoplay", "label": "Seconds per slide", "min": 4, "max": 12, "step": 1, "default": 7 },
+    { "type": "checkbox", "id": "hs_halloween", "label": "Show Halloween slide", "info": "Hides itself after the Halloween end date below", "default": true },
+    { "type": "text", "id": "hs_hw_eyebrow", "label": "Halloween slide label", "default": "Spooky season is here" },
+    { "type": "text", "id": "hs_hw_heading", "label": "Halloween slide heading", "default": "Fabrics to die for." },
+    { "type": "textarea", "id": "hs_hw_text", "label": "Halloween slide text", "default": "Sugar skulls, gothic velvets, glittering tulle and creepy-cute décor. Stitch a costume so good the neighbours will want a second look (and maybe a third)." },
     { "type": "header", "content": "Reassurance strip" },
     { "type": "text", "id": "trust_1_title", "label": "Item 1 title", "default": "Free UK delivery over £65" },
     { "type": "text", "id": "trust_1_text", "label": "Item 1 text", "default": "2-day tracked, UK mainland" },
