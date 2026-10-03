@@ -166,6 +166,48 @@
     .brf-tile .brf-swatch img,.brf-post .brf-swatch img{position:absolute;top:0;left:0}
   }
 
+  /* hero gallery banner */
+  .brf-hs{position:relative}
+  .brf-hs__track{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;-ms-overflow-style:none;scroll-behavior:smooth;overscroll-behavior-x:contain}
+  .brf-hs__track::-webkit-scrollbar{display:none}
+  .brf-hs__slide{flex:0 0 100%;min-width:0;display:flex;align-items:center;scroll-snap-align:start;scroll-snap-stop:always}
+  .brf-hs__slide>.brf-hero{flex:1 1 auto;min-width:0}
+  .brf-hs__slide .brf-hero{padding-bottom:40px}
+  .brf-hs__nav{display:flex;align-items:center;justify-content:center;gap:14px;padding:0 0 36px}
+  .brf-hs__dots{display:flex;gap:8px}
+  .brf-hs__dot{width:8px;height:8px;padding:0;border:0;border-radius:99px;background:rgba(28,27,25,.22);cursor:pointer;transition:width .35s ease,background .35s ease}
+  .brf-hs__dot[aria-current="true"]{width:28px;background:#1C1B19}
+  .brf-hs__arrow{width:36px;height:36px;border-radius:50%;border:1px solid rgba(28,27,25,.18);background:#fff;color:#1C1B19;display:grid;place-items:center;cursor:pointer;padding:0;transition:background .2s,color .2s}
+  .brf-hs__arrow:hover{background:#1C1B19;color:#fff}
+  .brf-hs__h{display:block;margin:0 0 24px;font-size:64px;line-height:1.03;letter-spacing:-.02em;font-weight:inherit}
+  .brf-hs__h .brf-eyebrow{font-size:13px;line-height:1.4;letter-spacing:.18em;margin-bottom:14px}
+  .brf-hs__new{display:inline-block;margin-right:8px;padding:3px 8px;border-radius:99px;background:#1C1B19;color:#fff;letter-spacing:.12em}
+  .brf-hs__chips{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 30px;padding:0;list-style:none;max-width:560px}
+  .brf-hs__chips a{display:inline-block;padding:6px 12px;border-radius:99px;background:#fff;border:1px solid rgba(28,27,25,.12);font-size:13.5px;font-weight:600;color:#1C1B19;text-decoration:none;white-space:nowrap;transition:border-color .2s,transform .2s}
+  .brf-hs__chips a:hover{border-color:#1C1B19;transform:translateY(-1px)}
+  .brf-hero__media--hl{grid-template-columns:1.25fr 1fr 1fr}
+  .brf-hl-tile{position:relative;display:block;border-radius:6px;overflow:hidden;background:#fff;text-decoration:none;color:#1C1B19}
+  .brf-hl-tile img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;padding:14px 14px 44px;transition:transform .5s ease}
+  .brf-hl-tile.is-photo img{object-fit:cover;padding:0}
+  .brf-hl-tile:hover img{transform:scale(1.04)}
+  .brf-hl-tile span{position:absolute;left:10px;bottom:10px;padding:6px 11px;border-radius:99px;background:rgba(255,255,255,.92);box-shadow:0 2px 8px rgba(28,27,25,.12);font-size:13px;font-weight:700;line-height:1.2;-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}
+  .brf-hero__media--hl>.brf-hl-tile:first-child{grid-row:1 / span 2}
+  .brf-hero__media--hl>.brf-hl-tile:first-child span{font-size:15px}
+  .brf-hs__slide .brf-hero>*{min-width:0}
+  @media (max-width:1023px){.brf-hs__h{font-size:52px}.brf-hs__slide .brf-hero{grid-template-columns:minmax(0,1fr)}}
+  @media (max-width:640px){
+    .brf-hs__slide .brf-hero{padding-bottom:20px}
+    .brf-hs__nav{padding-bottom:28px}
+    .brf-hs__arrow{display:none}
+    .brf-hs__h{font-size:38px;margin-bottom:14px}
+    .brf-hs__chips{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;margin:0 -16px 22px;padding:0 16px;max-width:none}
+    .brf-hs__chips::-webkit-scrollbar{display:none}
+    .brf-hero__media--hl{grid-template-columns:1.2fr 1fr;grid-template-rows:1fr 1fr}
+    .brf-hero__media--hl>.brf-hl-tile:nth-child(n+4){display:none}
+    .brf-hl-tile img{padding:10px 10px 38px}
+    .brf-hl-tile span{font-size:12px;padding:5px 9px;left:8px;bottom:8px}
+  }
+  @media (prefers-reduced-motion:reduce){.brf-hs__track{scroll-behavior:auto}}
   @media (max-width:1023px){
     .brf-wrap{padding:0 32px}
     .brf-hero{grid-template-columns:1fr;gap:40px}
@@ -224,31 +266,96 @@
   {%- comment -%} HERO {%- endcomment -%}
   {%- assign hero_col = section.settings.hero_collection -%}{%- if hero_col.handle == blank -%}{%- assign hero_col = collections[section.settings.hero_collection] -%}{%- endif -%}
   {%- if hero_col == blank or hero_col.handle == blank -%}{%- assign hero_col = collections['rose-hubble'] -%}{%- endif -%}
-  <section class="brf-wrap brf-hero">
-    <div>
-      <h1 class="brf-hero__h1"><span class="brf-eyebrow">{{ section.settings.hero_eyebrow }}</span> <span class="brf-serif brf-hero__title">{{ section.settings.hero_heading }}</span></h1>
-      <p>{{ section.settings.hero_text }}</p>
-      <div class="brf-hero__ctas">
-        <a class="brf-btn brf-btn--solid" href="{{ section.settings.hero_btn1_link | default: '/collections' }}">{{ section.settings.hero_btn1_label }}</a>
-        <a class="brf-btn brf-btn--line" href="{{ section.settings.hero_btn2_link | default: '/pages/wholesale-trade-enquiries' }}">{{ section.settings.hero_btn2_label }}</a>
+  {%- assign hl_items = nil -%}
+  {%- for l in linklists['main-menu-2026'].links -%}{%- assign lt = l.title | strip | handleize -%}{%- if lt == 'home-lifestyle' -%}{%- assign hl_items = l.links -%}{%- endif -%}{%- endfor -%}
+  {%- assign hl_col = collections['home-lifestyle'] -%}
+  <div class="brf-hs" data-brf-hs>
+    <div class="brf-hs__track" data-brf-hs-track tabindex="-1">
+    {%- if section.settings.hl_enable and hl_items.size > 0 -%}
+    <div class="brf-hs__slide" role="group" aria-roledescription="slide" aria-label="Home &amp; Lifestyle">
+    <section class="brf-wrap brf-hero">
+      <div>
+        <h2 class="brf-hs__h"><span class="brf-eyebrow"><span class="brf-hs__new">New</span>{{ section.settings.hl_eyebrow }}</span> <span class="brf-serif">{{ section.settings.hl_heading }}</span></h2>
+        <p>{{ section.settings.hl_text }}</p>
+        <ul class="brf-hs__chips" aria-label="Home &amp; Lifestyle categories">
+          {%- for l in hl_items -%}{%- if l.object.products_count > 0 or l.object == blank -%}<li><a href="{{ l.url }}">{{ l.title | strip }}</a></li>{%- endif -%}{%- endfor -%}
+        </ul>
+        <div class="brf-hero__ctas">
+          <a class="brf-btn brf-btn--solid" href="{{ hl_col.url | default: '/collections/home-lifestyle' }}">{{ section.settings.hl_btn_label }}</a>
+          <a class="brf-btn brf-btn--line" href="/collections">Shop fabrics</a>
+        </div>
       </div>
-    </div>
-    <div class="brf-hero__media">
-      {%- assign m1 = section.settings.hero_image_1 | default: hero_col.image -%}
-      {%- assign m2 = section.settings.hero_image_2 | default: collections['plush-velvet'].image -%}
-      {%- assign m3 = section.settings.hero_image_3 | default: collections['satin'].image -%}
-      <div class="brf-swatch">{% if m1 %}<img src="{{ m1 | img_url: '900x' }}" alt="{{ m1.alt | default: hero_col.title | escape }}" width="900" height="1100" fetchpriority="high">{% endif %}</div>
-      <div class="brf-swatch" style="background-color:#1F4A4F">{% if m2 %}<img src="{{ m2 | img_url: '600x' }}" alt="{{ m2.alt | escape }}" loading="lazy">{% endif %}</div>
-      <div class="brf-swatch" style="background-color:#D9C3A0">{% if m3 %}<img src="{{ m3 | img_url: '600x' }}" alt="{{ m3.alt | escape }}" loading="lazy">{% endif %}</div>
-      {%- if hero_col.handle != blank -%}
-      <div class="brf-hero__card">
-        <span class="brf-eyebrow">{{ section.settings.hero_card_label }}</span>
-        <strong>{{ section.settings.hero_card_title | default: hero_col.title }}</strong>
-        <a href="{{ hero_col.url }}">Shop {{ hero_col.products_count }} designs &rarr;</a>
+      <div class="brf-hero__media brf-hero__media--hl">
+        {%- assign shown = 0 -%}
+        {%- for l in hl_items -%}
+          {%- if shown >= 5 -%}{%- break -%}{%- endif -%}
+          {%- assign c = l.object -%}
+          {%- if c == blank or c.products_count == 0 -%}{%- continue -%}{%- endif -%}
+          {%- assign ti = c.image -%}{%- assign photo = true -%}
+          {%- unless ti -%}{%- assign ti = c.products.first.featured_image -%}{%- assign photo = false -%}{%- endunless -%}
+          {%- unless ti -%}{%- continue -%}{%- endunless -%}
+          <a class="brf-hl-tile{% if photo %} is-photo{% endif %}" href="{{ l.url }}"><img src="{{ ti | img_url: '700x' }}" alt="" {% if shown == 0 %}fetchpriority="high"{% else %}loading="lazy"{% endif %}><span>{{ l.title | strip }}</span></a>
+          {%- assign shown = shown | plus: 1 -%}
+        {%- endfor -%}
       </div>
-      {%- endif -%}
+    </section>
     </div>
-  </section>
+    {%- endif -%}
+    <div class="brf-hs__slide" role="group" aria-roledescription="slide" aria-label="Fabric by the metre">
+    <section class="brf-wrap brf-hero">
+      <div>
+        <h1 class="brf-hero__h1"><span class="brf-eyebrow">{{ section.settings.hero_eyebrow }}</span> <span class="brf-serif brf-hero__title">{{ section.settings.hero_heading }}</span></h1>
+        <p>{{ section.settings.hero_text }}</p>
+        <div class="brf-hero__ctas">
+          <a class="brf-btn brf-btn--solid" href="{{ section.settings.hero_btn1_link | default: '/collections' }}">{{ section.settings.hero_btn1_label }}</a>
+          <a class="brf-btn brf-btn--line" href="{{ section.settings.hero_btn2_link | default: '/pages/wholesale-trade-enquiries' }}">{{ section.settings.hero_btn2_label }}</a>
+        </div>
+      </div>
+      <div class="brf-hero__media">
+        {%- assign m1 = section.settings.hero_image_1 | default: hero_col.image -%}
+        {%- assign m2 = section.settings.hero_image_2 | default: collections['plush-velvet'].image -%}
+        {%- assign m3 = section.settings.hero_image_3 | default: collections['satin'].image -%}
+        <div class="brf-swatch">{% if m1 %}<img src="{{ m1 | img_url: '900x' }}" alt="{{ m1.alt | default: hero_col.title | escape }}" width="900" height="1100" fetchpriority="high">{% endif %}</div>
+        <div class="brf-swatch" style="background-color:#1F4A4F">{% if m2 %}<img src="{{ m2 | img_url: '600x' }}" alt="{{ m2.alt | escape }}" loading="lazy">{% endif %}</div>
+        <div class="brf-swatch" style="background-color:#D9C3A0">{% if m3 %}<img src="{{ m3 | img_url: '600x' }}" alt="{{ m3.alt | escape }}" loading="lazy">{% endif %}</div>
+        {%- if hero_col.handle != blank -%}
+        <div class="brf-hero__card">
+          <span class="brf-eyebrow">{{ section.settings.hero_card_label }}</span>
+          <strong>{{ section.settings.hero_card_title | default: hero_col.title }}</strong>
+          <a href="{{ hero_col.url }}">Shop {{ hero_col.products_count }} designs &rarr;</a>
+        </div>
+        {%- endif -%}
+      </div>
+    </section>
+    </div>
+    </div>
+    <div class="brf-hs__nav" data-brf-hs-nav hidden>
+      <button type="button" class="brf-hs__arrow" data-brf-hs-prev aria-label="Previous slide"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg></button>
+      <div class="brf-hs__dots" data-brf-hs-dots></div>
+      <button type="button" class="brf-hs__arrow" data-brf-hs-next aria-label="Next slide"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></button>
+    </div>
+  </div>
+  <script>
+  (function(){
+    var root=document.querySelector('[data-brf-hs]');if(!root)return;
+    var track=root.querySelector('[data-brf-hs-track]'),slides=track.children,n=slides.length;if(n<2)return;
+    var nav=root.querySelector('[data-brf-hs-nav]'),dotsEl=root.querySelector('[data-brf-hs-dots]'),dots=[],cur=0,timer=null,paused=false;
+    var reduce=window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches;
+    for(var i=0;i<n;i++){(function(i){var b=document.createElement('button');b.type='button';b.className='brf-hs__dot';b.setAttribute('aria-label','Slide '+(i+1)+' of '+n);b.onclick=function(){go(i);stop();};dotsEl.appendChild(b);dots.push(b);})(i);}
+    nav.hidden=false;
+    function mark(i){cur=i;for(var k=0;k<n;k++){dots[k].setAttribute('aria-current',k===i?'true':'false');slides[k].setAttribute('aria-hidden',k===i?'false':'true');slides[k].inert=k!==i;}}
+    function go(i){i=(i+n)%n;track.scrollTo({left:slides[i].offsetLeft-track.offsetLeft,behavior:reduce?'auto':'smooth'});mark(i);}
+    var t;track.addEventListener('scroll',function(){clearTimeout(t);t=setTimeout(function(){var i=Math.round(track.scrollLeft/track.clientWidth);if(i!==cur)mark(Math.max(0,Math.min(n-1,i)));},80);},{passive:true});
+    root.querySelector('[data-brf-hs-prev]').onclick=function(){go(cur-1);stop();};
+    root.querySelector('[data-brf-hs-next]').onclick=function(){go(cur+1);stop();};
+    function start(){if(reduce||timer)return;timer=setInterval(function(){if(!paused&&!document.hidden)go(cur+1);},{{ section.settings.hl_autoplay | default: 7 | times: 1000 }});}
+    function stop(){clearInterval(timer);timer=null;}
+    root.addEventListener('mouseenter',function(){paused=true;});root.addEventListener('mouseleave',function(){paused=false;});
+    root.addEventListener('focusin',function(){paused=true;});root.addEventListener('focusout',function(){paused=false;});
+    track.addEventListener('touchstart',stop,{passive:true});
+    mark(0);start();
+  })();
+  </script>
 
   {%- comment -%} TRUST STRIP {%- endcomment -%}
   <div class="brf-wrap">
@@ -571,6 +678,13 @@
     { "type": "collection", "id": "hero_collection", "label": "Featured collection (card over image)" },
     { "type": "text", "id": "hero_card_label", "label": "Card label", "default": "New in" },
     { "type": "text", "id": "hero_card_title", "label": "Card title", "default": "Rose & Hubble Cotton Poplins" },
+    { "type": "header", "content": "Home & Lifestyle banner slide" },
+    { "type": "checkbox", "id": "hl_enable", "label": "Show Home & Lifestyle slide", "default": true },
+    { "type": "text", "id": "hl_eyebrow", "label": "Small label", "default": "Home & Lifestyle" },
+    { "type": "text", "id": "hl_heading", "label": "Heading", "default": "Big-brand bits for every room." },
+    { "type": "textarea", "id": "hl_text", "label": "Text", "default": "Our new department: homeware, garden, furniture, tech, toys and more, at the same friendly prices as our fabrics. New curtains deserve a comfy new sofa, right?" },
+    { "type": "text", "id": "hl_btn_label", "label": "Button label", "default": "Shop Home & Lifestyle" },
+    { "type": "range", "id": "hl_autoplay", "label": "Seconds per slide", "min": 4, "max": 12, "step": 1, "default": 7 },
     { "type": "header", "content": "Reassurance strip" },
     { "type": "text", "id": "trust_1_title", "label": "Item 1 title", "default": "Free UK delivery over £65" },
     { "type": "text", "id": "trust_1_text", "label": "Item 1 text", "default": "2-day tracked, UK mainland" },
