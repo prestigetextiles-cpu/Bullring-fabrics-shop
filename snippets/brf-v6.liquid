@@ -54,19 +54,19 @@
   /* Search results: the quantity pill sits in a row (a search-only rule stacked it in a column, pushing Add out of sight) */
   html body.template-search .product-item .brf-qa-form{flex-direction:row!important}
   html body.template-search .product-item .brf-qa-form:not(.brf-qa-form--qty){flex-wrap:nowrap!important}
-  /* ...and on phones it gets the same white quantity + green Add pill as desktop */
+  /* Phones (every page): the same white quantity + green Add pill as desktop */
   @media (max-width:767px){
-    html body.template-search .product-item .brf-qa-form.brf-qa-form--qty{background:#fff!important;box-shadow:inset 0 0 0 1px #DDD5C8,0 8px 18px -14px rgba(29,29,31,.4)!important}
-    html body.template-search .product-item .brf-qa-form--qty .brf-qa__qty{background:transparent!important;-webkit-backdrop-filter:none!important;backdrop-filter:none!important;box-shadow:none!important}
-    html body.template-search .product-item .brf-qa-form--qty .brf-qa__qty::before{content:none!important}
-    html body.template-search .product-item .brf-qa-form--qty .brf-qa__step,html body.template-search .product-item .brf-qa-form--qty .brf-qa__in{color:#1D1D1F!important;caret-color:#1D1D1F}
-    html body.template-search .product-item .brf-qa-form--qty .brf-qa__step:hover,html body.template-search .product-item .brf-qa-form--qty .brf-qa__step:active{background:rgba(29,29,31,.06)!important}
-    html body.template-search .product-item .brf-qa-form--qty .brf-qa__step:disabled{color:#C9C2B7!important;background:transparent!important}
-    html body.template-search .product-item .brf-qa-form--qty>.brf-qa__add{color:#fff!important;background:linear-gradient(180deg,#1DAE65 0%,#149954 52%,#0F884A 100%)!important;
+    html body .product-item .brf-qa-form.brf-qa-form--qty{background:#fff!important;box-shadow:inset 0 0 0 1px #DDD5C8,0 8px 18px -14px rgba(29,29,31,.4)!important}
+    html body .product-item .brf-qa-form--qty .brf-qa__qty{background:transparent!important;-webkit-backdrop-filter:none!important;backdrop-filter:none!important;box-shadow:none!important}
+    html body .product-item .brf-qa-form--qty .brf-qa__qty::before{content:none!important}
+    html body .product-item .brf-qa-form--qty .brf-qa__step,html body .product-item .brf-qa-form--qty .brf-qa__in{color:#1D1D1F!important;caret-color:#1D1D1F}
+    html body .product-item .brf-qa-form--qty .brf-qa__step:hover,html body .product-item .brf-qa-form--qty .brf-qa__step:active{background:rgba(29,29,31,.06)!important}
+    html body .product-item .brf-qa-form--qty .brf-qa__step:disabled{color:#C9C2B7!important;background:transparent!important}
+    html body .product-item .brf-qa-form--qty>.brf-qa__add{color:#fff!important;background:linear-gradient(180deg,#1DAE65 0%,#149954 52%,#0F884A 100%)!important;
       box-shadow:inset 0 1px 0 rgba(255,255,255,.3),inset 0 -1px 0 rgba(0,60,28,.22)!important;padding:0 10px!important}
-    html body.template-search .product-item .brf-qa-form--qty>.brf-qa__add.is-done{background:#0C6637!important}
-    html body.template-search .product-item .brf-qa-form--qty>.brf-qa__add:disabled{background:#ECE6DC!important;color:#8C867D!important;box-shadow:none!important}
-    html body.template-search .product-item .brf-qa-form--qty.is-added{background:#fff!important}
+    html body .product-item .brf-qa-form--qty>.brf-qa__add.is-done{background:#0C6637!important}
+    html body .product-item .brf-qa-form--qty>.brf-qa__add:disabled{background:#ECE6DC!important;color:#8C867D!important;box-shadow:none!important}
+    html body .product-item .brf-qa-form--qty.is-added{background:#fff!important}
   }
 
   /* "2 in bag" under the button */
@@ -122,6 +122,12 @@
     html .template-cart .line-item__title{overflow-wrap:anywhere}
   }
   html.brf-cartpg #main,html.brf-cartpg main{overflow-x:clip}
+  /* ---------- Rewards on phones: the button only shows on the home page and the bag page ---------- */
+  @media (max-width:767px){
+    html:not(.brf-smile-page) body #smile-ui-lite-launcher-frame-container,
+    html:not(.brf-smile-page) body [id^="smile-ui"][id*="launcher-frame-container"]{display:none!important}
+  }
+
   /* ---------- Bag icon: the sewing button spins and the bag hops when something goes in ---------- */
   .brf-bagx{overflow:visible;transform-origin:50% 92%}
   .brf-bagx .brf-bagx__btn{transform-box:fill-box;transform-origin:center;transition:transform .7s cubic-bezier(.3,1.5,.4,1)}
@@ -143,6 +149,8 @@
 
   /* 19. tag the bag page so its sideways lock only applies there */
   if (doc.body && doc.body.classList.contains('template-cart')) root.classList.add('brf-cartpg');
+  /* Rewards button (phones) only on the home page and the bag page */
+  if (doc.body && (doc.body.classList.contains('template-index') || doc.body.classList.contains('template-cart'))) root.classList.add('brf-smile-page');
 
   /* bag icon "wow" whenever the bag count goes up or something is added */
   var wowAt = 0;
