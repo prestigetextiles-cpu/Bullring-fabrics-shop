@@ -494,18 +494,19 @@
     var track=root.querySelector('[data-brf-hs-track]'),slides=track.children,n=slides.length;if(n<2)return;
     var nav=root.querySelector('[data-brf-hs-nav]'),dotsEl=root.querySelector('[data-brf-hs-dots]'),dots=[],cur=0,timer=null,paused=false;
     var reduce=window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches;
-    for(var i=0;i<n;i++){(function(i){var b=document.createElement('button');b.type='button';b.className='brf-hs__dot';b.setAttribute('aria-label','Slide '+(i+1)+' of '+n);b.onclick=function(){go(i);stop();};dotsEl.appendChild(b);dots.push(b);})(i);}
+    for(var i=0;i<n;i++){(function(i){var b=document.createElement('button');b.type='button';b.className='brf-hs__dot';b.setAttribute('aria-label','Slide '+(i+1)+' of '+n);b.onclick=function(){go(i);restart();};dotsEl.appendChild(b);dots.push(b);})(i);}
     nav.hidden=false;
     function mark(i){cur=i;for(var k=0;k<n;k++){dots[k].setAttribute('aria-current',k===i?'true':'false');slides[k].setAttribute('aria-hidden',k===i?'false':'true');slides[k].inert=k!==i;}}
     function go(i){i=(i+n)%n;track.scrollTo({left:slides[i].offsetLeft-track.offsetLeft,behavior:reduce?'auto':'smooth'});mark(i);}
     var t;track.addEventListener('scroll',function(){clearTimeout(t);t=setTimeout(function(){var i=Math.round(track.scrollLeft/track.clientWidth);if(i!==cur)mark(Math.max(0,Math.min(n-1,i)));},80);},{passive:true});
-    root.querySelector('[data-brf-hs-prev]').onclick=function(){go(cur-1);stop();};
-    root.querySelector('[data-brf-hs-next]').onclick=function(){go(cur+1);stop();};
-    function start(){if(reduce||timer)return;timer=setInterval(function(){if(!paused&&!document.hidden)go(cur+1);},{{ section.settings.hl_autoplay | default: 7 | times: 1000 }});}
+    root.querySelector('[data-brf-hs-prev]').onclick=function(){go(cur-1);restart();};
+    root.querySelector('[data-brf-hs-next]').onclick=function(){go(cur+1);restart();};
+    function start(){if(reduce||timer)return;timer=setInterval(function(){if(!paused&&!document.hidden)go(cur+1);},{{ section.settings.hl_autoplay | default: 5 | times: 1000 }});}
     function stop(){clearInterval(timer);timer=null;}
-    root.addEventListener('mouseenter',function(){paused=true;});root.addEventListener('mouseleave',function(){paused=false;});
-    root.addEventListener('focusin',function(){paused=true;});root.addEventListener('focusout',function(){paused=false;});
-    track.addEventListener('touchstart',stop,{passive:true});
+    function restart(){stop();start();}
+    track.addEventListener('mouseenter',function(){paused=true;});track.addEventListener('mouseleave',function(){paused=false;});
+    track.addEventListener('focusin',function(e){if(e.target.matches&&e.target.matches(':focus-visible'))paused=true;});track.addEventListener('focusout',function(){paused=false;});
+    track.addEventListener('touchend',restart,{passive:true});
     mark(0);start();
   })();
   (function(){
@@ -848,7 +849,7 @@
     { "type": "text", "id": "hl_heading", "label": "Heading", "default": "Big-brand bits for every room." },
     { "type": "textarea", "id": "hl_text", "label": "Text", "default": "Our new department: homeware, garden, furniture, tech, toys and more, at the same friendly prices as our fabrics. New curtains deserve a comfy new sofa, right?" },
     { "type": "text", "id": "hl_btn_label", "label": "Button label", "default": "Shop Home & Lifestyle" },
-    { "type": "range", "id": "hl_autoplay", "label": "Seconds per slide", "min": 4, "max": 12, "step": 1, "default": 7 },
+    { "type": "range", "id": "hl_autoplay", "label": "Seconds per slide", "min": 3, "max": 12, "step": 1, "default": 5 },
     { "type": "checkbox", "id": "hs_halloween", "label": "Show Halloween slide", "info": "Hides itself after the Halloween end date below", "default": true },
     { "type": "text", "id": "hs_hw_eyebrow", "label": "Halloween slide label", "default": "Spooky season" },
     { "type": "textarea", "id": "hs_hw_quotes", "label": "Halloween slide quotes", "info": "One per line. Add the author after a | sign", "default": "Double, double toil and trouble; fire burn and cauldron bubble.|William Shakespeare, Macbeth\nDeep into that darkness peering, long I stood there, wondering, fearing.|Edgar Allan Poe, The Raven\nWhen witches go riding and black cats are seen, the moon laughs and whispers, 'tis near Halloween.|Traditional rhyme\nThe needle is sharp, the thread is black, once you sew a cape there's no turning back.|The Bull Ring cutting table" },
