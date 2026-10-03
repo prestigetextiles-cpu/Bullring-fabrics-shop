@@ -504,7 +504,6 @@
     function start(){if(reduce||timer)return;timer=setInterval(function(){if(!paused&&!document.hidden)go(cur+1);},{{ section.settings.hl_autoplay | default: 5 | times: 1000 }});}
     function stop(){clearInterval(timer);timer=null;}
     function restart(){stop();start();}
-    track.addEventListener('mouseenter',function(){paused=true;});track.addEventListener('mouseleave',function(){paused=false;});
     track.addEventListener('focusin',function(e){if(e.target.matches&&e.target.matches(':focus-visible'))paused=true;});track.addEventListener('focusout',function(){paused=false;});
     track.addEventListener('touchend',restart,{passive:true});
     mark(0);start();

@@ -81,12 +81,10 @@
           </div>
 
           {%- if product.description != blank -%}
-            {%- comment -%} Bull Ring: imported Home & Lifestyle descriptions use h3 sub-headings, which an app folds into
-                 click-to-open boxes. Show them as plain bold lines so the whole description reads as text. {%- endcomment -%}
+            {%- comment -%} Bull Ring: description sub-headings (h2/h3/h4) get folded by an app into click-to-open boxes.
+                 Show them as plain bold lines on every product so the whole description reads as text. {%- endcomment -%}
             {%- assign brf_desc = product.description | remove: 'data-section-type="product"' -%}
-            {%- if product.tags contains 'home-lifestyle' -%}
-              {%- assign brf_desc = brf_desc | replace: '<h3>', '<p class="brf-desc-h">' | replace: '</h3>', '</p>' | replace: '<h4>', '<p class="brf-desc-h">' | replace: '</h4>', '</p>' -%}
-            {%- endif -%}
+            {%- assign brf_desc = brf_desc | replace: '<h2>', '<p class="brf-desc-h">' | replace: '</h2>', '</p>' | replace: '<h3>', '<p class="brf-desc-h">' | replace: '</h3>', '</p>' | replace: '<h4>', '<p class="brf-desc-h">' | replace: '</h4>', '</p>' -%}
             <div class="product-block-list__item product-block-list__item--description">
               <div class="card">
                 {%- if section.settings.content_display_mode == 'collapse_all' -%}
