@@ -21,7 +21,7 @@
       <div class="container brf-cp">
         <header class="page__header page__header--stack">
           <div class="brf-cp__top">
-            <h1 class="page__title heading h1">Your Bag <span class="brf-cp__count">{{ cart.item_count }} {% if cart.item_count == 1 %}item{% else %}items{% endif %}</span></h1>
+            <h1 class="page__title heading h1">My bag <span class="brf-cp__count">{{ cart.item_count }} {% if cart.item_count == 1 %}item{% else %}items{% endif %}</span></h1>
             <a href="{{ settings.cart_empty_button_link | default: '/collections/all' }}" class="brf-cp__continue">← Continue shopping</a>
           </div>
           {%- render 'brf-cart-perks' -%}

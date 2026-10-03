@@ -308,11 +308,7 @@
     </div>
 
     {%- if request.page_type == 'collection' or request.page_type == 'search' or show_add_to_cart -%}
-      {%- if section.settings.show_quick_view == 'list_grid' or section.settings.show_quick_buy == 'list_grid' or show_add_to_cart -%}
-        {%- assign product_form_classes = 'product-item__action-list button-stack' -%}
-      {%- else -%}
-        {%- assign product_form_classes = 'product-item__action-list product-item__action-list--list-view-only button-stack' -%}
-      {%- endif -%}
+      {%- assign product_form_classes = 'product-item__action-list button-stack' -%}
 
       {%- assign form_id = 'product_form_id_' | append: product.id | append: '_' | append: section.id -%}
 
@@ -336,11 +332,8 @@
         {%- endif -%}
         <input type="hidden" name="id" value="{{ brf_v.id }}">
 
-        {%- if section.settings.show_quick_buy == 'list_grid' or show_add_to_cart -%}
-          {%- assign quick_buy_classes = 'product-item__action-button button button--small button--primary' -%}
-        {%- else -%}
-          {%- assign quick_buy_classes = 'product-item__action-button product-item__action-button--list-view-only button button--small button--primary' -%}
-        {%- endif -%}
+        {%- comment -%} Bull Ring: the Add / Choose options button shows on every card view (search used to hide it in grid view) {%- endcomment -%}
+        {%- assign quick_buy_classes = 'product-item__action-button button button--small button--primary' -%}
 
         {%- if product.available -%}
           {%- if product.variants.size == 1 -%}

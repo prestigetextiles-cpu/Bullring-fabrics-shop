@@ -1,0 +1,76 @@
+{%- comment -%}
+  Bull Ring Fabrics — playful low-stock lines for the product page and quick view.
+  window.brfLowStock(n, isHL) returns a different line each time ({n} = how many are left).
+  Fabric products get crafty lines; Home & Lifestyle products (tag: home-lifestyle) get homely ones
+  and no "maximum" wording.
+{%- endcomment -%}
+<script>
+(function(){
+  var FABRIC = [
+    'Only {n} left! Snip snip, before it’s gone ✂️',
+    'Just {n} left on the roll. Your sewing machine is already purring 🧵',
+    'Only {n} left. This one’s flying off the shelf faster than a dropped pin 📌',
+    'Psst… just {n} left. Other crafters are circling 👀',
+    'Only {n} left! Fabric this good doesn’t hang around 🏃‍♀️',
+    'Down to the last {n}. Reel it in before someone else does 🧶',
+    'Only {n} left. Your stash has been asking for this one 💌',
+    'Just {n} left! Sew now, thank yourself later 🪡',
+    'Only {n} left. It’s practically waving at you from the shelf 👋',
+    'Hurry! Just {n} left, and they’re seam-ingly popular 😉',
+    'Only {n} left. Even our cutting table is getting nervous ✂️',
+    'Just {n} left! Don’t let this one unravel away 🧵',
+    'Only {n} left. Measure twice, add to bag once 📏',
+    'Last {n} standing! Grab your share before the bobbin runs out 🌀',
+    'Only {n} left. This one’s a real crowd-pleaser (and the crowd is coming) 🎉',
+    'Just {n} left! Pin it in your bag before it’s gone 📌',
+    'Only {n} left. Somewhere a half-finished project needs this 🪄',
+    'Just {n} left. It’s now or the next craft fair 🎪',
+    'Only {n} left! Our fabric whisperer says this one won’t last 🤫',
+    'Last {n} on the bolt. Quick, before it’s cut and gone ✂️',
+    'Only {n} left. Your next masterpiece is calling, pick up! 📞',
+    'Just {n} left! Snap it up quicker than a needle finds your thumb 😬',
+    'Only {n} left. Stitch happens, but restocks might not 🧵',
+    'Just {n} left. Fabric FOMO is real, trust us 💚',
+    'Only {n} left! Crafters of Birmingham, assemble 🦸',
+    'Down to {n}. This roll’s got its bags packed and ready to go 🧳',
+    'Only {n} left. Don’t make your sewing box sad 🥺',
+    'Just {n} left! Hemming and hawing could cost you this one ⏳',
+    'Only {n} left. Treat yourself, you crafty legend 🌟',
+    'Just {n} left. The early bird gets the fabric 🐦'
+  ];
+  var HOME = [
+    'Only {n} left! Your home has excellent taste, by the way 🏡',
+    'Just {n} left. It’s practically moving in already 📦',
+    'Only {n} left! Cosy things never stay on the shelf for long ☕',
+    'Down to the last {n}. Your sofa is dropping hints 🛋️',
+    'Only {n} left. Make room, a new favourite is coming home 🏠',
+    'Just {n} left! Snap it up before the neighbours do 👀',
+    'Only {n} left. Your living room is already saying thank you 💚',
+    'Just {n} left. Good things come to those who don’t wait ⏳',
+    'Only {n} left! This one’s ready for its forever home 🐾',
+    'Last {n} in the warehouse. Going, going… 🔨',
+    'Only {n} left. Home sweet home just got sweeter 🍯',
+    'Just {n} left! Quick, before someone else gets cosy with it 🧸',
+    'Only {n} left. It’ll look even better in your place, honestly ✨',
+    'Down to {n}. Our shelves will miss it, your home won’t 😉',
+    'Only {n} left! Fluff those cushions and make space 🛏️',
+    'Just {n} left. Popular? You could say that 🌟',
+    'Only {n} left. Your guests are going to ask where you got it 🗣️',
+    'Last {n} here! Home upgrades wait for no one 🚀',
+    'Only {n} left. Kettle on, bag it, job done ☕',
+    'Just {n} left! A little treat for your four walls 🖼️',
+    'Only {n} left. This one’s been waiting for you, specifically 💌',
+    'Down to the last {n}. Cosy season has entered the chat 🍂',
+    'Only {n} left! Faster than a cup of tea goes cold ☕',
+    'Just {n} left. Your home deserves nice things (so do you) 🏡'
+  ];
+  var KEY = 'brfLowStockLast';
+  window.brfLowStock = function(n, isHL){
+    var bank = isHL ? HOME : FABRIC, last = -1, i;
+    try { last = parseInt(sessionStorage.getItem(KEY + (isHL ? 'H' : 'F')), 10); } catch (e) {}
+    do { i = Math.floor(Math.random() * bank.length); } while (bank.length > 1 && i === last);
+    try { sessionStorage.setItem(KEY + (isHL ? 'H' : 'F'), String(i)); } catch (e) {}
+    return bank[i].replace('{n}', n);
+  };
+})();
+</script>

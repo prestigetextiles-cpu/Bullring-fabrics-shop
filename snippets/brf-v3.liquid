@@ -361,8 +361,7 @@
         + '<span class="brf-ship__row"><b>UK Next Day · order by 9pm</b><i>£6.99 · <strong>FREE</strong> over £150</i></span>'
         + '<span class="brf-ship__row"><b>Europe Express</b><i>£13.95 · <strong>FREE</strong> over £400</i></span>'
         + '<span class="brf-ship__row"><b>Rest of world Express</b><i>£20–£24.95 · <strong>FREE</strong> over £400</i></span>'
-        + '<span class="brf-ship__note" data-brf-ship-cart>Same-day dispatch Mon–Fri on orders before 10pm.</span>'
-        + '<a class="brf-ship__more" href="' + shipLink.getAttribute('href') + '">Full delivery policy →</a>';
+        + '<span class="brf-ship__note" data-brf-ship-cart>Same-day dispatch Mon–Fri on orders before 10pm.</span>';
       wrap.appendChild(card);
       var hideT = null;
       function show(){ clearTimeout(hideT); wrap.classList.add('is-open'); shipLink.setAttribute('aria-expanded', 'true'); cartNote(); }
@@ -407,7 +406,7 @@
         qSel.innerHTML = html; qSel.value = String(Math.min(val, top));
       }
       if (qIn) { if (max != null) qIn.max = max; else qIn.removeAttribute('max'); }
-      capNote(max != null && max > 0 && max <= 10 ? 'Hurry! Only ' + max + ' in stock – you can order a maximum of ' + max + '. Grab it before another crafter does! 🧵' : '');
+      capNote(max != null && max > 0 && max <= 10 ? (window.brfLowStock ? window.brfLowStock(max, !!window.brfIsHL) : 'Hurry! Only ' + max + ' left.') : '');
     }
     if (idEl) { applyCap(true); setInterval(applyCap, 400); }
     document.addEventListener('input', function(e){
@@ -434,7 +433,7 @@
           var ts = thumbs(); if (!ts.length) return;
           var i = ts.findIndex(function(t){ return t.classList.contains('is-nav-selected'); }); if (i < 0) i = 0;
           var n = ts[(i + (dir === 'prev' ? -1 : 1) + ts.length) % ts.length];
-          n.click(); if (window.matchMedia('(min-width:768px)').matches) { try { n.scrollIntoView({block:'nearest', inline:'center', behavior:'smooth'}); } catch (err) {} }
+          n.click(); /* thumbnails are hidden everywhere now, so no scrolling them into view */
         });
         w.appendChild(b);
       });

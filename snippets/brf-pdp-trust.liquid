@@ -18,6 +18,7 @@
   </li>
 </ul>
 
+{%- if template.name == 'product' -%}<script>window.brfIsHL = {% if product.tags contains 'home-lifestyle' %}true{% else %}false{% endif %};</script>{%- endif -%}
 {%- if template.name == 'product' and template != 'product.quick-view' and product.template_suffix != 'contact' -%}
   <div class="brf-sticky-atc" data-brf-sticky hidden>
     <div class="brf-sticky-atc__inner">
@@ -54,9 +55,12 @@
       if (selected) mo.observe(selected, {childList:true, subtree:true, characterData:true});
       mo.observe(mainBtn, {attributes:true, childList:true, subtree:true});
     }
+    /* Phones: the bar floats whenever the real button is off screen (above or below), so Add to bag is always one tap away.
+       Larger screens: only once you've scrolled past it. */
+    var phone = window.matchMedia('(max-width: 767px)');
     var io = new IntersectionObserver(function(entries){
       var e = entries[0];
-      var past = !e.isIntersecting && e.boundingClientRect.top < 0;
+      var past = !e.isIntersecting && (phone.matches || e.boundingClientRect.top < 0);
       bar.hidden = false;
       bar.classList.toggle('is-visible', past);
       document.body.classList.toggle('brf-sticky-on', past);

@@ -448,7 +448,7 @@
       }
       if (inp) { if (max != null) inp.max = max; else inp.removeAttribute('max'); }
       var note = m.querySelector('.brf-qty-note');
-      var msg = max != null && max > 0 && max <= 10 ? 'Hurry! Only ' + max + ' in stock – you can order a maximum of ' + max + '. Grab it before another crafter does! 🧵' : '';
+      var msg = max != null && max > 0 && max <= 10 ? (window.brfLowStock ? window.brfLowStock(max, !!m.querySelector('[data-brf-hl]')) : 'Hurry! Only ' + max + ' left.') : '';
       if (!note && msg) {
         note = doc.createElement('p'); note.className = 'brf-qty-note';
         var host = m.querySelector('.product-form__info-item--quantity .product-form__info-content') || (sel || inp).parentNode;

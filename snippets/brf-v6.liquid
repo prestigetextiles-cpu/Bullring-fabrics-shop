@@ -1,0 +1,146 @@
+{%- comment -%}
+  Bull Ring Fabrics — round 4 polish (loads last).
+   1. Product page: no thumbnail strip under the main photo (arrows + "1 | 6" counter on every screen size)
+   5. Prices sized to match the rest of the type
+  11. Desktop cards: quantity + Add to bag as one pill (white quantity, green button), "2 in bag" line after adding
+  12. Phones: slimmer header that slides away when scrolling down and comes back when scrolling up
+  13/16. Undo row in the bag drawer keeps its shape (empty bag, long bag)
+  14. Quick view: a smaller, tidier box
+  17. "Choose options" text centred
+  18. Club sign-up email box keeps its height on phones
+  19. Bag page never scrolls sideways
+{%- endcomment -%}
+<style>
+  /* ---------- 1. Product page: thumbnails hidden on every screen size (kept in the page for the arrows) ---------- */
+  html .template-product .product-gallery{position:relative}
+  html .template-product .product-gallery .scroller{position:absolute!important;top:0;left:0;width:1px!important;height:1px!important;overflow:hidden!important;clip:rect(0 0 0 0);clip-path:inset(50%);opacity:0;pointer-events:none;margin:0!important;padding:0!important}
+  @media (min-width:768px){
+    html .template-product .brf-garrow{opacity:.95!important}
+    html .template-product .brf-garrow--prev{width:auto;padding:0 14px 0 12px;grid-auto-flow:column;gap:8px;border-radius:980px}
+    html .template-product .brf-garrow__count{display:inline-block;font:600 13px/1 Inter,-apple-system,sans-serif;letter-spacing:.02em;color:#1D1D1F;font-variant-numeric:tabular-nums;white-space:nowrap}
+  }
+
+  /* ---------- 5. Prices: in step with the titles around them ---------- */
+  html .template-product .product-form__info-content .price{font-size:22px!important;font-weight:600!important;letter-spacing:-.005em}
+  html .template-product .product-form__info-content .price--compare{font-size:15px!important;font-weight:400!important}
+  html .modal .product-form__info-content .price{font-size:20px!important;font-weight:600!important}
+  html .modal .product-form__info-content .price--compare{font-size:14px!important;font-weight:400!important}
+  html body .product-item .product-item__price-list .price{font-size:15px}
+  html body .product-item .product-item__price-list .price--compare{font-size:13px}
+  @media (max-width:640px){
+    html .template-product .product-form__info-content .price{font-size:20px!important}
+    html .template-product .product-form__info-content .price--compare{font-size:14px!important}
+    html body .product-item .product-item__price-list .price{font-size:14px}
+    html body .product-item .product-item__price-list .price--compare{font-size:12px}
+  }
+
+  /* ---------- 11. Desktop + tablet cards: one pill, white quantity on the left, green Add to bag on the right ---------- */
+  @media (min-width:768px){
+    html .product-item .brf-qa-form.brf-qa-form--qty{display:flex!important;flex-wrap:nowrap!important;align-items:center;gap:0!important;height:44px;padding:3px!important;border-radius:980px;
+      background:#fff;box-shadow:inset 0 0 0 1px #DDD5C8,0 8px 18px -14px rgba(29,29,31,.4);transition:box-shadow .2s ease}
+    html .product-item .brf-qa-form--qty:focus-within{box-shadow:inset 0 0 0 1.5px #1D1D1F,0 8px 18px -14px rgba(29,29,31,.4)}
+    html .product-item .brf-qa-form--qty .brf-qa__qty,html .product-item .brf-qa-form--qty.is-compact .brf-qa__qty{flex:0 0 92px!important;width:92px;height:38px!important;margin:0;background:transparent!important;box-shadow:none!important;border-radius:980px}
+    html .product-item .brf-qa-form--qty .brf-qa__step{flex:0 0 28px;width:28px}
+    html .product-item .brf-qa-form--qty>.brf-qa__add,html .product-item .brf-qa-form--qty.is-compact>.brf-qa__add{flex:1 1 auto!important;min-width:0;height:38px!important;margin:0!important;padding:0 12px!important;
+      border:0!important;border-radius:980px!important;color:#fff!important;font-size:13.5px!important;line-height:1!important;
+      background:linear-gradient(180deg,#1DAE65 0%,#149954 52%,#0F884A 100%)!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.3),inset 0 -1px 0 rgba(0,60,28,.22)!important}
+    html .product-item .brf-qa-form--qty>.brf-qa__add:hover{background:linear-gradient(180deg,#18A05C 0%,#0F884A 100%)!important}
+    html .product-item .brf-qa-form--qty>.brf-qa__add.is-done{background:#0C6637!important}
+    html .product-item .brf-qa-form--qty>.brf-qa__add:disabled{background:#ECE6DC!important;color:#8C867D!important;box-shadow:none!important}
+    /* cards with options: the same green pill shape */
+    html .product-item .brf-qa-form:not(.brf-qa-form--qty)>.product-item__action-button.button--primary{height:44px!important;border:0!important;color:#fff!important;
+      background:linear-gradient(180deg,#1DAE65 0%,#149954 52%,#0F884A 100%)!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.3),0 8px 18px -12px rgba(20,153,84,.8)!important}
+  }
+  /* "2 in bag" under the button */
+  .brf-qa__inbag{display:flex;align-items:center;justify-content:center;gap:4px;margin:7px 0 0;font-size:12.5px;line-height:1.2;font-weight:600;color:#0C6637;text-align:center}
+  .brf-qa__inbag svg{flex:0 0 auto}
+  .brf-qa__inbag.is-pop{animation:brf-qa-pop .45s cubic-bezier(.2,1.4,.3,1)}
+  @media (max-width:767px){.brf-qa__inbag{font-size:12px;margin-top:6px}}
+
+  /* ---------- 17. "Choose options" text sits dead centre ---------- */
+  html .product-item .brf-qa-form>a.product-item__action-button{display:flex!important;align-items:center;justify-content:center;text-align:center;line-height:1.15!important;
+    padding-top:0!important;padding-bottom:0!important;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  @media (max-width:767px){html .product-item .brf-qa-form>a.product-item__action-button{height:44px!important;padding-left:10px!important;padding-right:10px!important}}
+
+  /* ---------- 12. Phones + tablets: slimmer header that tucks away on the way down ---------- */
+  @media (max-width:999px){
+    html #shopify-section-header .header{padding-top:5px!important;padding-bottom:5px!important;min-height:56px}
+    html #shopify-section-header .header__logo-image{max-height:48px;width:auto}
+    html #shopify-section-header#shopify-section-header{transition:top .34s cubic-bezier(.2,.8,.2,1),background-color .24s ease}
+    html.brf-hdr-hide #shopify-section-header#shopify-section-header{top:calc(-2px - var(--brf-hdr-h,90px))!important}
+    html.brf-hdr-hide body .brf-fstick.brf-fstick{top:0!important}
+    html body .brf-fstick.brf-fstick{transition:top .34s cubic-bezier(.2,.8,.2,1)}
+  }
+  @media (prefers-reduced-motion:reduce){html #shopify-section-header#shopify-section-header,html body .brf-fstick.brf-fstick{transition:none}}
+
+  /* ---------- 13 + 16. Undo row in the drawer: never squashed, picture stays in its square ---------- */
+  html .mini-cart .brf-mc__undo{flex:0 0 auto!important;align-self:stretch;width:auto;min-height:62px;box-sizing:border-box;text-align:left;margin:8px 0 10px}
+  html .mini-cart .brf-mc__empty .brf-mc__undo{margin:0 0 18px}
+  html .mini-cart .brf-mc__undo img{flex:0 0 40px!important;width:40px!important;height:40px!important;max-width:40px!important;margin:0!important}
+  html .mini-cart .brf-mc__undo-t{display:block}
+  html .mini-cart .brf-mc__undo-bar{bottom:5px}
+
+  /* ---------- 14. Quick view: a more compact box ---------- */
+  @media (min-width:768px){
+    html .modal[id^="modal-quick-view"] .modal__dialog{max-width:860px!important;width:calc(100% - 80px)!important;max-height:calc(100vh - 96px);max-height:calc(100dvh - 96px)}
+    html .modal[id^="modal-quick-view"] .card__section{padding:22px 24px!important}
+    html .modal[id^="modal-quick-view"] .product-meta__title{font-size:21px!important;line-height:1.25!important;margin-bottom:6px}
+    html .modal[id^="modal-quick-view"] .product-form__option,html .modal[id^="modal-quick-view"] .product-form__info-list{margin-bottom:14px}
+  }
+  @media (min-width:1000px){html .modal[id^="modal-quick-view"] .featured-product>.card:first-child{width:46%!important}}
+  html .modal[id^="modal-quick-view"] .select-wrapper select{height:44px;border-radius:12px;font-size:14.5px}
+
+  /* ---------- 18. Club sign-up: the email box keeps its full height on phones ---------- */
+  @media (max-width:420px){
+    html .brf-signup__row .brf-signup__input{flex:0 0 auto!important;width:100%;height:48px!important;min-height:48px;box-sizing:border-box;-webkit-appearance:none;appearance:none}
+  }
+
+  /* ---------- 19. Bag page: no sideways scrolling (the item list sat in a sideways-scrolling table box on phones/tablets) ---------- */
+  @media (max-width:999px){
+    html .template-cart .table-wrapper{overflow-x:hidden!important;overflow-y:visible!important;white-space:normal!important;-webkit-overflow-scrolling:auto;touch-action:pan-y pinch-zoom}
+    html .template-cart .line-item-table{width:100%!important;max-width:100%}
+    html .template-cart .line-item-table td{white-space:normal!important;min-width:0}
+    html .template-cart .line-item__product-info-wrapper,html .template-cart .line-item__meta{min-width:0;max-width:100%}
+    html .template-cart .line-item__title{overflow-wrap:anywhere}
+  }
+  html.brf-cartpg #main,html.brf-cartpg main{overflow-x:clip}
+</style>
+<script>
+(function(){
+  var doc = document, root = doc.documentElement;
+
+  /* 19. tag the bag page so its sideways lock only applies there */
+  if (doc.body && doc.body.classList.contains('template-cart')) root.classList.add('brf-cartpg');
+
+  /* 12. phones/tablets: header slides away while scrolling down, back on the first scroll up */
+  var hdr = doc.getElementById('shopify-section-header');
+  if (!hdr || !window.matchMedia) return;
+  var mq = window.matchMedia('(max-width: 999px)');
+  var BUSY = ['is-locked', 'brf-cart-open', 'brf-mm-open', 'brf-msearch-open', 'brf-so-open', 'brf-ship-sheet', 'brf-consent-open', 'brf-md-open', 'brf-sheet-open', 'brf-vps-open'];
+  var lastY = window.pageYOffset || 0, acc = 0, ticking = false, hidden = false;
+  function setH(){ root.style.setProperty('--brf-hdr-h', hdr.offsetHeight + 'px'); }
+  function busy(){
+    for (var i = 0; i < BUSY.length; i++) if (root.classList.contains(BUSY[i]) || doc.body.classList.contains(BUSY[i])) return true;
+    var ae = doc.activeElement;
+    if (ae && hdr.contains(ae) && /^(INPUT|TEXTAREA|SELECT)$/.test(ae.tagName)) return true;
+    return !!hdr.querySelector('[aria-expanded="true"]');
+  }
+  function show(){ if (hidden) { hidden = false; root.classList.remove('brf-hdr-hide'); } }
+  function hide(){ if (!hidden) { setH(); hidden = true; root.classList.add('brf-hdr-hide'); } }
+  function run(){
+    ticking = false;
+    var y = Math.max(0, window.pageYOffset || 0), d = y - lastY; lastY = y;
+    if (!mq.matches || busy() || y < hdr.offsetHeight + 60) { acc = 0; show(); return; }
+    if ((d > 0 && acc < 0) || (d < 0 && acc > 0)) acc = 0;
+    acc += d;
+    if (acc > 28) hide(); else if (acc < -10) show();
+  }
+  window.addEventListener('scroll', function(){ if (!ticking) { ticking = true; requestAnimationFrame(run); } }, {passive: true});
+  window.addEventListener('resize', function(){ setH(); if (!mq.matches) show(); }, {passive: true});
+  /* a drawer, menu or search opening always brings the header back */
+  var mo = new MutationObserver(function(){ if (hidden && busy()) show(); });
+  mo.observe(root, {attributes: true, attributeFilter: ['class']});
+  mo.observe(doc.body, {attributes: true, attributeFilter: ['class']});
+  setH();
+})();
+</script>

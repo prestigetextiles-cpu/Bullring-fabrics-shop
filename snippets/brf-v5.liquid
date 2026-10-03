@@ -754,8 +754,22 @@
     if (!n) { n = doc.createElement('p'); n.className = 'brf-qa__note'; n.setAttribute('role', 'status'); form.insertAdjacentElement('afterend', n); }
     n.textContent = msg; clearTimeout(n.__t); n.__t = setTimeout(function(){ if (n.isConnected) n.remove(); }, 6000);
   }
+  /* "2 in bag" under the card button once some are in the bag */
+  function inBag(form){
+    var idEl = form.querySelector('[name="id"]'), host = form.parentNode; if (!idEl || !host) return;
+    var n = bagQty[idEl.value] || 0, el = host.querySelector('.brf-qa__inbag');
+    if (!n) { if (el) el.remove(); return; }
+    if (!el) { el = doc.createElement('p'); el.className = 'brf-qa__inbag'; form.insertAdjacentElement('afterend', el); }
+    var t = n + ' in bag';
+    if (el.getAttribute('data-n') !== String(n)) {
+      el.setAttribute('data-n', n);
+      el.innerHTML = '<svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.2 4.2L19 7"/></svg>' + t;
+      el.classList.remove('is-pop'); void el.offsetWidth; el.classList.add('is-pop');
+    }
+  }
   function syncRoom(){
     [].forEach.call(doc.querySelectorAll('.brf-qa-form--qty'), function(form){
+      inBag(form);
       var input = form.querySelector('.brf-qa__in'), add = form.querySelector('.brf-qa__add'); if (!input || !add) return;
       var room = roomFor(form); if (room == null) return;
       if (room > 0) {
@@ -799,6 +813,7 @@
         btn.__brfBusy = false; btn.disabled = false;
         if (res.ok) {
           if (idEl) bagQty[idEl.value] = (bagQty[idEl.value] || 0) + q;
+          inBag(form);
           if (q < want) note(form, 'We only had ' + q + ' more, so ' + q + ' went in your bag 🎉');
           form.dispatchEvent(new CustomEvent('product:added', {bubbles: true, detail: {variant: null, quantity: q}}));
           setTimeout(syncRoom, 1500);

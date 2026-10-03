@@ -53,12 +53,21 @@
       box-shadow:0 0 0 .5px rgba(29,29,31,.08),0 34px 80px -24px rgba(29,29,31,.4)!important}
     html.brf-hc [data-brf-mm] .brf-mm__panel>.container{max-width:none}
 
-    /* Mini logo + actions (wide screens only; 1000–1199px keeps just the menu) */
-    @media (min-width:1200px){
+    /* Mini logo + actions (1000px and up; 1000–1199px gets a compact version so the bag is always there) */
+    @media (min-width:1000px){
       html.brf-hc .brf-hc__logo{display:flex;align-items:center;justify-content:center;flex:0 0 auto;width:42px;height:42px;margin-right:6px;border-radius:50%;background:#fff;
         box-shadow:0 0 0 .5px rgba(29,29,31,.1),0 2px 6px -2px rgba(29,29,31,.2);animation:brf-hc-pop .7s cubic-bezier(.3,1.5,.4,1) .08s both}
       html.brf-hc .brf-hc__logo img{width:32px;height:32px;object-fit:contain}
       html.brf-hc .brf-hc__acts{display:flex;align-items:center;gap:2px;flex:0 0 auto;margin-left:4px;animation:brf-hc-pop .7s cubic-bezier(.3,1.5,.4,1) .14s both}
+    }
+    @media (min-width:1000px) and (max-width:1199px){
+      html.brf-hc [data-brf-mm]>.container{padding:0 6px}
+      html.brf-hc .brf-hc__logo{display:none}
+      html.brf-hc .brf-mm__top{padding:0 8px;font-size:13px;letter-spacing:-.005em}
+      html.brf-hc .brf-hc__acts{margin-left:2px;gap:0}
+      html.brf-hc .brf-hc__acts .brf-hc__btn{width:36px;height:36px}
+      html.brf-hc .brf-hc__btn--cart{width:auto;padding:0 10px 0 9px;gap:5px}
+      html.brf-hc .brf-hc__btn--cart>span:not(.brf-hc__count){display:none}
     }
     @keyframes brf-hc-pop{from{opacity:0;transform:scale(.4) rotate(-20deg)}to{opacity:1;transform:none}}
     .brf-hc__btn{position:relative;display:grid;place-items:center;width:40px;height:40px;padding:0;border:0;border-radius:50%;background:transparent;color:#1D1D1F;cursor:pointer;text-decoration:none;transition:background .2s,transform .3s cubic-bezier(.3,1.5,.4,1)}
@@ -78,7 +87,7 @@
     html.brf-hc .brf-mm__bar{transition:opacity .28s ease,transform .45s cubic-bezier(.2,.8,.2,1),filter .28s ease}
     html.brf-hc.brf-hc-searching .brf-mm__bar{opacity:0;transform:scale(.96);filter:blur(6px);pointer-events:none}
     html.brf-hc.brf-hc-searching .brf-hc__glide{opacity:0}
-    @media (min-width:1200px){
+    @media (min-width:1000px){
       html.brf-hc .brf-hc__search{display:flex;position:absolute;top:6px;bottom:6px;left:var(--brf-hc-sl,52px);right:var(--brf-hc-sr,150px);z-index:2;align-items:center;gap:10px;margin:0;padding:0 8px 0 18px;
         border-radius:980px;background:#fff;box-shadow:inset 0 0 0 1px rgba(29,29,31,.1),0 0 0 4px rgba(20,153,84,0);opacity:0;pointer-events:none;
         clip-path:inset(0 0 0 calc(100% - 42px) round 980px);transition:clip-path .6s cubic-bezier(.2,.9,.25,1.04),opacity .18s ease,box-shadow .3s ease}
@@ -111,7 +120,7 @@
       html.brf-hc .brf-mm__bar,html.brf-hc .brf-hc__search{transition:none}
     }
 
-    @media (min-width:1200px){
+    @media (min-width:1000px){
       /* The page behind the search blurs like frosted glass */
       html.brf-hc .brf-hc__veil{display:block;position:fixed;inset:0;z-index:-1;pointer-events:none;opacity:0;visibility:hidden;
         background:rgba(246,244,240,.38);-webkit-backdrop-filter:blur(14px) saturate(140%);backdrop-filter:blur(14px) saturate(140%);
@@ -275,7 +284,7 @@
   var glide = doc.createElement('span'); glide.className = 'brf-hc__glide'; glide.setAttribute('aria-hidden', 'true');
   var veil = doc.createElement('div'); veil.className = 'brf-hc__veil'; veil.setAttribute('aria-hidden', 'true');
   var quip = doc.createElement('p'); quip.className = 'brf-hc__quip'; quip.setAttribute('aria-hidden', 'true');
-  var bagPinned = false; var bag = doc.createElement('div'); bag.className = 'brf-hc__bag'; bag.id = 'brf-hc-bag'; bag.setAttribute('role', 'dialog'); bag.setAttribute('aria-label', 'Your bag');
+  var bagPinned = false; var bag = doc.createElement('div'); bag.className = 'brf-hc__bag'; bag.id = 'brf-hc-bag'; bag.setAttribute('role', 'dialog'); bag.setAttribute('aria-label', 'My bag');
   var toast = doc.createElement('a'); toast.className = 'brf-hc__toast'; toast.href = '{{ routes.cart_url }}'; toast.setAttribute('role', 'status'); toast.setAttribute('aria-live', 'polite');
   pill.insertBefore(glide, pill.firstChild);
   pill.insertBefore(logo, glide.nextSibling);
@@ -509,7 +518,7 @@
       return;
     }
     var free = 6500, left = free - c.total_price, keep = bag.querySelector('.brf-hc__bag-list'), st = keep ? keep.scrollTop : 0;
-    bag.innerHTML = '<div class="brf-hc__bag-h">Your bag <span>' + c.item_count + (c.item_count === 1 ? ' item' : ' items') + '</span><button type="button" class="brf-hc__bag-x" data-brf-bag-x aria-label="Close your bag">×</button></div>' +
+    bag.innerHTML = '<div class="brf-hc__bag-h">My bag <span>' + c.item_count + (c.item_count === 1 ? ' item' : ' items') + '</span><button type="button" class="brf-hc__bag-x" data-brf-bag-x aria-label="Close my bag">×</button></div>' +
       '<p class="brf-hc__bag-msg" role="status">' + esc(bagMsg) + '</p>' +
       '<ul class="brf-hc__bag-list" role="list">' + c.items.map(function(it, i){
         var v = it.variant_title && it.variant_title !== 'Default Title' ? it.variant_title : '';
