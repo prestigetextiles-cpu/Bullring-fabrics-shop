@@ -140,7 +140,19 @@
   .brf-spooky .brf-swatch{background-color:#2A2233}
   .brf-spooky .brf-btn--line{border-color:#EDE6DA;color:#EDE6DA!important}
   .brf-spooky .brf-btn--line:hover{background:#EDE6DA;color:#16121B!important}
-  .brf-spooky__foot{position:relative;margin-top:40px;display:flex;justify-content:center}
+  .brf-spooky__foot{position:relative;margin-top:40px;display:flex;justify-content:center;flex-wrap:wrap;gap:12px}
+  /* R11. Halloween home décor rail inside the spooky section */
+  .brf-spooky__decor{position:relative;margin-top:56px;padding-top:40px;border-top:1px solid rgba(237,230,218,.14)}
+  .brf-spooky__decor-head{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;margin-bottom:20px}
+  .brf-spooky__decor-head h3{margin:6px 0 0;font-size:clamp(24px,2.4vw,32px);line-height:1.1;color:#F3E3B8}
+  .brf-spooky__decor-all{flex:0 0 auto;font-weight:600;color:#F2A65A!important;text-decoration:none;white-space:nowrap}
+  .brf-spooky__decor-all:hover{text-decoration:underline}
+  .brf-spooky__rail{display:grid;grid-auto-flow:column;grid-auto-columns:calc((100% - 72px) / 4);gap:24px;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;-webkit-overflow-scrolling:touch;padding-bottom:4px}
+  .brf-spooky__rail::-webkit-scrollbar{display:none}
+  .brf-spooky__rail>.brf-card{scroll-snap-align:start}
+  .brf-spooky__foot .brf-spooky__foot-2{color:#EDE6DA!important;border-color:rgba(237,230,218,.45)!important}
+  @media (max-width:999px){.brf-spooky__rail{grid-auto-columns:calc((100% - 24px) / 2.3)}}
+  @media (max-width:640px){.brf-spooky__decor{margin-top:40px;padding-top:28px}.brf-spooky__rail{grid-auto-columns:62%;gap:12px;margin:0 -20px;padding:0 20px 4px;scroll-padding:0 20px}}
 
   /* Older Safari (before 15) has no aspect-ratio or inset: without these, the image boxes have no height
      and the grid columns grow to the image's full size. Padding-box fallback keeps the same proportions. */
@@ -319,8 +331,46 @@
           </div>
         {%- endfor -%}
       </div>
+      {%- comment -%} R11. Halloween Home & Décor (smart collection: type Halloween + tag home-lifestyle) {%- endcomment -%}
+      {%- assign hd = collections['halloween-home-decor'] -%}
+      {%- if hd.products_count > 0 -%}
+        <div class="brf-spooky__decor">
+          <div class="brf-spooky__decor-head">
+            <div>
+              <span class="brf-eyebrow">Spooky home décor</span>
+              <h3 class="brf-serif">Haunt the house too</h3>
+            </div>
+            <a class="brf-spooky__decor-all" href="{{ hd.url }}">See all {{ hd.products_count }} &rarr;</a>
+          </div>
+          <div class="brf-spooky__rail">
+            {%- for product in hd.products limit: 8 -%}
+              <div class="brf-card">
+                <a class="brf-card__media" href="{{ product.url | within: hd }}">
+                  <div class="brf-swatch">{% if product.featured_image %}<img src="{{ product.featured_image | img_url: '600x' }}" alt="{{ product.featured_image.alt | default: product.title | escape }}" loading="lazy">{% endif %}</div>
+                  {%- unless product.available -%}<span class="brf-badge">Sold out</span>{%- endunless -%}
+                </a>
+                <a class="brf-card__title" href="{{ product.url | within: hd }}">{{ product.title }}</a>
+                <div class="brf-card__price">
+                  {%- if product.price_varies -%}<strong>From {{ product.price_min | money }}</strong>
+                  {%- elsif product.compare_at_price > product.price -%}<strong class="is-sale">{{ product.price | money }}</strong><s>{{ product.compare_at_price | money }}</s>
+                  {%- else -%}<strong>{{ product.price | money }}</strong>{%- endif -%}
+                </div>
+                {%- if product.has_only_default_variant and product.available -%}
+                  {%- form 'product', product -%}
+                    <input type="hidden" name="id" value="{{ product.selected_or_first_available_variant.id }}">
+                    <button type="submit" class="brf-btn brf-btn--line">Add to bag</button>
+                  {%- endform -%}
+                {%- else -%}
+                  <a class="brf-btn brf-btn--line" href="{{ product.url | within: hd }}">{% if product.available %}Choose options{% else %}View{% endif %}</a>
+                {%- endif -%}
+              </div>
+            {%- endfor -%}
+          </div>
+        </div>
+      {%- endif -%}
       <div class="brf-spooky__foot">
         <a class="brf-btn brf-btn--pumpkin" href="{{ hw.url }}">Shop all {{ hw.products_count }} Halloween fabrics</a>
+        {%- if hd.products_count > 0 -%}<a class="brf-btn brf-btn--line brf-spooky__foot-2" href="{{ hd.url }}">Shop Halloween décor</a>{%- endif -%}
       </div>
     </div>
   </section>

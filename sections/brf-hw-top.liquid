@@ -43,6 +43,14 @@
   .brf-hw__head h2{margin:0;font-size:32px;line-height:1.1}
   .brf-hw__head p{margin:6px 0 0;color:#5E5A52;font-size:15px}
   .brf-hw__grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:20px}
+  /* R11. spooky home décor rail */
+  .brf-hw__decor-all{flex:0 0 auto;font-weight:600;color:#1F4D3A;text-decoration:none;white-space:nowrap}
+  .brf-hw__decor-all:hover{text-decoration:underline}
+  .brf-hw__rail{display:grid;grid-auto-flow:column;grid-auto-columns:calc((100% - 60px) / 4);gap:20px;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;-webkit-overflow-scrolling:touch;padding-bottom:4px}
+  .brf-hw__rail::-webkit-scrollbar{display:none}
+  .brf-hw__rail>.brf-hw__card{scroll-snap-align:start}
+  @media (max-width:999px){.brf-hw__rail{grid-auto-columns:calc((100% - 20px) / 2.3)}}
+  @media (max-width:640px){.brf-hw__rail{grid-auto-columns:62%;gap:10px}.brf-hw__head{align-items:flex-start}}
   .brf-hw__card{display:flex;flex-direction:column;gap:10px}
   .brf-hw__media{position:relative;display:block;aspect-ratio:1/1.1;border-radius:6px;overflow:hidden;background:#2A2233}
   .brf-hw__media img{display:block;width:100%;height:100%;object-fit:cover;transition:transform .5s ease}
@@ -258,7 +266,7 @@
               {%- if product.has_only_default_variant -%}
                 {%- form 'product', product -%}
                   <input type="hidden" name="id" value="{{ v.id }}">
-                  <button type="submit" class="brf-hw__add">Add to basket</button>
+                  <button type="submit" class="brf-hw__add">Add to bag</button>
                 {%- endform -%}
               {%- else -%}
                 <a class="brf-hw__add" href="{{ product.url | within: collection }}">Choose options</a>
@@ -269,6 +277,53 @@
       </div>
     </section>
     {%- endif -%}
+  {%- endif -%}
+
+  {%- comment -%} R11. Halloween Home & Décor (smart collection: type Halloween + tag home-lifestyle) {%- endcomment -%}
+  {%- assign hd = collections['halloween-home-decor'] -%}
+  {%- if current_tags == blank and hd.products_count > 0 -%}
+    <section class="brf-hw__picks brf-hw__decor">
+      <div class="brf-hw__wrap">
+        <div class="brf-hw__head">
+          <div>
+            <h2 class="brf-hw__serif">Spooky home décor</h2>
+            <p>Animated butlers, glowing pumpkins and light-up BOO letters to haunt the whole house.</p>
+          </div>
+          <a class="brf-hw__decor-all" href="{{ hd.url }}">See all {{ hd.products_count }} &rarr;</a>
+        </div>
+        <div class="brf-hw__rail">
+          {%- for product in hd.products limit: 8 -%}
+            {%- assign v = product.selected_or_first_available_variant -%}
+            <div class="brf-hw__card">
+              <a class="brf-hw__media" href="{{ product.url | within: hd }}">
+                {%- if product.featured_image -%}<img src="{{ product.featured_image | img_url: '600x' }}" alt="{{ product.featured_image.alt | default: product.title | escape }}" loading="lazy">{%- endif -%}
+                {%- if product.compare_at_price > product.price -%}
+                  {%- assign save = product.compare_at_price | minus: product.price | times: 100 | divided_by: product.compare_at_price -%}
+                  <span class="brf-hw__badge">Save {{ save }}%</span>
+                {%- endif -%}
+                {%- if product.has_only_default_variant and v.inventory_management == 'shopify' and v.inventory_quantity > 0 and v.inventory_quantity <= 15 -%}
+                  <span class="brf-hw__low">Only {{ v.inventory_quantity }} left</span>
+                {%- endif -%}
+              </a>
+              <a class="brf-hw__title" href="{{ product.url | within: hd }}">{{ product.title }}</a>
+              <div class="brf-hw__price">
+                {%- if product.price_varies -%}<strong>From {{ product.price_min | money }}</strong>
+                {%- elsif product.compare_at_price > product.price -%}<strong class="is-sale">{{ product.price | money }}</strong><s>{{ product.compare_at_price | money }}</s>
+                {%- else -%}<strong>{{ product.price | money }}</strong>{%- endif -%}
+              </div>
+              {%- if product.has_only_default_variant and product.available -%}
+                {%- form 'product', product -%}
+                  <input type="hidden" name="id" value="{{ v.id }}">
+                  <button type="submit" class="brf-hw__add">Add to bag</button>
+                {%- endform -%}
+              {%- else -%}
+                <a class="brf-hw__add" href="{{ product.url | within: hd }}">{% if product.available %}Choose options{% else %}Sold out{% endif %}</a>
+              {%- endif -%}
+            </div>
+          {%- endfor -%}
+        </div>
+      </div>
+    </section>
   {%- endif -%}
 
   <div class="brf-hw__all" id="brf-hw-all">
