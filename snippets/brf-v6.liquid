@@ -229,3 +229,27 @@
   new MutationObserver(function(){ clearTimeout(t); t = setTimeout(sync, 250); }).observe(host, {childList: true, subtree: true});
 })();
 </script>
+<script>
+/* R11. A quantity box only takes focus when the shopper taps (or tabs) into it.
+   Anything else that focuses one (the theme's "10+" swap, a page script, iOS restoring focus)
+   is undone at once, so the phone keyboard never pops up by itself. */
+(function(){
+  var doc = document, at = 0, src = null;
+  function mark(e){ if (e.isTrusted === false) return; at = Date.now(); src = e.target; }
+  doc.addEventListener('pointerdown', mark, true);
+  doc.addEventListener('touchstart', mark, {capture: true, passive: true});
+  doc.addEventListener('change', function(e){ if (e.isTrusted && e.target.matches && e.target.matches('select[name="quantity"]')) mark(e); }, true);
+  doc.addEventListener('keydown', function(e){ if (e.isTrusted && e.key === 'Tab') { at = Date.now(); src = 'tab'; } }, true);
+  var SEL = 'input[name="quantity"]:not([type="hidden"]),.brf-sab__in,.brf-qa__in';
+  doc.addEventListener('focusin', function(e){
+    var el = e.target;
+    if (!el.matches || !el.matches(SEL)) return;
+    if (Date.now() - at < 2500 && src) {
+      if (src === 'tab' || src === el || (src.closest && (src.closest('label') === el.closest('label') && el.closest('label')))) return;
+      if (src.matches && src.matches('select[name="quantity"]')) return; /* picked "10+": the theme's own box may take focus */
+      if (src.closest && src.closest('.brf-sab__qty,.brf-qa__qty,.quantity-selector') && src.closest('.brf-sab__qty,.brf-qa__qty,.quantity-selector').contains(el)) return;
+    }
+    try { el.blur(); } catch (err) {}
+  }, true);
+})();
+</script>
