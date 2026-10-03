@@ -53,6 +53,7 @@
       <div class="brf-sab__info">
         <p class="brf-sab__title">{{ product.title | escape }}</p>
         <div class="brf-sab__opts" data-brf-sab-opts></div>
+        <p class="brf-sab__stock" data-brf-sab-stock hidden></p>
       </div>
       <div class="brf-sab__qty" data-brf-sab-qty>
         <button type="button" class="brf-sab__step" data-d="-1" aria-label="One less">&minus;</button>
@@ -70,7 +71,7 @@
   }</script>
   <script type="application/json" data-brf-sab-vars>[
     {%- for v in product.variants -%}
-      {"a":{{ v.available | json }},"o":[{{ v.option1 | json }},{{ v.option2 | json }},{{ v.option3 | json }}]}{% unless forloop.last %},{% endunless %}
+      {"i":{{ v.id }},"a":{{ v.available | json }},"o":[{{ v.option1 | json }},{{ v.option2 | json }},{{ v.option3 | json }}]}{% unless forloop.last %},{% endunless %}
     {%- endfor -%}
   ]</script>
   <style>
@@ -84,7 +85,8 @@
     html body .brf-sab .brf-sab__thumb img{display:block;width:100%;height:100%;object-fit:cover;border-radius:0;box-shadow:none;transition:opacity .2s ease,transform .45s cubic-bezier(.2,1.4,.3,1)}
     .brf-sab__thumb.is-swap img{animation:brf-sab-swap .5s cubic-bezier(.2,1.3,.3,1)}
     @keyframes brf-sab-swap{0%{opacity:.2;transform:scale(.7) rotate(-6deg)}100%{opacity:1;transform:none}}
-    .brf-sab__info{flex:1 1 auto;min-width:0;display:flex;flex-direction:column;justify-content:center;gap:4px}
+    .brf-sab__info{flex:1 1 auto;min-width:0;display:flex;flex-flow:row wrap;align-content:center;align-items:center;column-gap:10px;row-gap:4px}
+    .brf-sab__info .brf-sab__title{flex:1 0 100%}
     html body .brf-sab .brf-sab__title{margin:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:14px;font-weight:700;line-height:1.2;letter-spacing:-.01em;color:#1D1D1F}
     .brf-sab__opts{display:flex;gap:6px;min-width:0}
     .brf-sab__opts:empty{display:none}
@@ -96,6 +98,15 @@
     .brf-sab__seg svg{flex:0 0 auto;width:9px;height:9px;color:#8C867D}
     .brf-sab__dot{flex:0 0 auto;width:13px;height:13px;border-radius:50%;background:#ddd center/cover no-repeat;box-shadow:inset 0 0 0 1px rgba(0,0,0,.14)}
     .brf-sab__more{flex:0 0 auto;font-size:11px;font-weight:600;color:#8C867D}
+    /* stock level */
+    html body .brf-sab .brf-sab__stock{display:flex;align-items:center;gap:5px;margin:0;font-size:11.5px;font-weight:600;line-height:1.2;color:#0C6637;white-space:nowrap}
+    .brf-sab__stock::before{content:"";flex:0 0 auto;width:6px;height:6px;border-radius:50%;background:#149954;box-shadow:0 0 0 2px rgba(20,153,84,.18)}
+    html body .brf-sab .brf-sab__stock.is-low{color:#B45309}
+    .brf-sab__stock.is-low::before{background:#E08A00;box-shadow:0 0 0 2px rgba(224,138,0,.2);animation:brf-sab-blink 1.6s ease-in-out infinite}
+    @keyframes brf-sab-blink{50%{opacity:.35}}
+    .brf-sab__stock[hidden]{display:none!important}
+    .brf-sab-sheet__o em.brf-sab-q{color:#0C6637;font-weight:600}
+    .brf-sab-sheet__o em.brf-sab-q.is-low{color:#B45309}
     /* quantity */
     .brf-sab__qty{flex:0 0 auto;display:flex;align-items:center;height:40px;padding:0 2px;border-radius:11px;background:#F4F0EA;box-shadow:inset 0 0 0 1px #E6DFD4}
     .brf-sab__step{display:grid;place-items:center;width:28px;height:36px;padding:0;border:0;border-radius:9px;background:transparent;color:#1D1D1F;font:500 18px/1 inherit;cursor:pointer;-webkit-tap-highlight-color:transparent}
@@ -148,6 +159,10 @@
       html body .brf-sab .brf-sab__bar{width:100%;gap:8px!important;padding:6px!important;border-radius:16px!important}
       html body .brf-sab .brf-sab__title{font-size:13px}
       .brf-sab.has-opts .brf-sab__title{display:none}
+      .brf-sab__info{flex-flow:column nowrap;align-items:flex-start;justify-content:center;gap:3px}
+      .brf-sab__info .brf-sab__title{flex:0 0 auto}
+      .brf-sab.has-opts .brf-sab__seg{height:28px}
+      html body .brf-sab .brf-sab__stock{font-size:11px;padding-left:2px}
       .brf-sab:not(.has-opts) .brf-sab__title{white-space:normal;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;font-size:12.5px;line-height:1.25}
       .brf-sab__seg{height:34px;padding:0 8px;font-size:13px;border-radius:10px}
       .brf-sab__more{display:none}
@@ -265,6 +280,20 @@
         return true;
       });
     }
+    /* R9. stock for the variant a value would give (with the other options as chosen); null = not tracked */
+    function stockFor(gs, g, val){
+      var picks = {};
+      gs.forEach(function(o){ if (o !== g) { var s2 = o.values.filter(function(v){ return v.on; })[0]; if (s2) picks[o.pos] = s2.v; } });
+      picks[g.pos] = val.v;
+      var hit = vars.filter(function(x){ for (var q in picks) if (x.o[q] !== picks[q]) return false; return true; })[0];
+      return hit && hit.i ? stockOf(String(hit.i)) : null;
+    }
+    function stockLabel(n){ return n <= 0 ? 'Sold out' : n <= 5 ? 'Only ' + n + ' left' : n + ' in stock'; }
+    function badge(gs, g, v){
+      if (soldOut(gs, g, v)) return '<em>Sold out</em>';
+      var n = stockFor(gs, g, v);
+      return n == null ? '' : '<em class="brf-sab-q' + (n <= 5 ? ' is-low' : '') + '">' + stockLabel(n) + '</em>';
+    }
 
     var lastSig = '';
     function paintOpts(){
@@ -301,7 +330,7 @@
       gs.forEach(function(g, gi){
         html += (gs.length > 1 ? '<p class="brf-sab-sheet__g" data-g="' + gi + '">' + esc(g.name) + '</p>' : '') + '<div class="brf-sab-sheet__list" data-g="' + gi + '">' + g.values.map(function(v, k){
           var dot = isSwatch(g) ? swatchStyle(v) : '', oos = soldOut(gs, g, v);
-          return '<button type="button" class="brf-sab-sheet__o' + (v.on ? ' is-sel' : '') + (oos ? ' is-oos' : '') + '" data-k="' + k + '" aria-pressed="' + v.on + '"' + (oos ? ' aria-label="' + esc(v.label) + ', sold out"' : '') + '>' + (dot ? '<i class="brf-sab__dot" style="' + esc(dot) + '"></i>' : '') + '<span>' + esc(v.label) + '</span>' + (oos ? '<em>Sold out</em>' : '') + '</button>';
+          return '<button type="button" class="brf-sab-sheet__o' + (v.on ? ' is-sel' : '') + (oos ? ' is-oos' : '') + '" data-k="' + k + '" aria-pressed="' + v.on + '"' + (oos ? ' aria-label="' + esc(v.label) + ', sold out"' : '') + '>' + (dot ? '<i class="brf-sab__dot" style="' + esc(dot) + '"></i>' : '') + '<span>' + esc(v.label) + '</span>' + badge(gs, g, v) + '</button>';
         }).join('') + '</div>';
       });
       sheet.innerHTML = html + '</div>';
@@ -326,7 +355,7 @@
             [].forEach.call(l.querySelectorAll('.brf-sab-sheet__o'), function(b){
               var vv = gg.values[+b.getAttribute('data-k')]; if (!vv) return;
               var oos = soldOut(now, gg, vv); b.classList.toggle('is-oos', oos);
-              var em = b.querySelector('em'); if (oos && !em) b.insertAdjacentHTML('beforeend', '<em>Sold out</em>'); else if (!oos && em) em.remove();
+              var em = b.querySelector('em'); if (em) em.remove(); b.insertAdjacentHTML('beforeend', badge(now, gg, vv));
             });
           });
         }, 220);
@@ -355,6 +384,14 @@
         lbl.classList.toggle('is-added', done);
       }
       var id = idEl && idEl.value;
+      var sEl = bar.querySelector('[data-brf-sab-stock]');
+      if (sEl) {
+        var n = id ? stockOf(id) : null;
+        var t2 = mainBtn.disabled ? '' : n == null ? 'In stock' : stockLabel(n);
+        if (sEl.textContent !== t2) sEl.textContent = t2;
+        sEl.hidden = !t2;
+        sEl.classList.toggle('is-low', n != null && n <= 5);
+      }
       if (id && id !== lastId) {
         var src = imgs[id];
         var im = thumb.querySelector('img');
