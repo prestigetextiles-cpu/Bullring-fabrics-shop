@@ -569,11 +569,14 @@
 
   {%- comment -%} TRUST STRIP {%- endcomment -%}
   <div class="brf-wrap">
+    {%- if section.settings.cp_show -%}
+      {%- render 'brf-clearpay', mode: 'home', heading: section.settings.cp_heading, text: section.settings.cp_text -%}
+    {%- endif -%}
     <div class="brf-trust">
       <div class="brf-trust__item"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 7h11v9H3zM14 10h4l3 3v3h-7z"/><circle cx="7" cy="17.5" r="1.8"/><circle cx="17" cy="17.5" r="1.8"/></svg><div><strong>{{ section.settings.trust_1_title }}</strong><span>{{ section.settings.trust_1_text }}</span></div></div>
       <div class="brf-trust__item"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/></svg><div><strong>{{ section.settings.trust_2_title }}</strong><span>{{ section.settings.trust_2_text }}</span></div></div>
       <div class="brf-trust__item"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12l9-8 9 8M5 10v10h14V10"/><path d="M10 20v-6h4v6"/></svg><div><strong>{{ section.settings.trust_3_title }}</strong><span>{{ section.settings.trust_3_text }}</span></div></div>
-      <div class="brf-trust__item"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="10" width="14" height="10" rx="2"/><path d="M8 10V7a4 4 0 018 0v3"/></svg><div><strong>{{ section.settings.trust_4_title }}</strong><span>{{ section.settings.trust_4_text }}</span></div></div>
+      <div class="brf-trust__item"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="10" width="14" height="10" rx="2"/><path d="M8 10V7a4 4 0 018 0v3"/></svg><div><strong>{{ section.settings.trust_4_title }}</strong><span>{% unless section.settings.trust_4_text contains 'Clearpay' %}Clearpay, {% endunless %}{{ section.settings.trust_4_text }}</span></div></div>
     </div>
   </div>
 
@@ -912,6 +915,10 @@
     { "type": "text", "id": "trust_2_text", "label": "Item 2 text", "default": "Order before 10pm, Mon–Fri" },
     { "type": "text", "id": "trust_3_title", "label": "Item 3 title", "default": "Wholesale & trade" },
     { "type": "text", "id": "trust_3_text", "label": "Item 3 text", "default": "Rolls and job lots for business" },
+    { "type": "header", "content": "Clearpay banner" },
+    { "type": "checkbox", "id": "cp_show", "label": "Show Clearpay banner", "default": true },
+    { "type": "text", "id": "cp_heading", "label": "Heading (Clearpay logo follows)", "default": "Now accepting" },
+    { "type": "textarea", "id": "cp_text", "label": "Text", "default": "Craft now, pay later! Split your fabric haul into 4 interest-free payments, one every 2 weeks. Just pick Clearpay at checkout." },
     { "type": "text", "id": "trust_4_title", "label": "Item 4 title", "default": "Secure checkout" },
     { "type": "text", "id": "trust_4_text", "label": "Item 4 text", "default": "PayPal, Apple Pay, cards" },
     { "type": "header", "content": "Halloween" },

@@ -1,0 +1,123 @@
+{%- comment -%}
+  Clearpay messaging. render 'brf-clearpay', mode: 'pdp' | 'cart' | 'home', amount: cents
+  pdp:  "or 4 interest-free payments of £X with Clearpay", follows price + qty changes
+  cart: same line for the bag total
+  home: the "now accepting Clearpay" strip (heading/text passed in)
+  Clearpay UK order limits: £1 to £1,000 (cp_min / cp_max, in pence).
+{%- endcomment -%}
+{%- assign cp_min = 100 -%}
+{%- assign cp_max = 100000 -%}
+{%- capture cp_logo -%}<span class="brf-cpay__logo" aria-label="Clearpay"><svg viewBox="0 0 20 20" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 8h10l-3-3"/><path d="M16 12H6l3 3"/></svg>clearpay</span>{%- endcapture -%}
+<style>
+  .brf-cpay__logo{display:inline-flex;align-items:center;gap:3px;background:#B2FCE4;color:#000;font:800 13px/1 Figtree,system-ui,-apple-system,sans-serif;letter-spacing:-.02em;padding:4px 8px 4px 6px;border-radius:999px;vertical-align:middle;white-space:nowrap}
+  .brf-cpay{display:flex;align-items:center;flex-wrap:wrap;gap:4px 6px;margin:8px 0 0;font-size:14px;line-height:1.4;color:#3d3a35}
+  .brf-cpay b{color:#1C1B19}
+  .brf-cpay__tag{display:inline-flex;align-items:center;gap:4px;white-space:nowrap}
+  .brf-cpay[hidden]{display:none}
+  .brf-cpay__i{display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border:0;padding:0;background:none;color:#5E5A52;cursor:pointer;border-radius:50%}
+  .brf-cpay__i:hover{color:#1C1B19;background:rgba(0,0,0,.05)}
+  .brf-cpay--cart{justify-content:center;text-align:center;margin:0 0 14px;font-size:13.5px}
+  .brf-cpstrip{display:flex;align-items:center;gap:18px;background:#B2FCE4;color:#000;border-radius:16px;padding:18px 22px;margin:28px 0 0}
+  .brf-cpstrip__badge{display:inline-flex;align-items:center;justify-content:center;flex:none;width:52px;height:52px;border-radius:50%;background:#000;color:#B2FCE4}
+  .brf-cpstrip__body{flex:1;min-width:0}
+  .brf-cpstrip__h{display:flex;align-items:center;flex-wrap:wrap;gap:6px 10px;margin:0 0 4px;font:800 19px/1.25 Figtree,system-ui,-apple-system,sans-serif;color:#000}
+  .brf-cpstrip__new{font-size:11px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;background:#000;color:#B2FCE4;border-radius:999px;padding:4px 9px}
+  .brf-cpstrip p{margin:0;font-size:15px;line-height:1.5;color:#1d2b26}
+  .brf-cpstrip .brf-cpay__logo{background:#000;color:#B2FCE4}
+  .brf-cpstrip__btn{flex:none;border:2px solid #000;background:#000;color:#B2FCE4;font:700 14px/1 Figtree,system-ui,-apple-system,sans-serif;padding:12px 18px;border-radius:999px;cursor:pointer;white-space:nowrap}
+  .brf-cpstrip__btn:hover{background:transparent;color:#000}
+  @media (max-width:640px){
+    .brf-cpstrip{flex-wrap:wrap;gap:10px 12px;padding:14px 16px;margin:18px 0 0;border-radius:14px}
+    .brf-cpstrip__badge{width:40px;height:40px}
+    .brf-cpstrip__badge svg{width:20px;height:20px}
+    .brf-cpstrip__h{font-size:16px}
+    .brf-cpstrip p{font-size:14px}
+    .brf-cpstrip__btn{width:100%;padding:11px 16px}
+  }
+  .brf-cpsheet{position:fixed;inset:0;z-index:2147483000;display:flex;align-items:center;justify-content:center;padding:16px;background:rgba(20,18,15,.55)}
+  .brf-cpsheet[hidden]{display:none}
+  .brf-cpsheet__card{position:relative;width:100%;max-width:440px;max-height:calc(100vh - 32px);overflow:auto;background:#fff;color:#1C1B19;border-radius:18px;padding:24px 22px 20px;font-family:Figtree,system-ui,-apple-system,sans-serif;box-shadow:0 20px 60px rgba(0,0,0,.25)}
+  .brf-cpsheet__x{position:absolute;top:10px;right:10px;width:36px;height:36px;border:0;border-radius:50%;background:#F2EEE6;color:#1C1B19;font-size:22px;line-height:1;cursor:pointer}
+  .brf-cpsheet h2{margin:10px 0 6px;font-size:21px;line-height:1.25;font-weight:800;color:#1C1B19}
+  .brf-cpsheet__lede{margin:0 0 14px;font-size:15px;color:#5E5A52}
+  .brf-cpsheet ol{list-style:none;margin:0 0 14px;padding:0;display:grid;gap:10px}
+  .brf-cpsheet li{display:flex;gap:12px;align-items:flex-start;font-size:15px;line-height:1.45}
+  .brf-cpsheet li span{flex:none;display:inline-flex;align-items:center;justify-content:center;width:26px;height:26px;border-radius:50%;background:#B2FCE4;color:#000;font-weight:800;font-size:13px}
+  .brf-cpsheet__small{margin:0;font-size:12px;line-height:1.5;color:#6b665d}
+  .brf-cpsheet__small a{color:inherit;text-decoration:underline}
+  @media (max-width:640px){.brf-cpsheet{align-items:flex-end;padding:0}.brf-cpsheet__card{max-width:none;border-radius:18px 18px 0 0;max-height:88vh;padding-bottom:calc(20px + env(safe-area-inset-bottom))}}
+</style>
+{%- case mode -%}
+  {%- when 'home' -%}
+    <div class="brf-cpstrip" role="region" aria-label="Clearpay">
+      <span class="brf-cpstrip__badge" aria-hidden="true"><svg viewBox="0 0 20 20" width="26" height="26" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h10l-3-3"/><path d="M16 12H6l3 3"/></svg></span>
+      <div class="brf-cpstrip__body">
+        <p class="brf-cpstrip__h"><span class="brf-cpstrip__new">New</span>{{ heading | default: 'Now accepting' }} {{ cp_logo }}</p>
+        <p>{{ text | default: 'Craft now, pay later! Split your fabric haul into 4 interest-free payments, one every 2 weeks. Just pick Clearpay at checkout.' }}</p>
+      </div>
+      <button type="button" class="brf-cpstrip__btn" data-brf-cp-open>How it works</button>
+    </div>
+  {%- when 'cart' -%}
+    {%- assign a = amount | default: 0 -%}
+    {%- if a >= cp_min -%}
+      <p class="brf-cpay brf-cpay--cart">
+        {%- if a <= cp_max -%}
+          {%- assign q = a | divided_by: 4.0 | round -%}
+          <span>or 4 interest-free payments of <b>{{ q | money }}</b> with</span>
+        {%- else -%}
+          <span>Pay in 4 on orders up to {{ cp_max | money_without_trailing_zeros }} with</span>
+        {%- endif -%}
+        <span class="brf-cpay__tag">{{ cp_logo }}<button type="button" class="brf-cpay__i" data-brf-cp-open aria-label="How Clearpay works"><svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11v5"/><path d="M12 7.6v.1"/></svg></button></span>
+      </p>
+    {%- endif -%}
+  {%- else -%}
+    {%- assign a = amount | default: 0 -%}
+    {%- assign q = a | divided_by: 4.0 | round -%}
+    <p class="brf-cpay" data-brf-cpay data-min="{{ cp_min }}" data-max="{{ cp_max }}" {% if a < cp_min %}hidden{% endif %}>
+      <span data-brf-cpay-txt>{%- if a <= cp_max -%}or 4 interest-free payments of <b>{{ q | money }}</b> with{%- else -%}Pay in 4 on orders up to {{ cp_max | money_without_trailing_zeros }} with{%- endif -%}</span>
+      <span class="brf-cpay__tag">{{ cp_logo }}<button type="button" class="brf-cpay__i" data-brf-cp-open aria-label="How Clearpay works"><svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11v5"/><path d="M12 7.6v.1"/></svg></button></span>
+    </p>
+{%- endcase -%}
+<script>
+(function(){
+  if(window.__brfCp)return;window.__brfCp=1;
+  var sheet,last;
+  function build(){
+    sheet=document.createElement('div');sheet.className='brf-cpsheet';sheet.hidden=true;
+    sheet.innerHTML='<div class="brf-cpsheet__card" role="dialog" aria-modal="true" aria-labelledby="brf-cpsheet-h" tabindex="-1">'
+      +'<button type="button" class="brf-cpsheet__x" data-brf-cp-close aria-label="Close">&times;</button>'
+      +{{ cp_logo | json }}
+      +'<h2 id="brf-cpsheet-h">Craft now, pay later</h2>'
+      +'<p class="brf-cpsheet__lede">Get your fabric today and spread the cost over 4 interest-free payments.</p>'
+      +'<ol><li><span>1</span>Fill your bag and choose Clearpay at checkout.</li>'
+      +'<li><span>2</span>Log in or sign up with Clearpay in a few taps.</li>'
+      +'<li><span>3</span>Pay a quarter today, then the rest in 3 more payments every 2 weeks.</li>'
+      +'<li><span>4</span>No interest, ever. We send your order as normal, straight away.</li></ol>'
+      +'<p class="brf-cpsheet__small">Available on orders from {{ cp_min | money_without_trailing_zeros }} to {{ cp_max | money_without_trailing_zeros }}. You must be 18+, a UK resident and approved by Clearpay. Late fees may apply if a payment is missed, and only borrow what you can afford to repay. <a href="https://www.clearpay.co.uk/en-GB/terms-of-service" target="_blank" rel="noopener">Clearpay terms</a> apply.</p>'
+      +'</div>';
+    document.body.appendChild(sheet);
+    sheet.addEventListener('click',function(e){if(e.target===sheet||e.target.closest('[data-brf-cp-close]'))close();});
+    document.addEventListener('keydown',function(e){if(e.key==='Escape'&&!sheet.hidden)close();});
+  }
+  function open(btn){if(!sheet)build();last=btn;sheet.hidden=false;document.documentElement.style.overflow='hidden';sheet.querySelector('.brf-cpsheet__x').focus();}
+  function close(){sheet.hidden=true;document.documentElement.style.overflow='';if(last&&last.focus)last.focus();}
+  document.addEventListener('click',function(e){var b=e.target.closest&&e.target.closest('[data-brf-cp-open]');if(b){e.preventDefault();open(b);}});
+
+  /* product page: keep the instalment in step with the shown price x quantity */
+  var sym='£',fmt=function(p){return sym+(p/100).toFixed(2);};
+  function wire(line){
+    var scope=line.closest('form, .product-form, .product-block-list__item, .product__info')||document;
+    var form=line.closest('form')||scope.querySelector('form[action*="/cart/add"]')||document.querySelector('form[action*="/cart/add"]');
+    var priceBox=(line.closest('.product-form__info-content')||scope).querySelector('.price-list');
+    var min=+line.getAttribute('data-min'),max=+line.getAttribute('data-max'),txt=line.querySelector('[data-brf-cpay-txt]');
+    function qty(){var q=form&&form.querySelector('[name="quantity"]');var v=q?parseInt(q.value,10):1;return v>0?v:1;}
+    function price(){if(!priceBox)return 0;var p=priceBox.querySelector('.price--highlight')||priceBox.querySelector('.price');if(!p)return 0;var tx=p.textContent.trim(),m=tx.match(/^[^0-9]+/);if(m&&m[0].trim())sym=m[0].trim();var n=parseFloat(tx.replace(/[^0-9.]/g,''));return isNaN(n)?0:Math.round(n*100);}
+    function upd(){var t=price()*qty();if(!t)return;line.hidden=t<min;
+      txt.innerHTML=t<=max?'or 4 interest-free payments of <b>'+fmt(Math.round(t/4))+'</b> with':'Pay in 4 on orders up to '+fmt(max).replace('.00','')+' with';}
+    if(priceBox&&window.MutationObserver)new MutationObserver(upd).observe(priceBox,{childList:true,subtree:true,characterData:true});
+    if(form){form.addEventListener('input',upd);form.addEventListener('change',upd);form.addEventListener('click',function(){setTimeout(upd,0);});}
+  }
+  function init(){var ls=document.querySelectorAll('[data-brf-cpay]');for(var i=0;i<ls.length;i++)wire(ls[i]);}
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
+})();
+</script>
