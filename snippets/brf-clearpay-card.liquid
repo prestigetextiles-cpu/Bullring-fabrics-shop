@@ -1,0 +1,5 @@
+{%- comment -%} Clearpay card for the payment icon rows (footer, bag). Skipped if Shopify already lists Clearpay/Afterpay. {%- endcomment -%}
+{%- assign cp_types = shop.enabled_payment_types | join: ',' | downcase -%}
+{%- unless cp_types contains 'clearpay' or cp_types contains 'afterpay' -%}
+<svg class="payment-list__item" viewBox="0 0 38 24" width="38" height="24" role="img" aria-label="Clearpay"><rect width="38" height="24" rx="3" fill="#B2FCE4"/><rect x=".5" y=".5" width="37" height="23" rx="2.5" fill="none" stroke="#000" stroke-opacity=".07"/><g fill="none" stroke="#000" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"><path d="M15.2 5.6h6.2l-1.8-1.8"/><path d="M22.8 8.2h-6.2l1.8 1.8"/></g><text x="19" y="18.6" text-anchor="middle" font-family="Figtree,Helvetica,Arial,sans-serif" font-size="7.4" font-weight="800" letter-spacing="-.15" fill="#000">clearpay</text></svg>
+{%- endunless -%}

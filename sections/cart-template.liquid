@@ -450,6 +450,7 @@
                       {% for type in shop.enabled_payment_types %}
                         {{ type | payment_type_svg_tag: class: 'payment-list__item' }}
                       {% endfor %}
+                      {%- render 'brf-clearpay-card' -%}
                     </div>
                   </div>
                 {%- endif -%}
