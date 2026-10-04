@@ -569,6 +569,12 @@
 
   {%- comment -%} TRUST STRIP {%- endcomment -%}
   <div class="brf-wrap">
+    {%- comment -%} STAR BUY: one product in a banner of its own (hides when sold out) {%- endcomment -%}
+    {%- if section.settings.spot_show -%}
+      {%- assign spot_p = section.settings.spot_product -%}
+      {%- if spot_p == blank or spot_p.handle == blank -%}{%- assign spot_p = all_products['trudeau-seasoning-station-6-piece-set'] -%}{%- endif -%}
+      {%- render 'brf-spotlight', p: spot_p, eyebrow: section.settings.spot_eyebrow, heading: section.settings.spot_heading, text: section.settings.spot_text, btn: section.settings.spot_btn -%}
+    {%- endif -%}
     {%- if section.settings.cp_show -%}
       {%- render 'brf-clearpay', mode: 'home', heading: section.settings.cp_heading, text: section.settings.cp_text -%}
     {%- endif -%}
@@ -915,6 +921,13 @@
     { "type": "text", "id": "trust_2_text", "label": "Item 2 text", "default": "Order before 10pm, Mon–Fri" },
     { "type": "text", "id": "trust_3_title", "label": "Item 3 title", "default": "Wholesale & trade" },
     { "type": "text", "id": "trust_3_text", "label": "Item 3 text", "default": "Rolls and job lots for business" },
+    { "type": "header", "content": "Star buy banner", "info": "One product in its own banner under the main banner. It hides itself when the product sells out." },
+    { "type": "checkbox", "id": "spot_show", "label": "Show star buy banner", "default": true },
+    { "type": "product", "id": "spot_product", "label": "Product", "info": "Leave empty to show the Trudeau Seasoning Station" },
+    { "type": "text", "id": "spot_eyebrow", "label": "Badge", "default": "Kitchen star buy" },
+    { "type": "text", "id": "spot_heading", "label": "Heading", "default": "Spin. Sprinkle. Serve!" },
+    { "type": "textarea", "id": "spot_text", "label": "Text", "default": "Salt, pepper, oil and vinegar all on one twirly acacia lazy susan. A little table-top magic for every meal, and a cracking gift for the cook in your life." },
+    { "type": "text", "id": "spot_btn", "label": "Second button label", "default": "Take a look" },
     { "type": "header", "content": "Clearpay banner" },
     { "type": "checkbox", "id": "cp_show", "label": "Show Clearpay banner", "default": true },
     { "type": "text", "id": "cp_heading", "label": "Heading (Clearpay logo follows)", "default": "Now accepting" },
