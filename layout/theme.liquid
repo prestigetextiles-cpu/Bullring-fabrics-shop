@@ -66,6 +66,16 @@
 <!-- Please contact support@starapps.studio for any help -->
 {% include "starapps-language-meta" %}
 <!-- starapps_scripts_end -->
+{%- unless template.name == 'index' -%}
+    {%- comment -%} Google "Top Quality Store" badge (Google & YouTube app embed) shows on the homepage only: on other pages its start() is switched off before the app loads it {%- endcomment -%}
+    <script>
+      (function(){
+        var noop=function(){},tame=function(o){try{Object.defineProperty(o,'start',{configurable:true,get:function(){return noop;},set:function(){}});}catch(e){}return o;},mw=tame({});
+        try{Object.defineProperty(window,'merchantwidget',{configurable:true,get:function(){return mw;},set:function(v){mw=v&&typeof v==='object'?tame(v):v;}});}catch(e){}
+      })();
+    </script>
+    <style>iframe[src*="merchantwidget"],[id^="merchantwidget"],[class*="merchantwidget"]{display:none!important}</style>
+  {%- endunless -%}
 {%- if tinyscript -%}{{ content_for_header }}{%- else -%}{% render 'tiny-script-control' %}{%- endif -%}
 
     <link rel="stylesheet" href="{{ 'theme.css' | asset_url }}">
