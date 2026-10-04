@@ -296,7 +296,7 @@
               {%- endif -%}
             </div>
 
-            {%- render 'brf-clearpay', mode: 'pdp', amount: selected_variant.price -%}
+            {%- render 'brf-clearpay', mode: 'pdp', amount: selected_variant.price, skus: selected_variant.sku, cats: product.type -%}
 
             <div class="product-form__price-info" style="display: {% if selected_variant.unit_price_measurement %}block{% else %}none{% endif %}">
               <div class="unit-price-measurement">
