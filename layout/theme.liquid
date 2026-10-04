@@ -202,5 +202,53 @@
   {%- render 'brf-v4' -%}
   {%- render 'brf-v5' -%}
   {%- render 'brf-v6' -%}
+  {%- comment -%} Clearpay site messaging: Clearpay's own Shopify snippet (developers.afterpay.com, manually add Afterpay site messaging to theme), pointed at this theme's price, bag subtotal and bag drawer {%- endcomment -%}
+  <!-- Begin Shopify-Afterpay JavaScript Snippet (v1.2.1) -->
+  {% if cart.currency.iso_code == shop.currency %}
+  <script type="text/javascript">
+  // Overrides:
+  var afterpay_msg_size = 'sm';
+  var afterpay_logo_theme = 'colour';
+  var afterpay_modal_open_icon = true;
+  var afterpay_hide_lower_limit = true;
+  var afterpay_show_if_outside_limits = true;
+
+  var afterpay_product_integration_enabled = true;
+  var afterpay_product_selector = '.product-form__info-content .price-list';
+  var afterpay_variable_price_fallback = true;
+  var afterpay_variable_price_fallback_selector = '.product-form__info-content .price-list > .price:first-child';
+  var afterpay_variable_price_fallback_method = 'mutation';
+
+  var afterpay_cart_integration_enabled = true;
+  var afterpay_cart_static_selector = '#brf-cart-subtotal';
+  var afterpay_variable_subtotal_fallback = true;
+  var afterpay_variable_subtotal_fallback_selector = '#brf-cart-subtotal .cart-recap__price-line-price';
+  var afterpay_variable_subtotal_fallback_method = 'interval';
+
+  var afterpay_dynamic_cart_integration_enabled = true;
+  var afterpay_dynamic_cart_selector = '#mini-cart .brf-mc__total';
+  var afterpay_dynamic_cart_observer_target = '#mini-cart';
+
+  // Non-editable fields:
+  var afterpay_js_language = {{ localization.language.iso_code | slice: 0, 2 | json }};
+  var afterpay_js_country = {{ localization.country.iso_code | json }};
+  var afterpay_shop_currency = {{ shop.currency | json }};
+  var afterpay_cart_currency = {{ cart.currency.iso_code | json }};
+  var afterpay_shop_money_format = {{ shop.money_format | json }};
+  var afterpay_shop_permanent_domain = {{ shop.permanent_domain | json }};
+  var afterpay_theme_name = {{ theme.name | json }};
+  var afterpay_product = {{ product | json }};
+  var afterpay_product_collections = {{ product.collections | map: 'title' | join: ',' | json }};
+  var afterpay_current_variant = {{ product.selected_or_first_available_variant | json }};
+  var afterpay_cart_total_price = {{ cart.total_price | json }};
+  var afterpay_cart_skus = {{cart.items | map: 'sku' | join: ',' | json }};
+  var afterpay_cart_collections = {{cart.items | map: 'product' | map: 'collections' | map: 'title' | uniq | join: ',' | json }};
+  var afterpay_js_snippet_version = '1.2.1';
+  </script>
+  <script type="text/javascript" src="https://static.afterpay.com/shopify-afterpay-javascript.js"></script>
+  {% else %}
+  <!-- Afterpay disabled: {{ cart.currency.iso_code }} != {{ shop.currency }} -->
+  {% endif %}
+  <!-- End Shopify-Afterpay JavaScript Snippet (v1.2.1) -->
 </body>
 </html>
