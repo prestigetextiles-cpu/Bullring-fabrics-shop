@@ -1,0 +1,182 @@
+{%- comment -%}
+  Bull Ring Fabrics — auto-rotating announcement bar.
+  Add, remove or reorder messages in the theme editor (Announcement bar > Add message / countdown / code).
+  With no blocks added, it shows the main text plus the default same-day dispatch countdown and the NEWLOOK10 code.
+{%- endcomment -%}
+{%- if section.settings.show_announcement -%}
+  <section class="brf-ann" data-section-id="{{ section.id }}" style="--brf-ann-bg:{{ section.settings.background }};--brf-ann-fg:{{ section.settings.text_color }}">
+    <div class="announcement-bar brf-ann__bar">
+      <div class="container brf-ann__wrap">
+        <button type="button" class="brf-ann__nav brf-ann__nav--prev" data-brf-ann-prev aria-label="Previous message"><svg viewBox="0 0 12 12" width="10" height="10" aria-hidden="true"><path d="M7.5 2.5 4 6l3.5 3.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+        <div class="brf-ann__track" data-brf-ann-track aria-live="polite" data-interval="{{ section.settings.interval | default: 5 }}">
+          {%- if section.settings.text != blank -%}
+            {%- assign ann_lc = section.settings.text | downcase -%}
+            {%- capture ann_txt -%}
+              {%- if ann_lc contains 'clearpay' -%}<span class="brf-ann__cplogo" aria-hidden="true"><svg viewBox="0 0 20 20" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h10l-3-3"/><path d="M16 12H6l3 3"/></svg>clearpay</span>{%- endif -%}
+              {{- section.settings.text | escape -}}
+            {%- endcapture -%}
+            <div class="brf-ann__item is-active{% if ann_lc contains 'clearpay' %} brf-ann__item--cp{% endif %}">
+              {%- if section.settings.link != blank -%}<a href="{{ section.settings.link }}">{{ ann_txt }}</a>{%- else -%}<span>{{ ann_txt }}</span>{%- endif -%}
+            </div>
+          {%- endif -%}
+
+          {%- if section.blocks.size > 0 -%}
+            {%- for block in section.blocks -%}
+              <div class="brf-ann__item{% if section.settings.text == blank and forloop.first %} is-active{% endif %}" {{ block.shopify_attributes }}>
+                {%- case block.type -%}
+                  {%- when 'countdown' -%}
+                    <span class="brf-ann__count" data-brf-ann-countdown data-cutoff="{{ block.settings.cutoff_hour }}" data-before="{{ block.settings.before | escape }}" data-after="{{ block.settings.after | escape }}" data-closed="{{ block.settings.closed | escape }}"><i class="brf-ann__live" aria-hidden="true"></i><span data-brf-ann-text>{{ block.settings.closed | escape }}</span></span>
+                  {%- when 'code' -%}
+                    <span>{{ block.settings.text | escape }} <button type="button" class="brf-ann__code" data-brf-copy="{{ block.settings.code | escape }}">{{ block.settings.code | escape }}</button></span>
+                  {%- else -%}
+                    {%- if block.settings.link != blank -%}<a href="{{ block.settings.link }}">{{ block.settings.text | escape }}</a>{%- else -%}<span>{{ block.settings.text | escape }}</span>{%- endif -%}
+                {%- endcase -%}
+              </div>
+            {%- endfor -%}
+          {%- else -%}
+            <div class="brf-ann__item">
+              <span class="brf-ann__count" data-brf-ann-countdown data-cutoff="22" data-before="Same-day dispatch: order within" data-after="and it ships today" data-closed="Same-day dispatch Mon–Fri on orders before 10pm"><i class="brf-ann__live" aria-hidden="true"></i><span data-brf-ann-text>Same-day dispatch Mon–Fri on orders before 10pm</span></span>
+            </div>
+            <div class="brf-ann__item">
+              <span>✨ New look, new savings – 10% off with code <button type="button" class="brf-ann__code" data-brf-copy="NEWLOOK10">NEWLOOK10</button></span>
+            </div>
+            <div class="brf-ann__item">
+              <a href="/pages/delivery-times">🚚 FREE Next Day Delivery on orders over £150 placed before 9pm</a>
+            </div>
+          {%- endif -%}
+        </div>
+        <button type="button" class="brf-ann__nav brf-ann__nav--next" data-brf-ann-next aria-label="Next message"><svg viewBox="0 0 12 12" width="10" height="10" aria-hidden="true"><path d="M4.5 2.5 8 6 4.5 9.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+      </div>
+    </div>
+  </section>
+
+  <style>
+    .brf-ann .announcement-bar{background:var(--brf-ann-bg);color:var(--brf-ann-fg);padding:0}
+    .brf-ann__wrap{display:flex;align-items:center;gap:8px;height:38px}
+    .brf-ann__track{position:relative;flex:1;height:100%;overflow:hidden}
+    .brf-ann__item{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;text-align:center;font-size:13px;font-weight:500;letter-spacing:.005em;line-height:1.25;opacity:0;transform:translateY(100%);transition:transform .55s cubic-bezier(.2,.8,.2,1),opacity .45s ease;pointer-events:none;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .brf-ann__item.is-active{opacity:1;transform:none;pointer-events:auto}
+    .brf-ann__item.is-leaving{opacity:0;transform:translateY(-100%)}
+    .brf-ann__item a,.brf-ann__item span{color:inherit;text-decoration:none;overflow:hidden;text-overflow:ellipsis}
+    .brf-ann__item--cp a,.brf-ann__item--cp span{display:inline-flex;align-items:center;gap:8px}
+    .brf-ann__item--cp .brf-ann__cplogo{display:inline-flex;align-items:center;gap:3px;background:#B2FCE4;color:#000;font:800 12px/1 Figtree,system-ui,-apple-system,sans-serif;letter-spacing:-.02em;padding:4px 8px 4px 6px;border-radius:999px;white-space:nowrap;overflow:visible}
+    .brf-ann__item a:hover{text-decoration:underline;text-underline-offset:3px}
+    .brf-ann__nav{flex:0 0 26px;width:26px;height:26px;border-radius:50%;border:0;display:grid;place-items:center;background:rgba(127,127,127,.14);color:inherit;cursor:pointer;opacity:.75;transition:opacity .2s,background .2s}
+    .brf-ann__nav:hover{opacity:1;background:rgba(127,127,127,.24)}
+    .brf-ann__code{display:inline-block;margin-left:4px;padding:2px 9px;border-radius:980px;border:1px dashed currentColor;background:rgba(255,255,255,.14);color:inherit;font:inherit;font-weight:700;letter-spacing:.06em;cursor:pointer}
+    .brf-ann__code.is-copied::after{content:" ✓ copied";font-weight:500;letter-spacing:0}
+    .brf-ann__count strong{font-variant-numeric:tabular-nums;font-weight:700}
+    .brf-ann__count.is-urgent strong{color:#D92D20}
+    .brf-ann__live{display:none;width:7px;height:7px;margin-right:8px;border-radius:50%;background:#2ED47A;box-shadow:0 0 0 0 rgba(46,212,122,.6);animation:brfAnnPulse 1.8s infinite;vertical-align:1px}
+    .brf-ann__count.is-live .brf-ann__live{display:inline-block}
+    @keyframes brfAnnPulse{0%{box-shadow:0 0 0 0 rgba(46,212,122,.55)}70%{box-shadow:0 0 0 7px rgba(46,212,122,0)}100%{box-shadow:0 0 0 0 rgba(46,212,122,0)}}
+    @media (max-width:640px){.brf-ann__nav{display:none}.brf-ann__item{font-size:12px;white-space:normal;padding:0 6px}.brf-ann__wrap{height:40px}}
+    @media (prefers-reduced-motion:reduce){.brf-ann__item{transition:opacity .2s}}
+  </style>
+
+  <script>
+    (function(){
+      document.documentElement.style.removeProperty('--announcement-bar-button-width');
+      var sec = document.getElementById('shopify-section-{{ section.id }}');
+      if (sec) document.documentElement.style.setProperty('--announcement-bar-height', sec.clientHeight + 'px');
+      var track = document.querySelector('[data-brf-ann-track]'); if (!track || track.dataset.ready) return; track.dataset.ready = '1';
+      var items = [].slice.call(track.children), i = Math.max(0, items.findIndex(function(x){ return x.classList.contains('is-active'); })), timer = null, paused = false;
+      var ms = (parseFloat(track.dataset.interval) || 5) * 1000;
+      if (items.length && !items[i].classList.contains('is-active')) items[i].classList.add('is-active');
+      function go(n){
+        if (items.length < 2) return;
+        var cur = items[i]; i = (n + items.length) % items.length;
+        cur.classList.remove('is-active'); cur.classList.add('is-leaving');
+        setTimeout(function(){ cur.classList.remove('is-leaving'); }, 560);
+        items[i].classList.add('is-active');
+      }
+      function start(){ clearInterval(timer); timer = setInterval(function(){ if (!paused && !document.hidden) go(i + 1); }, ms); }
+      var bar = track.closest('.brf-ann');
+      /* Pause on hover for mouse users only – on phones a tap fires "mouseenter" with no "mouseleave",
+         which used to freeze the rotation after copying a code */
+      bar.addEventListener('pointerenter', function(e){ if (e.pointerType === 'mouse') paused = true; });
+      bar.addEventListener('pointerleave', function(e){ if (e.pointerType === 'mouse') paused = false; });
+      bar.querySelector('[data-brf-ann-prev]').addEventListener('click', function(){ go(i - 1); start(); });
+      bar.querySelector('[data-brf-ann-next]').addEventListener('click', function(){ go(i + 1); start(); });
+      start();
+
+      bar.addEventListener('click', function(e){
+        var b = e.target.closest('[data-brf-copy]'); if (!b) return;
+        var code = b.getAttribute('data-brf-copy');
+        try { navigator.clipboard.writeText(code); } catch (err) {}
+        b.classList.add('is-copied'); setTimeout(function(){ b.classList.remove('is-copied'); }, 2200);
+        /* hold the copied message on screen briefly, then carry on rotating */
+        if (e.pointerType !== 'mouse') { paused = true; setTimeout(function(){ paused = false; start(); }, 2500); }
+      });
+
+      /* Live countdowns (Europe/London, Mon–Fri, excluding UK bank holidays) */
+      var HOL = ['2026-12-25','2026-12-28','2027-01-01','2027-03-26','2027-03-29','2027-05-03','2027-05-31','2027-08-30','2027-12-27','2027-12-28'];
+      var fmt; try { fmt = new Intl.DateTimeFormat('en-GB', {timeZone:'Europe/London', year:'numeric', month:'2-digit', day:'2-digit', hour:'2-digit', minute:'2-digit', second:'2-digit', hour12:false, weekday:'short'}); } catch (e) { return; }
+      function pad(n){ return (n < 10 ? '0' : '') + n; }
+      var cds = [].slice.call(bar.querySelectorAll('[data-brf-ann-countdown]'));
+      function tick(){
+        var p = {}; fmt.formatToParts(new Date()).forEach(function(x){ p[x.type] = x.value; });
+        var wd = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'].indexOf(p.weekday), ymd = p.year + '-' + p.month + '-' + p.day;
+        var secs = (parseInt(p.hour,10) % 24) * 3600 + parseInt(p.minute,10) * 60 + parseInt(p.second,10);
+        cds.forEach(function(el){
+          var cut = (parseInt(el.dataset.cutoff,10) || 22) * 3600, t = el.querySelector('[data-brf-ann-text]');
+          if (wd >= 1 && wd <= 5 && HOL.indexOf(ymd) === -1 && secs < cut) {
+            var left = cut - secs, h = Math.floor(left / 3600), m = Math.floor(left % 3600 / 60), s = left % 60;
+            t.innerHTML = el.dataset.before + ' <strong>' + (h ? h + 'h ' : '') + pad(m) + 'm ' + pad(s) + 's</strong> ' + el.dataset.after;
+            el.classList.add('is-live'); el.classList.toggle('is-urgent', left < 3 * 3600);
+          } else { t.textContent = el.dataset.closed; el.classList.remove('is-live','is-urgent'); }
+        });
+      }
+      if (cds.length) { tick(); setInterval(tick, 1000); }
+    })();
+  </script>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Announcement bar",
+  "max_blocks": 8,
+  "settings": [
+    { "type": "checkbox", "id": "show_announcement", "label": "Show announcement", "default": true },
+    { "type": "color", "id": "background", "label": "Background", "default": "#1e2d7d" },
+    { "type": "color", "id": "text_color", "label": "Text", "default": "#ffffff" },
+    { "type": "text", "id": "text", "label": "First message", "default": "Announce something here" },
+    { "type": "select", "id": "text_position", "label": "Text position", "options": [ { "value": "left", "label": "Left" }, { "value": "center", "label": "Center" } ], "default": "center" },
+    { "type": "url", "id": "link", "label": "First message link" },
+    { "type": "range", "id": "interval", "label": "Seconds per message", "min": 3, "max": 10, "step": 1, "unit": "s", "default": 5 },
+    { "type": "paragraph", "content": "Until you add your own messages below, the bar also shows the same-day dispatch countdown, the NEWLOOK10 code and Next Day Delivery." },
+    { "type": "checkbox", "id": "show_newsletter", "label": "Show sign up form (no longer used)", "default": false },
+    { "type": "text", "id": "newsletter_button", "label": "Open button (no longer used)", "default": "Subscribe & Save" },
+    { "type": "text", "id": "newsletter_title", "label": "Heading (no longer used)", "default": "Newsletter" },
+    { "type": "richtext", "id": "newsletter_content", "label": "Text (no longer used)", "default": "<p>A short sentence describing what someone will receive by subscribing</p>" }
+  ],
+  "blocks": [
+    {
+      "type": "message",
+      "name": "Message",
+      "settings": [
+        { "type": "text", "id": "text", "label": "Text", "default": "Free tracked UK delivery over £65" },
+        { "type": "url", "id": "link", "label": "Link" }
+      ]
+    },
+    {
+      "type": "countdown",
+      "name": "Countdown",
+      "settings": [
+        { "type": "range", "id": "cutoff_hour", "label": "Cut-off hour (UK time, Mon–Fri)", "min": 12, "max": 23, "step": 1, "default": 22 },
+        { "type": "text", "id": "before", "label": "Text before timer", "default": "Same-day dispatch: order within" },
+        { "type": "text", "id": "after", "label": "Text after timer", "default": "and it ships today" },
+        { "type": "text", "id": "closed", "label": "Text after the cut-off", "default": "Same-day dispatch Mon–Fri on orders before 10pm" }
+      ]
+    },
+    {
+      "type": "code",
+      "name": "Discount code",
+      "settings": [
+        { "type": "text", "id": "text", "label": "Text", "default": "New look, new savings – 10% off with code" },
+        { "type": "text", "id": "code", "label": "Code", "default": "NEWLOOK10" }
+      ]
+    }
+  ]
+}
+{% endschema %}

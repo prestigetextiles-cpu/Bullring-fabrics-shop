@@ -1,0 +1,1872 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "current": {
+    "heading_color": "#0d0d0d",
+    "text_color": "#5e5d5d",
+    "accent_color": "#149954",
+    "link_color": "#007aff",
+    "border_color": "#e1e1e1",
+    "background": "#ffffff",
+    "secondary_background": "#f9f9f9",
+    "error_color": "#f71b1b",
+    "success_color": "#149954",
+    "primary_button_background": "#000000",
+    "primary_button_text_color": "#ffffff",
+    "secondary_button_background": "#149954",
+    "secondary_button_text_color": "#ffffff",
+    "header_background": "#ffffff",
+    "header_text_color": "#1c1b19",
+    "header_light_text_color": "#838282",
+    "header_accent_color": "#1f4d3a",
+    "product_on_sale_accent": "#ee0000",
+    "product_in_stock_color": "#3fd077",
+    "product_low_stock_color": "#ee0000",
+    "product_sold_out_color": "#e1e1e1",
+    "product_label_1_background": "#ff6128",
+    "product_label_2_background": "#3fd0b4",
+    "product_star_color": "#ffb647",
+    "base_text_font_size": 15,
+    "heading_font": "itc_avant_garde_gothic_n5",
+    "text_font": "basic_commercial_n4",
+    "underline_links": true,
+    "animation_image_zoom": true,
+    "search_mode": "product",
+    "show_vendor": false,
+    "show_secondary_image": true,
+    "show_discount": true,
+    "discount_mode": "percentage",
+    "product_price_position": "after_title",
+    "product_image_size": "square",
+    "show_color_swatch": true,
+    "show_inventory_quantity": true,
+    "low_inventory_threshold": 25,
+    "show_reviews_badge": true,
+    "cart_type": "drawer",
+    "cart_empty_button_link": "shopify://collections/black-friday",
+    "cart_show_free_shipping_threshold": true,
+    "cart_free_shipping_threshold": "64.99",
+    "social_facebook": "",
+    "social_twitter": "",
+    "social_pinterest": "",
+    "social_instagram": "",
+    "social_vimeo": "",
+    "social_tumblr": "",
+    "social_youtube": "",
+    "social_linkedin": "",
+    "social_snapchat": "",
+    "social_fancy": "",
+    "favicon": "shopify://shop_images/multiple-rolls-of-fabric-on-shelves.jpg",
+    "checkout_header_image": "shopify://shop_images/multiple-rolls-of-fabric-on-shelves.jpg",
+    "checkout_logo_image": "shopify://shop_images/PrestigeFashioLogo10-22-18.png",
+    "checkout_logo_position": "center",
+    "checkout_logo_size": "large",
+    "checkout_body_background_color": "#ffffff",
+    "checkout_input_background_color_mode": "transparent",
+    "checkout_sidebar_background_image": "",
+    "checkout_sidebar_background_color": "#fdfdfd",
+    "checkout_heading_font": "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol'",
+    "checkout_body_font": "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol'",
+    "checkout_accent_color": "#007aff",
+    "checkout_button_color": "#000000",
+    "checkout_error_color": "#f71b1b",
+    "sections": {
+      "header": {
+        "type": "header",
+        "settings": {
+          "enable_sticky_header": true,
+          "logo": "shopify://shop_images/Bullring_Logo.png",
+          "logo_max_width": 95,
+          "mobile_logo_max_width": 60,
+          "show_locale_selector": true,
+          "show_currency_selector": true,
+          "navigation_menu": "main-menu-2026",
+          "desktop_navigation_layout": "inline",
+          "desktop_navigation_open_trigger": "hover",
+          "show_navigation_social_media": true,
+          "navigation_phone_number": "",
+          "navigation_email": "sales@prestigefashionuk.com",
+          "show_condensed_search": true,
+          "show_search_filter": true,
+          "search_menu": "footer",
+          "show_search_menu_title": true
+        }
+      },
+      "footer": {
+        "type": "footer",
+        "blocks": {
+          "footer-0": {
+            "type": "text",
+            "settings": {
+              "title": "About Us",
+              "content": "<p>Bullring Fabrics was born out of a passion for textiles and a commitment to providing exceptional materials for both hobbyists and professionals. With decades of experience in the fabric industry, we’ve established ourselves as a trusted name for unparalleled quality and personalized service.</p><p><a href=\"/pages/about-us-1\" target=\"_blank\" title=\"About Us\">Read more...</a></p>"
+            }
+          },
+          "footer-1": {
+            "type": "links",
+            "settings": {
+              "menu": "footer"
+            }
+          },
+          "footer-2": {
+            "type": "newsletter",
+            "settings": {
+              "title": "BE THE FIRST TO KNOW",
+              "subheading": "<p>Get inspiration, new arrivals and the latest offers delivered directly to your inbox.</p>"
+            }
+          },
+          "1594502021800": {
+            "type": "links",
+            "settings": {
+              "menu": "main-menu"
+            }
+          },
+          "text_Ucp8mN": {
+            "type": "text",
+            "settings": {
+              "title": "About our store",
+              "content": "<p>Bullring Fabrics is a trusted supplier of high-quality fabrics, offering a wide range of textiles for fashion, upholstery, and interior design. With a commitment to exceptional customer service and a keen eye for detail, we provide both classic and contemporary fabrics to suit every project. Whether you're a designer, manufacturer, or DIY enthusiast, we take pride in delivering premium materials at competitive prices, backed by expert advice and reliable delivery. At Bullring Fabrics, we’re dedicated to helping our customers bring their creative visions to life with the finest fabrics available.</p>"
+            }
+          }
+        },
+        "block_order": [
+          "footer-0",
+          "footer-1",
+          "footer-2",
+          "1594502021800",
+          "text_Ucp8mN"
+        ],
+        "settings": {
+          "show_social_media": true,
+          "show_payment_icons": true,
+          "show_locale_selector": true,
+          "show_currency_selector": true,
+          "show_cookie_bar": true,
+          "text": "<p>We use cookies and other similar technologies to give you the best user experience. </p>",
+          "accept_button": "Accept"
+        }
+      },
+      "slideshow": {
+        "type": "slideshow",
+        "blocks": {
+          "image_47y4Ue": {
+            "type": "image",
+            "name": "Wholesale",
+            "disabled": true,
+            "settings": {
+              "image": "shopify://shop_images/26388C37-333D-4069-B51A-9CB30EF15303_73547c70-3a77-4d73-b5ca-5ff415072ab4.png",
+              "mobile_image": "shopify://shop_images/26388C37-333D-4069-B51A-9CB30EF15303_759a86f7-032b-4dd7-8cf3-a63e80e4c36a.png",
+              "show_overlay": true,
+              "overlay_opacity": 56,
+              "text_color": "#ffffff",
+              "title": "",
+              "content": "",
+              "content_position": "bottom_right",
+              "button_background": "#f71b1b",
+              "button_text_color": "#ffffff",
+              "button_text": "Shop Now",
+              "link": "shopify://collections/trade-outlet"
+            }
+          },
+          "image_kbPYG7": {
+            "type": "image",
+            "name": "Summer Sale",
+            "disabled": true,
+            "settings": {
+              "image": "shopify://shop_images/summer-sale.png",
+              "mobile_image": "shopify://shop_images/summer-sale.png",
+              "show_overlay": false,
+              "overlay_opacity": 30,
+              "text_color": "#ffffff",
+              "title": "",
+              "content": "",
+              "content_position": "bottom_center",
+              "button_background": "#ee0909",
+              "button_text_color": "#f3f3f3",
+              "button_text": "",
+              "link": "shopify://collections/pound-fabrics"
+            }
+          },
+          "slide-0": {
+            "type": "image",
+            "name": "Poplin Cottons",
+            "settings": {
+              "image": "shopify://shop_images/colorful-ribbon.jpg",
+              "mobile_image": "shopify://shop_images/sewing-supply-jars.jpg",
+              "show_overlay": true,
+              "overlay_opacity": 54,
+              "text_color": "#ffffff",
+              "title": "Rose & Hubble Cotton Poplins",
+              "content": "100% Cotton poplin fabrics for all your dressmaking, crafting and quilting projects",
+              "content_position": "bottom_center",
+              "button_background": "#f71b1b",
+              "button_text_color": "#ffffff",
+              "button_text": "Shop Now",
+              "link": "shopify://collections/rose-hubble"
+            }
+          },
+          "image_MU3V9n": {
+            "type": "image",
+            "name": "Fall In Fabrics",
+            "settings": {
+              "image": "shopify://shop_images/long-stem-red-rose-lays-on-white-silk.jpg",
+              "mobile_image": "shopify://shop_images/long-stem-red-rose-lays-on-white-silk.jpg",
+              "show_overlay": true,
+              "overlay_opacity": 45,
+              "text_color": "#faf9f6",
+              "title": "Summer Dress Satins",
+              "content": "Love is like fabric—woven with care, strengthened by time, and beautiful in every thread. ❤️✨",
+              "content_position": "bottom_center",
+              "button_background": "#f71b1b",
+              "button_text_color": "#ffffff",
+              "button_text": "Satin Fabrics",
+              "link": "shopify://collections/satin"
+            }
+          },
+          "image_HLgw8J": {
+            "type": "image",
+            "settings": {
+              "image": "shopify://shop_images/person-looks-over-their-shoulder-while-holding-green-fabric.jpg",
+              "show_overlay": true,
+              "overlay_opacity": 30,
+              "text_color": "#ffffff",
+              "title": "Luxury Taffeta Fabrics",
+              "content": "An exquisite range of plain, flocked and embroidered taffeta fabrics to suit every taste.",
+              "content_position": "bottom_center",
+              "button_background": "#f71b1b",
+              "button_text_color": "#ffffff",
+              "button_text": "Taffeta Fabrics",
+              "link": "shopify://collections/taffeta"
+            }
+          },
+          "image_hxWN9Y": {
+            "type": "image",
+            "name": "Denims",
+            "settings": {
+              "image": "shopify://shop_images/womens-fashion-woman-denim-shorts-holding-pockets.jpg",
+              "show_overlay": true,
+              "overlay_opacity": 30,
+              "text_color": "#ffffff",
+              "title": "Denim",
+              "content": "A large selection of denims for everyday wear.",
+              "content_position": "bottom_center",
+              "button_background": "#f71b1b",
+              "button_text_color": "#ffffff",
+              "button_text": "Shop Denims",
+              "link": "shopify://collections/denim"
+            }
+          }
+        },
+        "block_order": [
+          "image_47y4Ue",
+          "image_kbPYG7",
+          "slide-0",
+          "image_MU3V9n",
+          "image_HLgw8J",
+          "image_hxWN9Y"
+        ],
+        "settings": {
+          "edge_to_edge": true,
+          "section_size": "large",
+          "carousel_effect": "slide",
+          "autoplay": true,
+          "cycle_speed": 8
+        }
+      },
+      "collection-list": {
+        "type": "collection-list",
+        "blocks": {
+          "collection-0": {
+            "type": "collection",
+            "settings": {
+              "collection": "craft-cotton"
+            }
+          },
+          "collection_KLK7h9": {
+            "type": "collection",
+            "settings": {
+              "collection": "tapestry"
+            }
+          },
+          "1594505315236": {
+            "type": "collection",
+            "settings": {
+              "collection": "lace"
+            }
+          },
+          "collection-2": {
+            "type": "collection",
+            "settings": {
+              "collection": "felt",
+              "image": "shopify://shop_images/Collage_Main_A.jpg"
+            }
+          },
+          "collection-3": {
+            "type": "collection",
+            "settings": {
+              "collection": "rose-hubble"
+            }
+          },
+          "collection-5": {
+            "type": "collection",
+            "settings": {
+              "collection": "lycra"
+            }
+          },
+          "collection-1": {
+            "type": "collection",
+            "settings": {
+              "collection": "fleece"
+            }
+          },
+          "collection_xBGQft": {
+            "type": "collection",
+            "settings": {
+              "collection": "cotton-chambray"
+            }
+          },
+          "1594660268185": {
+            "type": "collection",
+            "settings": {
+              "collection": "drill-cotton"
+            }
+          },
+          "collection_gbYXJx": {
+            "type": "collection",
+            "settings": {
+              "collection": "crushed-velvet"
+            }
+          },
+          "1594660293555": {
+            "type": "collection",
+            "settings": {
+              "collection": "lace"
+            }
+          }
+        },
+        "block_order": [
+          "collection-0",
+          "collection_KLK7h9",
+          "1594505315236",
+          "collection-2",
+          "collection-3",
+          "collection-5",
+          "collection-1",
+          "collection_xBGQft",
+          "1594660268185",
+          "collection_gbYXJx",
+          "1594660293555"
+        ],
+        "settings": {
+          "title": "Trending right now",
+          "link_title": "View all",
+          "link": "shopify://collections",
+          "round_images": true,
+          "show_collection_title": true
+        }
+      },
+      "collection-template": {
+        "type": "collection-template",
+        "settings": {
+          "show_collection_image": true,
+          "collapse_collection_description": true,
+          "collection_image_size": "small",
+          "products_per_row": "4",
+          "default_products_per_page": 48,
+          "default_view_layout": "grid",
+          "show_quick_buy": "list_grid",
+          "show_quick_view": "list_grid",
+          "quick_links": "main-menu",
+          "quick_links_show_products_count": true,
+          "show_filters": true,
+          "show_filter_color_swatch": true,
+          "filter_type": "tag",
+          "open_group_filters_mode": "first_open",
+          "filter_group_order": ""
+        }
+      },
+      "recently-viewed-products": {
+        "type": "recently-viewed-products",
+        "settings": {
+          "title": "Recently viewed",
+          "show_quick_buy": false
+        }
+      },
+      "product-template": {
+        "type": "product-template",
+        "settings": {
+          "show_vendor": true,
+          "show_sku": true,
+          "show_share_buttons": true,
+          "show_taxes_included": true,
+          "selector_mode": "block",
+          "color_mode": "block",
+          "show_quantity_selector": true,
+          "show_payment_button": true,
+          "image_size": "large",
+          "enable_image_zoom": true,
+          "enable_video_looping": true,
+          "zoom_effect": "outside",
+          "carousel_effect": "fade",
+          "show_inventory_quantity": true,
+          "low_inventory_threshold": 25,
+          "content_display_mode": "collapse_all_except_description",
+          "tab_page_1_handle": "how-to-buy-fabrics",
+          "tab_page_2_handle": "returns-policy",
+          "tab_page_3_handle": "delivery-times",
+          "enable_reviews": false,
+          "show_reviews_badge": false,
+          "trust_title": "Payment & Security",
+          "show_payment_icons": true,
+          "show_shipping_estimator": true,
+          "shipping_estimator_default_country": "United Kingdom",
+          "show_refunds_policy": true
+        }
+      },
+      "product-recommendations": {
+        "type": "product-recommendations",
+        "settings": {
+          "show_product_recommendations": true,
+          "heading": "You may also like",
+          "show_quick_buy": true
+        }
+      },
+      "announcement-bar": {
+        "type": "announcement-bar",
+        "settings": {
+          "show_announcement": true,
+          "background": "#101010",
+          "text_color": "#ff9d00",
+          "text": "Now accepting Clearpay",
+          "text_position": "center",
+          "link": "",
+          "interval": 5,
+          "show_newsletter": true,
+          "newsletter_button": "Subscribe & Save",
+          "newsletter_title": "Newsletter",
+          "newsletter_content": "<p>Craft in to receive latest offers and promotions. You definitely don't want to craft out!</p>"
+        }
+      },
+      "1542984811767": {
+        "type": "featured-collection",
+        "settings": {
+          "collection": "christmas",
+          "title": "Christmas Collection",
+          "products_count": 20,
+          "layout": "vertical",
+          "stack_desktop": true,
+          "show_quick_buy": true,
+          "link_title": "View all",
+          "link_url": "shopify://collections/christmas"
+        }
+      },
+      "1550833441117": {
+        "type": "collection-with-image",
+        "disabled": true,
+        "settings": {
+          "collection": "glitter-fabrics",
+          "products_count": 16,
+          "background": "#ecf9ee",
+          "text_color": "#ffffff",
+          "title": "Add some sparkle",
+          "content": "",
+          "button_background": "#3fd077",
+          "button_text_color": "#ffffff",
+          "button_text": "Shop Now",
+          "button_link": "shopify://collections/glitter-fabrics"
+        }
+      },
+      "1542984882560": {
+        "type": "blog-posts",
+        "settings": {
+          "blog": "news",
+          "title": "Blog posts",
+          "link_title": "View all",
+          "show_category": true,
+          "show_author": false,
+          "show_date": true,
+          "show_excerpt": true,
+          "stack_mobile": false
+        }
+      },
+      "popups": {
+        "type": "popups",
+        "blocks": {
+          "1592665191170": {
+            "type": "newsletter",
+            "disabled": true,
+            "settings": {
+              "show_only_on_index": false,
+              "show_only_for_visitors": true,
+              "show_only_once": true,
+              "title": "Newsletter Signup",
+              "content": "<p>Stay up to date with Bullring Fabrics Exclusive Offers and Promotions.</p>",
+              "show_newsletter": true,
+              "apparition_delay": 15
+            }
+          },
+          "1594392239847": {
+            "type": "exit",
+            "disabled": true,
+            "settings": {
+              "show_only_for_visitors": true,
+              "show_only_once": true,
+              "title": "Get 5% off",
+              "subheading": "on your next order + exclusive offers",
+              "show_newsletter": true,
+              "button_text": "Get my 5% off",
+              "success_message": "You will shortly receive an email containing your discount code!",
+              "close_message": "No thanks, I'd rather pay more : ("
+            }
+          }
+        },
+        "block_order": [
+          "1592665191170",
+          "1594392239847"
+        ],
+        "settings": {}
+      },
+      "text-with-icons": {
+        "type": "text-with-icons",
+        "blocks": {
+          "text-with-icons-1": {
+            "type": "item",
+            "settings": {
+              "icon": "bi-time",
+              "title": "Same-day dispatch",
+              "content": "<p>Order before 10pm Mon–Fri and we dispatch the same day</p>"
+            }
+          },
+          "text-with-icons-2": {
+            "type": "item",
+            "settings": {
+              "icon": "bi-customer-support",
+              "title": "UK Customer Service",
+              "content": "<p>Live chat from anywhere in the world 24/7</p>"
+            }
+          },
+          "text-with-icons-0": {
+            "type": "item",
+            "settings": {
+              "icon": "bi-delivery",
+              "title": "Free UK delivery + Worldwide Shipping",
+              "content": "<p>Spend over £65 FREE 2-day tracked delivery (UK Mainland)</p>"
+            }
+          },
+          "text-with-icons-3": {
+            "type": "item",
+            "settings": {
+              "icon": "bi-secure-payment",
+              "title": "Secure Payments",
+              "content": "<p>All transactions are secure and encrypted.</p>"
+            }
+          }
+        },
+        "block_order": [
+          "text-with-icons-1",
+          "text-with-icons-2",
+          "text-with-icons-0",
+          "text-with-icons-3"
+        ],
+        "settings": {
+          "show_section": true,
+          "stack_mobile": false
+        }
+      },
+      "static-promotion-list": {
+        "type": "static-promotion-list",
+        "blocks": {
+          "item_mge4q8": {
+            "type": "item",
+            "settings": {
+              "image": "shopify://shop_images/sicssors-cutting-fabric-topdown.jpg",
+              "show_overlay": true,
+              "overlay_opacity": 51,
+              "stretch_image": true,
+              "background": "#000000",
+              "text_color": "#ffffff",
+              "title": "Denims",
+              "content": "Shop our range of denim fabrics",
+              "content_position": "bottom_center",
+              "button_background": "#149954",
+              "button_text_color": "#ffffff",
+              "button_text": "Shop Now",
+              "button_link": "shopify://collections/denim"
+            }
+          },
+          "item_x3TwUD": {
+            "type": "item",
+            "settings": {
+              "image": "shopify://shop_images/black-lace-womens-top.jpg",
+              "show_overlay": true,
+              "overlay_opacity": 37,
+              "stretch_image": true,
+              "background": "#000000",
+              "text_color": "#ffffff",
+              "title": "Lace Fabrics",
+              "content": "Popular this season",
+              "content_position": "bottom_center",
+              "button_background": "#149954",
+              "button_text_color": "#ffffff",
+              "button_text": "Shop Now",
+              "button_link": "shopify://collections/lace"
+            }
+          }
+        },
+        "block_order": [
+          "item_mge4q8",
+          "item_x3TwUD"
+        ],
+        "settings": {
+          "expand_items": true,
+          "section_size": "small",
+          "stack_mobile": true
+        }
+      },
+      "static-recently-viewed-products": {
+        "type": "static-recently-viewed-products",
+        "settings": {
+          "show_section": true,
+          "title": "Recently viewed",
+          "show_quick_buy": true
+        }
+      },
+      "search-template": {
+        "type": "search-template",
+        "settings": {
+          "products_per_row": "4",
+          "default_view_layout": "grid",
+          "show_quick_view": "list_grid",
+          "show_quick_buy": "list_grid",
+          "quick_links": "main-menu"
+        }
+      },
+      "list-collections-template": {
+        "type": "list-collections-template",
+        "blocks": {
+          "1595100719275": {
+            "type": "collection",
+            "settings": {
+              "collection": ""
+            }
+          }
+        },
+        "block_order": [
+          "1595100719275"
+        ],
+        "settings": {
+          "collections_to_show": "all",
+          "show_collection_title": true,
+          "show_collection_overlay": true,
+          "collection_overlay_opacity": 35
+        }
+      },
+      "cart-template": {
+        "type": "cart-template",
+        "settings": {
+          "enable_order_notes": true,
+          "show_payment_icons": true,
+          "gift_wrap_product": "",
+          "gift_wrap_text": "Do you want a gift wrap?",
+          "gift_wrap_button": "Add a gift wrap",
+          "show_shipping_estimator": true,
+          "shipping_estimator_default_country": "United Kingdom",
+          "trust_heading": "Our guarantees",
+          "upsell_heading": "Complete your cart",
+          "upsell_collection": "craft-cotton-prints",
+          "upsell_products_count": 8
+        }
+      },
+      "1593631674990": {
+        "type": "offers",
+        "blocks": {
+          "1593631674990-0": {
+            "type": "offer",
+            "settings": {
+              "image": "shopify://shop_images/sale-lettering-close-up.jpg",
+              "title": "Shop Clearance",
+              "content": "<p><a href=\"/collections/black-friday\" title=\"SALE\">End of rolls and clearance fabric corner. Find something amazing next to nothing </a></p>"
+            }
+          },
+          "1593631674990-1": {
+            "type": "offer",
+            "settings": {
+              "image": "shopify://shop_images/hand-holding-origami-heart.jpg",
+              "title": "WOW Fabrics",
+              "content": "<p><a href=\"/collections/plush-velvet\" title=\"Plush Velvet\">Sshh... Hand picked daily, only the best make it!</a></p>"
+            }
+          },
+          "1593631829282": {
+            "type": "offer",
+            "settings": {
+              "image": "shopify://shop_images/reds-for-lips.jpg",
+              "title": "Red Hot Fabrics",
+              "content": "<p><a href=\"/collections/taffeta\" title=\"Taffeta\">Can you handle this weeks red hot fabrics?</a></p>"
+            }
+          }
+        },
+        "block_order": [
+          "1593631674990-0",
+          "1593631674990-1",
+          "1593631829282"
+        ],
+        "settings": {
+          "items_per_row": 3,
+          "stack_mobile": false
+        }
+      },
+      "article-template": {
+        "type": "article-template",
+        "settings": {
+          "show_category": true,
+          "show_author": false,
+          "show_date": true,
+          "show_share_buttons": true,
+          "show_tags": true,
+          "show_gravatar": true
+        }
+      },
+      "blog-sidebar": {
+        "type": "blog-sidebar",
+        "blocks": {
+          "blog-sidebar-0": {
+            "type": "newsletter",
+            "settings": {
+              "title": "Join Us",
+              "content": "<p>Stay up to date with latest promotions and offers.</p>",
+              "subtext": "100% free, Unsubscribe any time!",
+              "background": "#d6f0e0",
+              "text": "#000000"
+            }
+          },
+          "1594494517626": {
+            "type": "rich_text",
+            "settings": {
+              "title": "We're here to help",
+              "content": "<p>Live Chat with a Fabric Specialist 24/7. Use the chat button below</p>"
+            }
+          },
+          "blog-sidebar-1": {
+            "type": "social_media",
+            "settings": {
+              "title": "Follow us #BullRingFabrics",
+              "show_rss": true
+            }
+          },
+          "1594494344600": {
+            "type": "featured_products",
+            "settings": {
+              "title": "Featured products",
+              "product_1": "bees-digital-print-linen-cotton-canvas-furnishing-fabric",
+              "product_2": "sugar-skulls-tattoo-day-of-the-dead-cotton-fabric-black",
+              "product_3": "skeletons-cotton-poplin-fabric"
+            }
+          }
+        },
+        "block_order": [
+          "blog-sidebar-0",
+          "1594494517626",
+          "blog-sidebar-1",
+          "1594494344600"
+        ],
+        "settings": {
+          "show_on_mobile": true
+        }
+      },
+      "static-newsletter": {
+        "type": "static-newsletter",
+        "settings": {
+          "show_section": true,
+          "title": "Subscribe to our newsletter",
+          "content": "<p>Stay informed on what's going on behind the scenes at Bullring Fabrics.</p>",
+          "subtext": "100% free, Unsubscribe any time!",
+          "background": "#ebebeb",
+          "text": "#000000"
+        }
+      },
+      "blog-template": {
+        "type": "blog-template",
+        "settings": {
+          "articles_per_page": 12,
+          "highlight_first_article": true,
+          "show_tags": true,
+          "show_category": true,
+          "show_author": true,
+          "show_date": true,
+          "show_excerpt": false
+        }
+      },
+      "recently_viewed_products_aWzfqe": {
+        "type": "recently-viewed-products",
+        "settings": {
+          "title": "Recently viewed",
+          "show_quick_buy": true
+        }
+      },
+      "quick_links_X8gbiT": {
+        "type": "quick-links",
+        "blocks": {
+          "link_McNLye": {
+            "type": "link",
+            "settings": {
+              "title": "Printed Linen",
+              "link": "shopify://collections/craft-cotton-prints"
+            }
+          },
+          "link_gzWqWD": {
+            "type": "link",
+            "settings": {
+              "title": "Fleece",
+              "link": "https://bullringfabrics.co.uk/collections/fleece"
+            }
+          },
+          "link_YqYtnz": {
+            "type": "link",
+            "settings": {
+              "title": "Fur",
+              "link": "https://bullringfabrics.co.uk/collections/faux-fur"
+            }
+          },
+          "link_MjLFjz": {
+            "type": "link",
+            "settings": {
+              "title": "Faux Leather",
+              "link": "https://bullringfabrics.co.uk/collections/leather"
+            }
+          },
+          "link_7FRdVJ": {
+            "type": "link",
+            "settings": {
+              "title": "Polycotton",
+              "link": "https://bullringfabrics.co.uk/collections/polycotton"
+            }
+          },
+          "link_aexjTf": {
+            "type": "link",
+            "settings": {
+              "title": "Denim",
+              "link": "https://bullringfabrics.co.uk/collections/denim"
+            }
+          }
+        },
+        "block_order": [
+          "link_McNLye",
+          "link_gzWqWD",
+          "link_YqYtnz",
+          "link_MjLFjz",
+          "link_7FRdVJ",
+          "link_aexjTf"
+        ],
+        "custom_css": [],
+        "settings": {
+          "title": "Trending...",
+          "expand_items": true,
+          "show_desktop": true,
+          "link_title": "",
+          "link": ""
+        }
+      },
+      "rich_text_VEkQcB": {
+        "type": "rich-text",
+        "disabled": true,
+        "settings": {
+          "text_width": "wide",
+          "title": "LINEN SALE NOW ON | Up To 65% Off",
+          "content": "<p>Our Biggest Ever Fabric Clearance Sale Has Started At Bullring Fabrics. </p>",
+          "button_text": "Shop Now",
+          "button_link": "shopify://collections/craft-cotton-prints"
+        }
+      },
+      "minimal-header": {
+        "type": "minimal-header",
+        "settings": {
+          "logo_max_width": 140,
+          "mobile_logo_max_width": 100
+        }
+      },
+      "password-template": {
+        "type": "password-template",
+        "settings": {
+          "show_social_media": true,
+          "heading": "Opening Soon",
+          "text": "<p>A content describing what your store will sell.</p>",
+          "show_newsletter_signup": true,
+          "newsletter_text": "<p>A short sentence describing what someone will receive by subscribing.</p>"
+        }
+      },
+      "brf-home": {
+        "type": "brf-home",
+        "settings": {
+          "accent": "#1f4d3a",
+          "hero_eyebrow": "Fabric by the metre · Trade prices for everyone",
+          "hero_heading": "Beautiful fabric, cut to order in Birmingham.",
+          "hero_text": "Cotton poplins, satins, taffetas, velvets and upholstery weaves for dressmakers, crafters and the trade — at wholesale prices. Order before 10pm for same-day dispatch, delivered UK-wide and worldwide.",
+          "hero_btn1_label": "Shop all fabrics",
+          "hero_btn1_link": "",
+          "hero_btn2_label": "Trade & wholesale",
+          "hero_btn2_link": "",
+          "hero_collection": "",
+          "hero_card_label": "New in",
+          "hero_card_title": "Rose & Hubble Cotton Poplins",
+          "trust_1_title": "Free UK delivery over £65",
+          "trust_1_text": "2-day tracked, UK mainland",
+          "trust_2_title": "Same-day dispatch",
+          "trust_2_text": "Order before 10pm, Mon–Fri",
+          "trust_3_title": "Wholesale & trade",
+          "trust_3_text": "Rolls and job lots for business",
+          "trust_4_title": "Secure checkout",
+          "trust_4_text": "PayPal, Apple Pay, cards",
+          "show_halloween": true,
+          "halloween_end": "2026-10-31",
+          "halloween_collection": "",
+          "halloween_keywords": "halloween, skull, spider, pumpkin, ghost, witch, skeleton, cobweb, goth",
+          "halloween_eyebrow": "Spooky season",
+          "halloween_heading": "Fabrics to die for",
+          "halloween_text": "Sugar skulls, gothic velvets, glittering tulle and spooky prints for costumes, décor and trick-or-treat bags.",
+          "fabrics_heading": "Our most-loved fabrics",
+          "project_1_title": "Dressmaking",
+          "project_1_text": "Poplins, satins, crepe, chiffon, lace and lycra.",
+          "project_1_collection": "",
+          "project_2_title": "Crafts & quilting",
+          "project_2_text": "Craft cotton, felt, fleece, faux fur and polycotton.",
+          "project_2_collection": "",
+          "project_3_title": "Upholstery & curtains",
+          "project_3_text": "Plush velvet, tapestry, faux leather and suede.",
+          "project_3_collection": "",
+          "featured_collection": "",
+          "featured_exclude": "gift, job lot, wholesale, 20m, 10m",
+          "featured_eyebrow": "Seasonal",
+          "featured_heading": "Christmas fabrics have landed",
+          "featured_count": "4",
+          "show_outlet": true,
+          "outlet_heading": "Our Birmingham outlet",
+          "outlet_text": "Prefer to see and feel the fabric before you buy? Get in touch to arrange a visit to our Birmingham outlet.",
+          "outlet_address": "",
+          "outlet_hours": "",
+          "outlet_link": "",
+          "outlet_link_label": "Contact & directions",
+          "blog": ""
+        }
+      },
+      "brf-hw-top": {
+        "type": "brf-hw-top",
+        "settings": {
+          "eyebrow": "Spooky season",
+          "show_countdown": true,
+          "heading": "Halloween Fabric",
+          "lede": "Sugar skulls, spiderwebs, gothic velvets and glittering tulle — everything you need for costumes, décor and party makes, at wholesale prices.",
+          "chips": "Skulls, Spiders, Bats, Ghosts & Witches, Gothic, Velvet, Satin, Organza, Lace, Sequins",
+          "chip_min": 4,
+          "show_picks": true,
+          "picks_heading": "Spooky season favourites",
+          "picks_text": "Our best-selling Halloween prints this season.",
+          "pick_keywords": "halloween, skull, spider, pumpkin, ghost, witch, skeleton, cobweb, goth, bat print"
+        }
+      },
+      "brf-hw-bottom": {
+        "type": "brf-hw-bottom",
+        "settings": {
+          "about_heading": "About our Halloween fabric",
+          "idea_1_title": "Costumes",
+          "idea_1_text": "Velvets, tulle, lycra and satins for witches, vampires and skeletons.",
+          "idea_2_title": "Décor & draping",
+          "idea_2_text": "Organza, net and printed cottons for tablecloths, bunting and backdrops.",
+          "idea_3_title": "Party makes",
+          "idea_3_text": "Sugar skull and spiderweb prints for trick-or-treat bags and gifts.",
+          "trade_heading": "Buying for a school, theatre or event?",
+          "trade_text": "We supply Halloween fabric in bulk for productions, events and retailers."
+        }
+      },
+      "brf-mega-menu": {
+        "type": "brf-mega-menu",
+        "settings": {
+          "menu": ""
+        }
+      },
+      "brf-collection-head": {
+        "type": "brf-collection-head",
+        "settings": {
+          "menu": "main-menu",
+          "eyebrow_fallback": "Bull Ring Fabrics",
+          "show_description": true,
+          "show_filter_bar": true,
+          "hide_filters": "",
+          "show_tags": false
+        }
+      }
+    },
+    "content_for_index": [
+      "slideshow",
+      "rich_text_VEkQcB",
+      "quick_links_X8gbiT",
+      "1542984811767",
+      "collection-list",
+      "1550833441117",
+      "1542984882560",
+      "1593631674990",
+      "recently_viewed_products_aWzfqe"
+    ],
+    "blocks": {
+      "9670189827046205946": {
+        "type": "shopify://apps/hextom-translate-and-currency/blocks/app-block/b927a799-be04-4b97-9efb-5c8f0290a68e",
+        "disabled": false,
+        "settings": {}
+      },
+      "5460033060862993441": {
+        "type": "shopify://apps/essential-announcement/blocks/app-embed/93b5429f-c8d6-4c33-ae14-250fd84f361b",
+        "disabled": false,
+        "settings": {}
+      },
+      "1513253815146976218": {
+        "type": "shopify://apps/omnisend-email-marketing-sms/blocks/app-embed/44704aa2-794f-4c5d-8c8e-039c841158e9",
+        "disabled": false,
+        "settings": {}
+      },
+      "1744161739547163668": {
+        "type": "shopify://apps/hextom-timer-bar/blocks/ctb-embeded-block/f7b88b6e-2e87-46bc-87a9-3e3638a24fa9",
+        "disabled": false,
+        "settings": {}
+      },
+      "7079518687644006178": {
+        "type": "shopify://apps/checkout-blocks/blocks/app-embed/b0024ca5-9de8-4bf0-a92f-cd0783877ae2",
+        "disabled": false,
+        "settings": {
+          "utm_id": true,
+          "utm_source": true,
+          "utm_medium": true,
+          "utm_campaign": true,
+          "utm_term": true,
+          "ref": true
+        }
+      },
+      "6610233760104865948": {
+        "type": "shopify://apps/pushowl-brevo-email-push-sms/blocks/pushowl-app-embed-3d2ff2b5/fa20c3ba-38bf-43e0-ba5c-431f6ae07d95",
+        "disabled": true,
+        "settings": {}
+      },
+      "15683396631634586217": {
+        "type": "shopify://apps/inbox/blocks/chat/841fc607-4181-4ad1-842d-e24d7f8bad6b",
+        "disabled": false,
+        "settings": {
+          "greeting_message": "👋 Welcome to Bullring Fabrics! Looking for the perfect fabric? Our team is here to help 24/7 with product advice, stock availability, and orders. How can we assist you today?",
+          "button_color": "#e0fef0",
+          "button_icon": "chat_bubble",
+          "button_text": "live_chat",
+          "button_horizontal_position": "bottom_right",
+          "button_vertical_position": "lowest"
+        }
+      },
+      "1656560654682496077": {
+        "type": "shopify://apps/instant-ai-page-builder/blocks/instant_core/927e19d9-4e68-41db-99c7-d8debdc1f80d",
+        "disabled": false,
+        "settings": {}
+      },
+      "14722065763954342323": {
+        "type": "shopify://apps/ai-product-description/blocks/instant-speed-boost/0199f770-8893-7fd2-aa18-60494ee27236",
+        "disabled": false,
+        "settings": {
+          "enable_instant_page": true,
+          "enable_quick_link": true
+        }
+      },
+      "11089864892113081655": {
+        "type": "shopify://apps/tinyseo-seo-speed/blocks/website-json-ld-embed/0605268f-f7c4-4e95-b560-e43df7d59ae4",
+        "disabled": false,
+        "settings": {}
+      },
+      "1360768219604461044": {
+        "type": "shopify://apps/tinyseo-seo-speed/blocks/store-json-ld-embed/0605268f-f7c4-4e95-b560-e43df7d59ae4",
+        "disabled": true,
+        "settings": {}
+      },
+      "14971748854670876780": {
+        "type": "shopify://apps/tinyseo-seo-speed/blocks/product-json-ld-embed/0605268f-f7c4-4e95-b560-e43df7d59ae4",
+        "disabled": false,
+        "settings": {
+          "include_metafields": true,
+          "hide_price": false,
+          "hide_full_price": false
+        }
+      },
+      "1369284949797581044": {
+        "type": "shopify://apps/tinyseo-seo-speed/blocks/collection-json-ld-embed/0605268f-f7c4-4e95-b560-e43df7d59ae4",
+        "disabled": false,
+        "settings": {}
+      },
+      "15154131639906026026": {
+        "type": "shopify://apps/tinyseo-seo-speed/blocks/broken-link-embed/0605268f-f7c4-4e95-b560-e43df7d59ae4",
+        "disabled": false,
+        "settings": {}
+      },
+      "2353461558643755616": {
+        "type": "shopify://apps/tinyseo-seo-speed/blocks/breadcrumbs-json-ld-embed/0605268f-f7c4-4e95-b560-e43df7d59ae4",
+        "disabled": false,
+        "settings": {
+          "include_first_collection": false
+        }
+      },
+      "11104565113590962351": {
+        "type": "shopify://apps/tinyseo-seo-speed/blocks/article-json-ld-embed/0605268f-f7c4-4e95-b560-e43df7d59ae4",
+        "disabled": false,
+        "settings": {
+          "author_name": "",
+          "author_url": ""
+        }
+      },
+      "6159598353363395418": {
+        "type": "shopify://apps/google-youtube/blocks/store_widget/14ec7bd0-ac77-49a9-9417-90752398bdff",
+        "disabled": false,
+        "settings": {
+          "widget_position": "LEFT_BOTTOM",
+          "side_margin": 36,
+          "bottom_margin": 36,
+          "mobile_side_margin": 16,
+          "mobile_bottom_margin": 46
+        }
+      },
+      "13047258039897440615": {
+        "type": "shopify://apps/judge-me-reviews/blocks/cart_drawer_widget/61ccd3b1-a9f2-4160-9fe9-4fec8413e5d8",
+        "disabled": false,
+        "settings": {
+          "widget_type": "review-widget"
+        }
+      },
+      "14060646107696862457": {
+        "type": "shopify://apps/judge-me-reviews/blocks/judgeme_core/61ccd3b1-a9f2-4160-9fe9-4fec8413e5d8",
+        "disabled": false,
+        "settings": {}
+      },
+      "8890328729929522885": {
+        "type": "shopify://apps/ai-product-description/blocks/json_ld/0199f770-8893-7fd2-aa18-60494ee27236",
+        "disabled": false,
+        "settings": {}
+      },
+      "pagefly-ai-page-builder": {
+        "type": "shopify://apps/pagefly-ai-page-builder/blocks/app-embed/83e179f7-59a0-4589-8c66-c0dddf959200",
+        "disabled": false,
+        "settings": {}
+      },
+      "7226623565105347364": {
+        "type": "shopify://apps/ai-product-description/blocks/description_tabs/0199f770-8893-7fd2-aa18-60494ee27236",
+        "disabled": false,
+        "settings": {
+          "heading_tag": "h3",
+          "layout": "vertical",
+          "create_default_tab": false,
+          "default_tab_title": "",
+          "default_tab_open": true,
+          "custom_styles": false,
+          "bg_color": "rgba(0,0,0,0)",
+          "text_color": "#000000",
+          "border_color": "#00000033",
+          "padding_x": 16,
+          "padding_y": 12,
+          "rte_class": "rte"
+        }
+      },
+      "17550530943902319648": {
+        "type": "shopify://apps/appikon-back-in-stock/blocks/subscribe_it_helper/eb949c69-b3e6-4216-a322-1cd63915d46d",
+        "disabled": false,
+        "settings": {}
+      },
+      "6174324309569838175": {
+        "type": "shopify://apps/smile-io/blocks/smile-shopify-app/2fae4e25-1841-4ea2-bc02-bd548478c4f6",
+        "disabled": false,
+        "settings": {}
+      }
+    }
+  },
+  "presets": {
+    "Metal": {
+      "heading_color": "#3FD077",
+      "text_color": "#677279",
+      "accent_color": "#00badb",
+      "link_color": "#00badb",
+      "border_color": "#e1e3e4",
+      "background": "#f3f5f6",
+      "secondary_background": "#ffffff",
+      "error_color": "#ff0000",
+      "success_color": "#00aa00",
+      "primary_button_background": "#00badb",
+      "primary_button_text_color": "#ffffff",
+      "secondary_button_background": "#3FD077",
+      "secondary_button_text_color": "#ffffff",
+      "header_background": "#3FD077",
+      "header_text_color": "#ffffff",
+      "header_light_text_color": "#a3afef",
+      "header_accent_color": "#00badb",
+      "product_on_sale_accent": "#ee0000",
+      "product_in_stock_color": "#008a00",
+      "product_low_stock_color": "#ee0000",
+      "product_sold_out_color": "#8a9297",
+      "product_label_1_background": "#008a00",
+      "product_label_2_background": "#00a500",
+      "product_star_color": "#ffbd00",
+      "base_text_font_size": 16,
+      "heading_font": "din_next_n5",
+      "text_font": "din_next_n4",
+      "underline_links": true,
+      "animation_image_zoom": true,
+      "search_mode": "product,article",
+      "show_vendor": true,
+      "show_secondary_image": true,
+      "product_price_position": "after_title",
+      "product_image_size": "natural",
+      "show_discount": true,
+      "discount_mode": "saving",
+      "show_color_swatch": false,
+      "show_inventory_quantity": false,
+      "low_inventory_threshold": 0,
+      "show_reviews_badge": false,
+      "cart_type": "drawer",
+      "cart_empty_button_link": "shopify://collections/all",
+      "cart_show_free_shipping_threshold": false,
+      "cart_free_shipping_threshold": "50",
+      "share_image": "",
+      "social_facebook": "",
+      "social_twitter": "",
+      "social_google_plus": "",
+      "social_pinterest": "",
+      "social_instagram": "",
+      "social_vimeo": "",
+      "social_tumblr": "",
+      "social_youtube": "",
+      "social_linkedin": "",
+      "social_snapchat": "",
+      "social_fancy": "",
+      "favicon": "",
+      "checkout_header_image": "",
+      "checkout_logo_image": "",
+      "checkout_logo_position": "left",
+      "checkout_logo_size": "medium",
+      "checkout_body_background_image": "",
+      "checkout_body_background_color": "#fff",
+      "checkout_input_background_color_mode": "white",
+      "checkout_sidebar_background_image": "",
+      "checkout_sidebar_background_color": "#fafafa",
+      "checkout_heading_font": "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol'",
+      "checkout_body_font": "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol'",
+      "checkout_accent_color": "#00badb",
+      "checkout_button_color": "#00badb",
+      "checkout_error_color": "#ff0000",
+      "sections": {
+        "header": {
+          "type": "header",
+          "settings": {
+            "logo": "",
+            "logo_max_width": 140,
+            "mobile_logo_max_width": 100,
+            "navigation_menu": "main-menu",
+            "desktop_navigation_layout": "inline",
+            "desktop_navigation_open_trigger": "hover",
+            "navigation_phone_number": "Call us 000-000-0000",
+            "navigation_email": "info@yourwebsite.com",
+            "search_menu": ""
+          }
+        },
+        "footer": {
+          "type": "footer",
+          "blocks": {
+            "footer-0": {
+              "type": "text",
+              "settings": {
+                "title": "About the shop",
+                "content": "<p>Use this text area to tell your customers about your brand and vision. You can change it in the theme settings.</p>"
+              }
+            },
+            "footer-1": {
+              "type": "links",
+              "settings": {
+                "menu": "footer"
+              }
+            },
+            "footer-2": {
+              "type": "newsletter",
+              "settings": {
+                "title": "Newsletter",
+                "subheading": "<p>A short sentence describing what someone will receive by subscribing</p>"
+              }
+            }
+          },
+          "block_order": [
+            "footer-0",
+            "footer-1",
+            "footer-2"
+          ],
+          "settings": {
+            "show_social_media": true,
+            "show_payment_icons": true
+          }
+        },
+        "slideshow": {
+          "type": "slideshow",
+          "blocks": {
+            "slide-0": {
+              "type": "image",
+              "settings": {
+                "image": "",
+                "mobile_image": "",
+                "text_color": "#ffffff",
+                "title": "Tell your story",
+                "content": "Tell your story",
+                "content_position": "bottomLeft",
+                "button_background": "#ffffff",
+                "button_text_color": "#000000",
+                "button_text": "Button",
+                "link": ""
+              }
+            },
+            "slide-1": {
+              "type": "image",
+              "settings": {
+                "image": "",
+                "mobile_image": "",
+                "text_color": "#ffffff",
+                "title": "Tell your story",
+                "content": "Tell your story",
+                "content_position": "bottomLeft",
+                "button_background": "#ffffff",
+                "button_text_color": "#000000",
+                "button_text": "Button",
+                "link": ""
+              }
+            }
+          },
+          "block_order": [
+            "slide-0",
+            "slide-1"
+          ],
+          "settings": {
+            "edge_to_edge": true,
+            "section_size": "preserve_ratio",
+            "cycle_speed": 5
+          }
+        },
+        "collection-list": {
+          "type": "collection-list",
+          "blocks": {
+            "collection-0": {
+              "type": "collection",
+              "settings": {
+                "collection": "",
+                "image": ""
+              }
+            },
+            "collection-1": {
+              "type": "collection",
+              "settings": {
+                "collection": "",
+                "image": ""
+              }
+            },
+            "collection-2": {
+              "type": "collection",
+              "settings": {
+                "collection": "",
+                "image": ""
+              }
+            },
+            "collection-3": {
+              "type": "collection",
+              "settings": {
+                "collection": "",
+                "image": ""
+              }
+            },
+            "collection-4": {
+              "type": "collection",
+              "settings": {
+                "collection": "",
+                "image": ""
+              }
+            },
+            "collection-5": {
+              "type": "collection",
+              "settings": {
+                "collection": "",
+                "image": ""
+              }
+            }
+          },
+          "block_order": [
+            "collection-0",
+            "collection-1",
+            "collection-2",
+            "collection-3",
+            "collection-4",
+            "collection-5"
+          ],
+          "settings": {
+            "title": "Our collections",
+            "link_title": "View all",
+            "link": "shopify://collections"
+          }
+        },
+        "featured-product": {
+          "type": "featured-product",
+          "settings": {
+            "product": "",
+            "title": "Featured product",
+            "selector_mode": "block",
+            "color_mode": "color",
+            "low_inventory_threshold": 0,
+            "zoom_effect": "outside",
+            "carousel_effect": "fade"
+          }
+        },
+        "collection-template": {
+          "type": "collection-template",
+          "settings": {
+            "collection_image_size": "small",
+            "default_view_layout": "grid",
+            "show_quick_view": "list",
+            "show_quick_buy": "list",
+            "quick_links": "",
+            "filter_type": "tag"
+          }
+        },
+        "recently-viewed-products": {
+          "type": "recently-viewed-products",
+          "settings": {
+            "title": "Recently viewed"
+          }
+        },
+        "product-template": {
+          "type": "product-template",
+          "settings": {
+            "selector_mode": "block",
+            "color_mode": "color",
+            "low_inventory_threshold": 0,
+            "zoom_effect": "outside",
+            "carousel_effect": "fade",
+            "tab_page_1_handle": "",
+            "tab_page_2_handle": "",
+            "tab_page_3_handle": "",
+            "custom_security_badge": ""
+          }
+        },
+        "product-recommendations": {
+          "type": "product-recommendations",
+          "settings": {}
+        },
+        "announcement-bar": {
+          "type": "announcement-bar",
+          "settings": {
+            "background": "#3FD077",
+            "text_color": "#ffffff",
+            "text": "Announce something here",
+            "link": "",
+            "newsletter_button": "Subscribe & Save",
+            "newsletter_title": "Newsletter",
+            "newsletter_content": "<p>A short sentence describing what someone will receive by subscribing</p>"
+          }
+        },
+        "1542984811767": {
+          "type": "featured-collection",
+          "settings": {
+            "collection": "",
+            "title": "Featured collection",
+            "products_count": 12,
+            "layout": "vertical",
+            "link_title": "View all"
+          }
+        },
+        "1542984842027": {
+          "type": "newsletter",
+          "settings": {
+            "title": "Newsletter",
+            "content": "<p>A short sentence describing what someone will receive by subscribing</p>"
+          }
+        },
+        "1542984882560": {
+          "type": "blog-posts",
+          "settings": {
+            "blog": "news",
+            "title": "Blog posts"
+          }
+        }
+      },
+      "content_for_index": [
+        "slideshow",
+        "1542984811767",
+        "collection-list",
+        "1542984842027",
+        "featured-product",
+        "1542984882560"
+      ]
+    },
+    "Wood": {
+      "heading_color": "#3a2a2f",
+      "text_color": "#3a2a2f",
+      "accent_color": "#ff6128",
+      "link_color": "#ff6128",
+      "border_color": "#e7e2de",
+      "background": "#f7f4f2",
+      "secondary_background": "#ffffff",
+      "error_color": "#f71b1b",
+      "success_color": "#48b448",
+      "primary_button_background": "#ff6128",
+      "primary_button_text_color": "#ffffff",
+      "secondary_button_background": "#3a2a2f",
+      "secondary_button_text_color": "#ffffff",
+      "header_background": "#3a2a2f",
+      "header_text_color": "#ffffff",
+      "header_light_text_color": "#e9e2dd",
+      "header_accent_color": "#ff6128",
+      "product_on_sale_accent": "#ee0000",
+      "product_in_stock_color": "#008a00",
+      "product_low_stock_color": "#ee0000",
+      "product_sold_out_color": "#d1d1d4",
+      "product_label_1_background": "#ff6128",
+      "product_label_2_background": "#a95ebe",
+      "product_star_color": "#ffb647",
+      "base_text_font_size": 15,
+      "heading_font": "itc_avant_garde_gothic_n5",
+      "text_font": "basic_commercial_n4",
+      "underline_links": true,
+      "animation_image_zoom": true,
+      "search_mode": "product,article,page",
+      "show_vendor": true,
+      "show_secondary_image": true,
+      "show_discount": true,
+      "discount_mode": "percentage",
+      "product_price_position": "after_title",
+      "product_image_size": "square",
+      "show_color_swatch": false,
+      "show_inventory_quantity": true,
+      "low_inventory_threshold": 1,
+      "show_reviews_badge": false,
+      "cart_type": "drawer",
+      "cart_empty_button_link": "shopify://collections/all",
+      "cart_show_free_shipping_threshold": true,
+      "cart_free_shipping_threshold": "50",
+      "checkout_logo_position": "center",
+      "checkout_logo_size": "medium",
+      "checkout_body_background_image": "",
+      "checkout_body_background_color": "#fff",
+      "checkout_input_background_color_mode": "white",
+      "checkout_sidebar_background_image": "",
+      "checkout_sidebar_background_color": "#f7f4f2",
+      "checkout_heading_font": "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol'",
+      "checkout_body_font": "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol'",
+      "checkout_accent_color": "#ff6128",
+      "checkout_button_color": "#ff6128",
+      "checkout_error_color": "#f71b1b",
+      "sections": {
+        "header": {
+          "type": "header",
+          "settings": {
+            "logo": "",
+            "logo_max_width": 140,
+            "mobile_logo_max_width": 100,
+            "navigation_menu": "main-menu",
+            "desktop_navigation_layout": "inline",
+            "desktop_navigation_open_trigger": "hover",
+            "navigation_phone_number": "Call us 000-000-0000",
+            "navigation_email": "info@yourwebsite.com",
+            "search_menu": ""
+          }
+        },
+        "footer": {
+          "type": "footer",
+          "blocks": {
+            "footer-0": {
+              "type": "text",
+              "settings": {
+                "title": "About the shop",
+                "content": "<p>Use this text area to tell your customers about your brand and vision. You can change it in the theme settings.</p>"
+              }
+            },
+            "footer-1": {
+              "type": "links",
+              "settings": {
+                "menu": "footer"
+              }
+            },
+            "footer-2": {
+              "type": "newsletter",
+              "settings": {
+                "title": "Newsletter",
+                "subheading": "<p>A short sentence describing what someone will receive by subscribing</p>"
+              }
+            }
+          },
+          "block_order": [
+            "footer-0",
+            "footer-1",
+            "footer-2"
+          ],
+          "settings": {
+            "show_social_media": true,
+            "show_payment_icons": true
+          }
+        },
+        "slideshow": {
+          "type": "slideshow",
+          "blocks": {
+            "slide-0": {
+              "type": "image",
+              "settings": {
+                "image": "",
+                "mobile_image": "",
+                "text_color": "#ffffff",
+                "title": "Tell your story",
+                "content": "Tell your story",
+                "content_position": "bottomLeft",
+                "button_background": "#ffffff",
+                "button_text_color": "#000000",
+                "button_text": "Button",
+                "link": ""
+              }
+            },
+            "slide-1": {
+              "type": "image",
+              "settings": {
+                "image": "",
+                "mobile_image": "",
+                "text_color": "#ffffff",
+                "title": "Tell your story",
+                "content": "Tell your story",
+                "content_position": "bottomLeft",
+                "button_background": "#ffffff",
+                "button_text_color": "#000000",
+                "button_text": "Button",
+                "link": ""
+              }
+            }
+          },
+          "block_order": [
+            "slide-0",
+            "slide-1"
+          ],
+          "settings": {
+            "edge_to_edge": true,
+            "section_size": "preserve_ratio",
+            "cycle_speed": 5
+          }
+        },
+        "collection-list": {
+          "type": "collection-list",
+          "blocks": {
+            "collection-0": {
+              "type": "collection",
+              "settings": {
+                "collection": "",
+                "image": ""
+              }
+            },
+            "collection-1": {
+              "type": "collection",
+              "settings": {
+                "collection": "",
+                "image": ""
+              }
+            },
+            "collection-2": {
+              "type": "collection",
+              "settings": {
+                "collection": "",
+                "image": ""
+              }
+            },
+            "collection-3": {
+              "type": "collection",
+              "settings": {
+                "collection": "",
+                "image": ""
+              }
+            },
+            "collection-4": {
+              "type": "collection",
+              "settings": {
+                "collection": "",
+                "image": ""
+              }
+            },
+            "collection-5": {
+              "type": "collection",
+              "settings": {
+                "collection": "",
+                "image": ""
+              }
+            }
+          },
+          "block_order": [
+            "collection-0",
+            "collection-1",
+            "collection-2",
+            "collection-3",
+            "collection-4",
+            "collection-5"
+          ],
+          "settings": {
+            "title": "Our collections",
+            "link_title": "View all",
+            "link": "shopify://collections"
+          }
+        },
+        "collection-template": {
+          "type": "collection-template",
+          "settings": {
+            "collection_image_size": "small",
+            "default_view_layout": "grid",
+            "show_quick_view": "list",
+            "show_quick_buy": "list",
+            "quick_links": "",
+            "filter_type": "tag"
+          }
+        },
+        "recently-viewed-products": {
+          "type": "recently-viewed-products",
+          "settings": {
+            "title": "Recently viewed"
+          }
+        },
+        "product-template": {
+          "type": "product-template",
+          "settings": {
+            "selector_mode": "block",
+            "color_mode": "color",
+            "low_inventory_threshold": 0,
+            "zoom_effect": "outside",
+            "carousel_effect": "fade",
+            "tab_page_1_handle": "",
+            "tab_page_2_handle": "",
+            "tab_page_3_handle": "",
+            "custom_security_badge": ""
+          }
+        },
+        "product-recommendations": {
+          "type": "product-recommendations",
+          "settings": {}
+        },
+        "announcement-bar": {
+          "type": "announcement-bar",
+          "settings": {
+            "background": "#3a2a2f",
+            "text_color": "#ffffff",
+            "text": "Announce something here",
+            "link": "",
+            "newsletter_button": "Subscribe & Save",
+            "newsletter_title": "Newsletter",
+            "newsletter_content": "<p>A short sentence describing what someone will receive by subscribing</p>"
+          }
+        },
+        "1542984811767": {
+          "type": "featured-collection",
+          "settings": {
+            "collection": "",
+            "title": "Featured collection",
+            "products_count": 12,
+            "layout": "vertical",
+            "link_title": "View all"
+          }
+        },
+        "1550833441117": {
+          "type": "collection-with-image",
+          "settings": {
+            "collection": "",
+            "products_count": 12,
+            "image": "",
+            "background": "#3a2a2f",
+            "text_color": "#ffffff",
+            "title": "Our best sellers",
+            "content": "Shop our most popular products for this season.",
+            "button_background": "#e95d2b",
+            "button_text_color": "#ffffff",
+            "button_text": "Learn more",
+            "button_link": ""
+          }
+        },
+        "1555314133560": {
+          "type": "promotion-list",
+          "blocks": {
+            "1555314133560-0": {
+              "type": "item",
+              "settings": {
+                "image": "",
+                "show_overlay": false,
+                "stretch_image": false,
+                "background": "#6f42ef",
+                "text_color": "#ffffff",
+                "title": "Your heading",
+                "content": "Tell more about your product, collection...",
+                "button_background": "#ffffff",
+                "button_text_color": "#6f42ef",
+                "button_text": "Learn more",
+                "button_link": ""
+              }
+            },
+            "1555314133560-1": {
+              "type": "item",
+              "settings": {
+                "image": "",
+                "show_overlay": false,
+                "stretch_image": false,
+                "background": "#fc2a68",
+                "text_color": "#ffffff",
+                "title": "Your heading",
+                "content": "Tell more about your product, collection...",
+                "button_background": "#ffffff",
+                "button_text_color": "#fc2a68",
+                "button_text": "Learn more",
+                "button_link": ""
+              }
+            },
+            "1555314133560-2": {
+              "type": "item",
+              "settings": {
+                "image": "",
+                "show_overlay": false,
+                "stretch_image": false,
+                "background": "#26c1ce",
+                "text_color": "#ffffff",
+                "title": "Your heading",
+                "content": "Tell more about your product, collection...",
+                "button_background": "#ffffff",
+                "button_text_color": "#26c1ce",
+                "button_text": "Learn more",
+                "button_link": ""
+              }
+            }
+          },
+          "block_order": [
+            "1555314133560-0",
+            "1555314133560-1",
+            "1555314133560-2"
+          ],
+          "settings": {
+            "expand_items": false,
+            "section_size": "medium",
+            "stack_mobile": false
+          }
+        },
+        "1542984882560": {
+          "type": "blog-posts",
+          "settings": {
+            "blog": "news",
+            "title": "Blog posts"
+          }
+        }
+      },
+      "content_for_index": [
+        "slideshow",
+        "1542984811767",
+        "1555314133560",
+        "collection-list",
+        "1550833441117",
+        "1542984882560"
+      ]
+    }
+  },
+  "platform_customizations": {
+    "custom_css": []
+  }
+}
