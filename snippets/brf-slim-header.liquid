@@ -30,7 +30,7 @@
       box-shadow:inset 0 1px 0 rgba(255,255,255,.85),inset 0 0 0 .5px rgba(255,255,255,.6),0 0 0 .5px rgba(29,29,31,.08),0 12px 32px -14px rgba(29,29,31,.32);
       animation:brf-hc-in .62s cubic-bezier(.2,.9,.25,1.12) both}
     html.brf-hc.brf-mm-open [data-brf-mm]>.container,html.brf-hc.brf-hc-bagging [data-brf-mm]>.container{background:rgba(255,255,255,.94)}
-    html.brf-hc.brf-hc-searching [data-brf-mm]>.container{background:rgba(255,255,255,.97);box-shadow:inset 0 1px 0 #fff,0 0 0 .5px rgba(29,29,31,.1),0 0 0 8px rgba(255,255,255,.55),0 24px 60px -18px rgba(29,29,31,.45),0 0 90px 10px rgba(255,255,255,.75);transition:box-shadow .4s ease,background .3s ease}
+    html.brf-hc.brf-hc-searching [data-brf-mm]>.container{background:rgba(255,255,255,.97);box-shadow:inset 0 1px 0 #fff,0 0 0 .5px rgba(29,29,31,.1),0 24px 60px -18px rgba(29,29,31,.45),0 0 90px 10px rgba(255,255,255,.75);transition:box-shadow .4s ease,background .3s ease}
     @keyframes brf-hc-in{from{opacity:.4;transform:translateY(-12px) scaleX(.94)}to{opacity:1;transform:none}}
 
     html.brf-hc .brf-mm__bar{flex:1 1 auto;min-width:0;position:static;z-index:1}
@@ -239,8 +239,8 @@
   }
   /* ---------- Search magic (Abid, 2026-10-05) ----------
      Open: the magnifier twirls like a wand, the menu items are swept away one by one as the field
-     unrolls, a rainbow comet rides the unrolling edge leaving fairy dust, and a shimmering ring
-     circles the capsule once. Close: the field rolls back into the magnifier, the comet runs home,
+     unrolls, a rainbow comet rides the unrolling edge leaving fairy dust, and the ring around
+     the capsule turns into a slowly flowing ribbon of colour while search is open. Close: the field rolls back into the magnifier, the comet runs home,
      and each menu item springs back up as the edge passes it, with a twinkle. */
   .brf-hc__comet,.brf-hc__aura{display:none}
   @media (min-width:1000px){
@@ -269,20 +269,23 @@
     html.brf-hc .brf-hc__comet::after{content:"";position:absolute;left:50%;top:4px;bottom:4px;width:3px;margin-left:-1.5px;border-radius:3px;
       background:linear-gradient(#FF9AD5,#8FD3FF 50%,#9BFFCF);box-shadow:0 0 10px 3px rgba(143,211,255,.9),0 0 22px 6px rgba(255,154,213,.55)}
 
-    /* a shimmering rainbow ring that circles the capsule once */
-    @property --brf-a{syntax:"<angle>";inherits:false;initial-value:0deg}
-    html.brf-hc .brf-hc__aura{display:block;position:absolute;inset:-4px;z-index:-1;pointer-events:none;border-radius:980px;padding:2.5px;opacity:0;
-      background:conic-gradient(from var(--brf-a),#FF9AD5,#FFD86B,#9BFFCF,#8FD3FF,#C9A7FF,#FF9AD5);
-      -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask:linear-gradient(#000 0 0) content-box exclude,linear-gradient(#000 0 0)}
-    html.brf-hc .brf-hc__aura.is-on{animation:brf-hc-aura 1.5s cubic-bezier(.3,.6,.3,1) both}
-    @keyframes brf-hc-aura{0%{opacity:0;--brf-a:0deg;filter:blur(3px)}18%{opacity:1;filter:blur(.5px)}70%{opacity:.9}100%{opacity:0;--brf-a:360deg;filter:blur(2px)}}
+    /* while search is open, the ring around the capsule becomes a slowly flowing ribbon of colour */
+    html.brf-hc .brf-hc__aura{display:block;position:absolute;inset:-8px;z-index:-1;pointer-events:none;border-radius:980px;padding:6px;opacity:0;transform:scale(.985);
+      background:linear-gradient(90deg,#FF6FB5,#FFC93C,#3DDC97,#149954,#4FB3FF,#A77BFF,#FF6FB5,#FFC93C,#3DDC97,#149954,#4FB3FF,#A77BFF,#FF6FB5) 0 0/200% 100%;
+      -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask:linear-gradient(#000 0 0) content-box exclude,linear-gradient(#000 0 0);
+      transition:opacity .35s ease,transform .35s ease}
+    html.brf-hc.brf-hc-searching .brf-hc__aura{opacity:1;transform:none;transition:opacity .5s ease .1s,transform .7s cubic-bezier(.2,1.4,.4,1) .1s;
+      animation:brf-hc-flow 5s linear infinite,brf-hc-glint 2.6s ease-in-out infinite}
+    @keyframes brf-hc-flow{from{background-position:0 0}to{background-position:100% 0}}
+    @keyframes brf-hc-glint{0%,100%{filter:saturate(1) brightness(1)}50%{filter:saturate(1.35) brightness(1.12)}}
   }
   .brf-hc__spark{position:fixed;left:0;top:0;z-index:2147483000;pointer-events:none;border-radius:2px;
     clip-path:polygon(50% 0,61% 38%,100% 50%,61% 62%,50% 100%,39% 62%,0 50%,39% 38%)}
   @media (prefers-reduced-motion:reduce){
     html.brf-hc .brf-mm__item,html.brf-hc.brf-hc-searching .brf-mm__item{transition:none}
     html.brf-hc .brf-hc__search,html.brf-hc.brf-hc-searching .brf-hc__search{transition:none}
-    html.brf-hc.brf-hc-searching .brf-hc__search input,html.brf-hc.brf-hc-searching .brf-hc__search>svg,[data-brf-hc-search] svg,html.brf-hc .brf-hc__aura.is-on{animation:none}
+    html.brf-hc.brf-hc-searching .brf-hc__search input,html.brf-hc.brf-hc-searching .brf-hc__search>svg,[data-brf-hc-search] svg{animation:none}
+    html.brf-hc.brf-hc-searching .brf-hc__aura{animation:none}
   }
 </style>
 {%- capture brf_hc_bag_icon -%}{%- render 'brf-bag-icon', cls: 'brf-hc__bag-ic' -%}{%- endcapture -%}
@@ -636,14 +639,11 @@
       var prog = i / 12;
       spark(g.right - g.span * prog, g.mid + (Math.random() - .5) * 26, {delay: easeTime(.45, .05, .2, 1, Math.min(prog, .99)) * OPEN_MS, dx: (Math.random() - .3) * 30, dy: (Math.random() - .5) * 46});
     }
-    aura.classList.remove('is-on'); void aura.offsetWidth; aura.classList.add('is-on');
-    later(function(){ aura.classList.remove('is-on'); }, 1600);
   }
   function magicClose(){
     magicT.forEach(clearTimeout); magicT = [];
     if (calm) return;
     var g = magicGeo(), btn = acts.querySelector('[data-brf-hc-search]');
-    aura.classList.remove('is-on');
     rideComet(g.left, g.right, CLOSE_MS, 'cubic-bezier(.6,0,.2,1)', g);
     /* each item springs back up the moment the rolling edge uncovers it, with a twinkle */
     magicItems().forEach(function(li){
