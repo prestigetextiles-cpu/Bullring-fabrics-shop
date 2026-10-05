@@ -1,0 +1,80 @@
+{%- comment -%}
+  Bull Ring Fabrics — Home & Lifestyle product page tweaks (products tagged home-lifestyle).
+  Runs straight after the product section has rendered:
+  1. Removes the fabric-only "How to Buy Fabric" tab.
+  2. Swaps the "Delivery & Shipping" tab content for the Home & Lifestyle version below.
+  3. Changes the "Same-day dispatch" trust chip unless the item is tagged in-stock.
+  Pass stocked: true for items tagged in-stock (same-day dispatch before 10pm, like fabrics).
+{%- endcomment -%}
+{%- assign brf_v = product.selected_or_first_available_variant -%}
+{%- assign brf_direct = false -%}
+{%- if product.tags contains 'dropship' or brf_v.price >= 8000 -%}{%- assign brf_direct = true -%}{%- endif -%}
+<template id="brf-hl-delivery">
+<div class="brf-hl-del">
+<p class="brf-hl-del__this">
+  <strong>This item:</strong>
+  {%- if stocked %} in stock at our Birmingham warehouse. Order before 10pm Monday to Friday and we dispatch it the same day.
+  {%- elsif brf_direct %} sent direct from our supplier and delivered in 3–5 working days, with tracking.
+  {%- else %} dispatched from our Birmingham warehouse within 1–3 working days.
+  {%- endif %}
+</p>
+
+<h3>How Home &amp; Lifestyle orders are dispatched</h3>
+<table class="brf-hl-del__table">
+<thead><tr><th>Item</th><th>When it ships</th></tr></thead>
+<tbody>
+<tr><td><strong>In stock with us</strong><br><span>Marked “Same-day dispatch” on the product page</span></td><td>Same day, Monday–Friday, for orders placed before 10pm</td></tr>
+<tr><td><strong>Ordered in for you</strong></td><td>Within 1–3 working days</td></tr>
+<tr><td><strong>Larger items sent direct from our supplier</strong><br><span>Usually items £80 and over</span></td><td>Delivered in 3–5 working days, in a separate parcel with its own tracking</td></tr>
+</tbody>
+</table>
+
+<h3>UK delivery</h3>
+<ul>
+<li><strong>Free tracked UK delivery</strong> on orders over £65.</li>
+<li>Standard delivery £3.99 on orders under £65.</li>
+<li>Next day delivery is only available on items we hold in stock.</li>
+<li>Items we order in usually arrive 2–5 working days after you order.</li>
+</ul>
+
+<h3>Good to know</h3>
+<ul>
+<li>If your order mixes fabric and Home &amp; Lifestyle items, they may arrive in separate parcels.</li>
+<li>We email a tracking number as soon as each parcel is on its way.</li>
+<li>Orders placed at the weekend or on a bank holiday start from the next working day.</li>
+</ul>
+
+<p>Questions about delivery? Email <a href="mailto:sales@prestigefashionuk.com">sales@prestigefashionuk.com</a> or use the live chat. You can also read our <a href="/pages/returns-policy">returns policy</a>.</p>
+</div>
+</template>
+<style>
+  .brf-hl-del__this{padding:12px 14px;border-radius:12px;background:#F4EFE6;border:1px solid #E4DCCD}
+  .brf-hl-del__table{width:100%;border-collapse:collapse;font-size:15px;margin:0 0 12px}
+  .brf-hl-del__table th{background:#1F4D3A;color:#fff;text-align:left;padding:10px 12px;font-weight:600}
+  .brf-hl-del__table td{padding:10px 12px;border-top:1px solid #E4DCCD;vertical-align:top}
+  .brf-hl-del__table td span{font-size:13px;color:#6B665D}
+</style>
+<script>
+(function(){
+  var cards = document.querySelectorAll('.product-block-list__item--content');
+  var tpl = document.getElementById('brf-hl-delivery');
+  [].forEach.call(cards, function(item){
+    var t = item.querySelector('.card__title');
+    var name = t ? t.textContent.trim().toLowerCase() : '';
+    if (name.indexOf('how to buy') > -1) { item.parentNode.removeChild(item); return; }
+    if (tpl && (name.indexOf('delivery') > -1 || name.indexOf('shipping') > -1)) {
+      var rte = item.querySelector('.rte');
+      if (rte) { rte.innerHTML = ''; rte.appendChild(tpl.content.cloneNode(true)); }
+    }
+  });
+  {%- unless stocked %}
+  [].forEach.call(document.querySelectorAll('.brf-trust-chips li'), function(li){
+    if (li.textContent.indexOf('Same-day dispatch') > -1) {
+      var svg = li.querySelector('svg');
+      li.textContent = {% if brf_direct %}' Delivered in 3–5 working days'{% else %}' Dispatched in 1–3 working days'{% endif %};
+      if (svg) li.insertBefore(svg, li.firstChild);
+    }
+  });
+  {%- endunless %}
+})();
+</script>
