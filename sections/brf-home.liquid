@@ -5,7 +5,7 @@
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Figtree:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Figtree:wght@400;500;600;700&family=Creepster&display=swap" rel="stylesheet">
 
 <style>
   .brf-home{--brf-ground:#F7F3EC;--brf-surface:#FFFFFF;--brf-ink:#1C1B19;--brf-muted:#5E5A52;--brf-line:#E4DCCD;--brf-accent:{{ section.settings.accent | default: '#1F4D3A' }};--brf-brass:#8A5A1C;--brf-sale:#A3372B;--brf-sand:#EDE3D1;
@@ -140,7 +140,19 @@
   .brf-spooky .brf-swatch{background-color:#2A2233}
   .brf-spooky .brf-btn--line{border-color:#EDE6DA;color:#EDE6DA!important}
   .brf-spooky .brf-btn--line:hover{background:#EDE6DA;color:#16121B!important}
-  .brf-spooky__foot{position:relative;margin-top:40px;display:flex;justify-content:center}
+  .brf-spooky__foot{position:relative;margin-top:40px;display:flex;justify-content:center;flex-wrap:wrap;gap:12px}
+  /* R11. Halloween home décor rail inside the spooky section */
+  .brf-spooky__decor{position:relative;margin-top:56px;padding-top:40px;border-top:1px solid rgba(237,230,218,.14)}
+  .brf-spooky__decor-head{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;margin-bottom:20px}
+  .brf-spooky__decor-head h3{margin:6px 0 0;font-size:clamp(24px,2.4vw,32px);line-height:1.1;color:#F3E3B8}
+  .brf-spooky__decor-all{flex:0 0 auto;font-weight:600;color:#F2A65A!important;text-decoration:none;white-space:nowrap}
+  .brf-spooky__decor-all:hover{text-decoration:underline}
+  .brf-spooky__rail{display:grid;grid-auto-flow:column;grid-auto-columns:calc((100% - 72px) / 4);gap:24px;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;-webkit-overflow-scrolling:touch;padding-bottom:4px}
+  .brf-spooky__rail::-webkit-scrollbar{display:none}
+  .brf-spooky__rail>.brf-card{scroll-snap-align:start}
+  .brf-spooky__foot .brf-spooky__foot-2{color:#EDE6DA!important;border-color:rgba(237,230,218,.45)!important}
+  @media (max-width:999px){.brf-spooky__rail{grid-auto-columns:calc((100% - 24px) / 2.3)}}
+  @media (max-width:640px){.brf-spooky__decor{margin-top:40px;padding-top:28px}.brf-spooky__rail{grid-auto-columns:62%;gap:12px;margin:0 -20px;padding:0 20px 4px;scroll-padding:0 20px}}
 
   /* Older Safari (before 15) has no aspect-ratio or inset: without these, the image boxes have no height
      and the grid columns grow to the image's full size. Padding-box fallback keeps the same proportions. */
@@ -154,6 +166,173 @@
     .brf-tile .brf-swatch img,.brf-post .brf-swatch img{position:absolute;top:0;left:0}
   }
 
+  /* hero gallery banner */
+  .brf-hs{position:relative}
+  .brf-hs__track{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;-ms-overflow-style:none;scroll-behavior:smooth;overscroll-behavior-x:contain}
+  .brf-hs__track::-webkit-scrollbar{display:none}
+  .brf-hs__slide{flex:0 0 100%;min-width:0;display:flex;align-items:center;scroll-snap-align:start;scroll-snap-stop:always}
+  .brf-hs__slide>.brf-hero{flex:1 1 auto;min-width:0}
+  .brf-hs__slide .brf-hero{padding-bottom:40px}
+  .brf-hs__nav{display:flex;align-items:center;justify-content:center;gap:14px;padding:16px 0 36px}
+  .brf-hs__dots{display:flex;gap:8px}
+  .brf-hs__dot{width:8px;height:8px;padding:0;border:0;border-radius:99px;background:rgba(28,27,25,.22);cursor:pointer;transition:width .35s ease,background .35s ease}
+  .brf-hs__dot[aria-current="true"]{width:28px;background:#1C1B19}
+  .brf-hs__arrow{width:36px;height:36px;border-radius:50%;border:1px solid rgba(28,27,25,.18);background:#fff;color:#1C1B19;display:grid;place-items:center;cursor:pointer;padding:0;transition:background .2s,color .2s}
+  .brf-hs__arrow:hover{background:#1C1B19;color:#fff}
+  .brf-hs__h{display:block;margin:0 0 24px;font-size:64px;line-height:1.03;letter-spacing:-.02em;font-weight:inherit}
+  .brf-hs__h .brf-eyebrow{font-size:13px;line-height:1.4;letter-spacing:.18em;margin-bottom:14px}
+  .brf-hs__new{display:inline-block;margin-right:8px;padding:3px 8px;border-radius:99px;background:#1C1B19;color:#fff;letter-spacing:.12em}
+  .brf-hs__chips{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 30px;padding:0;list-style:none;max-width:560px}
+  .brf-hs__chips a{display:inline-block;padding:6px 12px;border-radius:99px;background:#fff;border:1px solid rgba(28,27,25,.12);font-size:13.5px;font-weight:600;color:#1C1B19;text-decoration:none;white-space:nowrap;transition:border-color .2s,transform .2s}
+  .brf-hs__chips a:hover{border-color:#1C1B19;transform:translateY(-1px)}
+  .brf-hero__media--hl{grid-template-columns:1.25fr 1fr 1fr}
+  .brf-hl-tile{position:relative;display:block;border-radius:6px;overflow:hidden;background:#fff;text-decoration:none;color:#1C1B19}
+  .brf-hl-tile img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;padding:14px 14px 44px;transition:transform .5s ease}
+  .brf-hl-tile.is-photo img{object-fit:cover;padding:0}
+  .brf-hl-tile:hover img{transform:scale(1.04)}
+  .brf-hl-tile span{position:absolute;left:10px;bottom:10px;padding:6px 11px;border-radius:99px;background:rgba(255,255,255,.92);box-shadow:0 2px 8px rgba(28,27,25,.12);font-size:13px;font-weight:700;line-height:1.2;-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}
+  .brf-hero__media--hl>.brf-hl-tile:first-child{grid-row:1 / span 2}
+  .brf-hero__media--hl>.brf-hl-tile:first-child span{font-size:15px}
+  .brf-hs__slide .brf-hero>*{min-width:0}
+  @media (max-width:1023px){.brf-hs__h{font-size:52px}.brf-hs__slide .brf-hero{grid-template-columns:minmax(0,1fr)}}
+  @media (max-width:640px){
+    .brf-hs__slide .brf-hero{padding-bottom:20px}
+    .brf-hs__nav{padding-bottom:28px}
+    .brf-hs__arrow{display:none}
+    .brf-hs__h{font-size:38px;margin-bottom:14px}
+    .brf-hs__chips{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;margin:0 -16px 22px;padding:0 16px;max-width:none}
+    .brf-hs__chips::-webkit-scrollbar{display:none}
+    .brf-hero__media--hl{grid-template-columns:1.2fr 1fr;grid-template-rows:1fr 1fr}
+    .brf-hero__media--hl>.brf-hl-tile:nth-child(n+4){display:none}
+    .brf-hl-tile img{padding:10px 10px 38px}
+    .brf-hl-tile span{font-size:12px;padding:5px 9px;left:8px;bottom:8px}
+  }
+  @media (prefers-reduced-motion:reduce){.brf-hs__track{scroll-behavior:auto}}
+  /* halloween slide: "dare to enter" */
+  .brf-hs__slide--spooky{position:relative;overflow:hidden;color:#EDE6DA;background:radial-gradient(ellipse 60% 70% at 50% 38%,#3A1A2E 0%,#1A1020 45%,#0B080E 100%);justify-content:center}
+  .brf-scary{position:relative;z-index:2;width:100%;max-width:780px;margin:0 auto;padding:56px 24px 96px;text-align:center}
+  .brf-scary__eyebrow{display:inline-block;font-size:12.5px;font-weight:700;letter-spacing:.24em;text-transform:uppercase;color:#F08A24}
+  .brf-scary__title{margin:10px 0 6px;font-family:Creepster,'Fraunces',Georgia,serif;font-weight:400;font-size:96px;line-height:1;letter-spacing:.03em;color:#F5A04A;text-shadow:0 0 18px rgba(240,138,36,.55),0 0 48px rgba(200,40,20,.45),0 6px 0 #5A1308;animation:brfFlicker 6s infinite}
+  @keyframes brfFlicker{0%,18%,22%,62%,64%,100%{opacity:1}20%,63%{opacity:.55}}
+  .brf-scary__count-lbl{margin:18px 0 12px;font-size:12px;font-weight:700;letter-spacing:.3em;text-transform:uppercase;color:#B9A9C9}
+  .brf-scary__stones{display:flex;justify-content:center;gap:14px}
+  .brf-scary__stone{position:relative;width:96px;padding:20px 0 12px;border-radius:48px 48px 6px 6px;background:linear-gradient(180deg,#4A4452 0%,#2B2631 100%);box-shadow:inset 0 2px 0 rgba(255,255,255,.12),inset 0 -8px 16px rgba(0,0,0,.35),0 14px 24px rgba(0,0,0,.5)}
+  .brf-scary__stone::after{content:"";position:absolute;left:-8px;right:-8px;bottom:-6px;height:10px;border-radius:50%;background:#1B2A16;filter:blur(1px)}
+  .brf-scary__stone b{display:block;font-family:Creepster,Georgia,serif;font-weight:400;font-size:46px;line-height:1;color:#F3E3B8;text-shadow:0 0 12px rgba(243,227,184,.35);font-variant-numeric:tabular-nums}
+  .brf-scary__stone span{display:block;margin-top:6px;font-size:10.5px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:#A89DB3}
+  .brf-scary__here{margin:8px 0 0;font-family:Creepster,Georgia,serif;font-size:34px;color:#F5A04A}
+  .brf-scary__quotes{position:relative;min-height:84px;margin:30px auto 26px;max-width:620px}
+  .brf-scary__q{position:absolute;inset:0;margin:0;opacity:0;transform:translateY(8px);transition:opacity .45s ease,transform .45s ease;pointer-events:none}
+  .brf-scary__q.is-on{opacity:1;transform:none;transition-delay:.5s;pointer-events:auto}
+  .brf-scary__q p{margin:0;font-family:Fraunces,Georgia,serif;font-style:italic;font-size:20px;line-height:1.45;color:#E6DCEB}
+  .brf-scary__q cite{display:block;margin-top:6px;font-style:normal;font-size:12px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:#8E819C}
+  .brf-scary__cta{display:inline-flex;align-items:center;gap:10px;padding:16px 30px;border-radius:99px;background:#F08A24;color:#16121B!important;font-weight:800;font-size:16px;text-decoration:none;box-shadow:0 0 0 0 rgba(240,138,36,.6);animation:brfPulse 2.4s infinite}
+  .brf-scary__cta:hover{animation:brfShake .4s;background:#FFA64D}
+  @keyframes brfPulse{0%{box-shadow:0 0 0 0 rgba(240,138,36,.55)}70%{box-shadow:0 0 0 18px rgba(240,138,36,0)}100%{box-shadow:0 0 0 0 rgba(240,138,36,0)}}
+  @keyframes brfShake{0%,100%{transform:none}25%{transform:translateX(-3px) rotate(-1deg)}75%{transform:translateX(3px) rotate(1deg)}}
+  .brf-scary__sub{margin:14px 0 0;font-size:14px;color:#A89DB3}
+  .brf-scary__moon{position:absolute;top:34px;left:7%;width:110px;height:110px;z-index:1;filter:drop-shadow(0 0 30px rgba(243,227,184,.35));pointer-events:none}
+  .brf-scary__trees{position:absolute;left:0;right:0;bottom:0;width:100%;height:110px;z-index:1;pointer-events:none}
+  .brf-scary__flash{position:absolute;inset:0;z-index:1;background:#C9D6FF;opacity:0;pointer-events:none;animation:brfFlash 11s infinite}
+  @keyframes brfFlash{0%,90%,94%,100%{opacity:0}91%{opacity:.16}92%{opacity:0}93%{opacity:.1}}
+  .brf-scary__eyes{position:absolute;inset:0;z-index:1;pointer-events:none}
+  .brf-scary__eyes i{position:absolute;width:30px;height:10px;animation:brfBlink 5.5s infinite}
+  .brf-scary__eyes i::before,.brf-scary__eyes i::after{content:"";position:absolute;top:0;width:10px;height:7px;border-radius:50% 50% 45% 45%;background:#FFD23F;box-shadow:0 0 8px 2px rgba(255,170,0,.7)}
+  .brf-scary__eyes i::before{left:0;transform:rotate(12deg)}.brf-scary__eyes i::after{right:0;transform:rotate(-12deg)}
+  @keyframes brfBlink{0%,44%,48%,100%{opacity:1}46%{opacity:0}70%{opacity:1}72%{opacity:.1}74%{opacity:1}}
+  @media (max-width:1023px){.brf-scary__title{font-size:76px}.brf-scary__moon{width:80px;height:80px;left:4%}}
+  @media (max-width:640px){
+    .brf-scary{padding:40px 16px 84px}
+    .brf-scary__title{font-size:56px}
+    .brf-scary__stones{gap:8px}
+    .brf-scary__stone{width:74px;padding:16px 0 10px}
+    .brf-scary__stone b{font-size:34px}
+    .brf-scary__stone span{font-size:9.5px;letter-spacing:.14em}
+    .brf-scary__quotes{min-height:108px;margin:22px auto 18px}
+    .brf-scary__q p{font-size:17px}
+    .brf-scary__moon{top:18px;width:56px;height:56px}
+    .brf-scary__desk{display:none}
+    .brf-scary__trees{height:70px}
+  }
+  @media (max-width:640px){
+    /* phones: no dark side vignettes or edge shadows on the banner slides */
+    .brf-hs__slide--spooky{background:linear-gradient(180deg,#1A1020 0%,#2A1527 45%,#0B080E 100%)}
+    .brf-hs__slide--xmas{background:linear-gradient(180deg,#14503C 0%,#0F3B2E 60%,#0A2A20 100%)}
+    .brf-hs .brf-hl-tile,.brf-xmas__media .brf-hl-tile{box-shadow:none}
+    .brf-xmas__media .brf-hl-tile{outline:2px solid rgba(227,179,65,.55);outline-offset:-2px}
+    .brf-scary__stone{box-shadow:inset 0 2px 0 rgba(255,255,255,.12),inset 0 -8px 16px rgba(0,0,0,.35)}
+    .brf-scary__moon{filter:none}
+  }
+  @media (max-width:640px){
+    /* phones: compact banner */
+    .brf-hs__slide .brf-hero{padding-top:14px;padding-bottom:12px;gap:14px}
+    .brf-hs__slide .brf-hero__media{height:170px;gap:6px}
+    .brf-hs__slide .brf-hero h1,.brf-hs__slide .brf-hero__title,.brf-hs__h{font-size:28px!important;line-height:1.08;margin-bottom:8px!important}
+    .brf-hs__slide .brf-hero__h1 .brf-eyebrow,.brf-hs__h .brf-eyebrow{font-size:10.5px;letter-spacing:.14em;margin-bottom:6px}
+    .brf-hs__slide .brf-hero p{display:none}
+    .brf-hs__h,.brf-hs__slide .brf-hero__h1{margin-bottom:12px!important}
+    .brf-hs__chips{margin-bottom:12px}
+    .brf-hs__chips a{padding:5px 10px;font-size:12.5px}
+    .brf-hs__slide .brf-hero__ctas{flex-direction:row;gap:8px}
+    .brf-hs__slide .brf-hero__ctas .brf-btn{flex:1 1 auto;width:auto;min-width:0;padding:11px 14px;font-size:14px;text-align:center;white-space:nowrap}
+    .brf-hs__slide .brf-hero__ctas .brf-btn--line{flex:0 1 auto}
+    .brf-hs__nav{padding:10px 0 18px}
+    .brf-hs__slide--xmas>.brf-hero{padding-top:44px}
+    .brf-scary{padding:22px 16px 46px}
+    .brf-scary__eyebrow{font-size:10.5px}
+    .brf-scary__title{font-size:40px;margin:6px 0 2px}
+    .brf-scary__count-lbl{margin:8px 0 8px;font-size:10px}
+    .brf-scary__stone{width:60px;padding:11px 0 7px;border-radius:30px 30px 5px 5px}
+    .brf-scary__stone b{font-size:26px}
+    .brf-scary__stone span{font-size:8.5px;margin-top:3px}
+    .brf-scary__quotes{min-height:64px;margin:12px auto 10px}
+    .brf-scary__q p{font-size:14.5px}
+    .brf-scary__q cite{font-size:10px;margin-top:3px}
+    .brf-scary__cta{padding:12px 22px;font-size:14.5px}
+    .brf-scary__sub{display:none}
+    .brf-scary__trees{height:44px}
+    .brf-scary__moon{width:40px;height:40px;top:12px}
+  }
+  @media (max-width:374px){
+    .brf-hs__slide .brf-hero__ctas .brf-btn{font-size:13px;padding:10px 10px}
+    .brf-hs__slide:first-child .brf-hero__ctas .brf-btn--line{display:none}
+    .brf-hs__slide .brf-hero__ctas{flex-wrap:nowrap}
+    .brf-hs__h .brf-eyebrow{font-size:0;letter-spacing:0}
+    .brf-hs__h .brf-eyebrow .brf-hs__new{font-size:10px;letter-spacing:.12em}
+  }
+  @media (prefers-reduced-motion:reduce){.brf-scary__title,.brf-scary__cta,.brf-scary__flash,.brf-scary__eyes i{animation:none}}
+  /* christmas slide */
+  .brf-hs__slide--xmas{position:relative;overflow:hidden;color:#F4EFE6;background:radial-gradient(ellipse 70% 90% at 75% 40%,#1D5C45 0%,#0F3B2E 50%,#0A2A20 100%)}
+  .brf-hs__slide--xmas>.brf-hero{position:relative;z-index:2;padding-top:84px}
+  .brf-hs__slide--xmas .brf-eyebrow{color:#E3B341}
+  .brf-hs__slide--xmas .brf-hs__h .brf-serif{color:#FFF8EA}
+  .brf-hs__slide--xmas .brf-hero p{color:#CFE0D6}
+  .brf-hs__slide--xmas .brf-hs__new{background:#C8102E;color:#fff}
+  .brf-hs__slide--xmas .brf-btn--solid{background:#C8102E!important;border-color:#C8102E!important;color:#fff!important}
+  .brf-hs__slide--xmas .brf-btn--solid:hover{background:#A50D26!important}
+  .brf-hs__slide--xmas .brf-btn--line{border-color:rgba(227,179,65,.7)!important;color:#F6DE9C!important;background:transparent!important}
+  .brf-hs__slide--xmas .brf-btn--line:hover{background:#E3B341!important;color:#0F3B2E!important}
+  .brf-hs__slide--xmas .brf-hs__chips a{background:rgba(255,255,255,.07);border-color:rgba(227,179,65,.35);color:#F6EEDC}
+  .brf-hs__slide--xmas .brf-hs__chips a:hover{border-color:#E3B341}
+  .brf-xmas__media .brf-hl-tile{background:#0A2A20;box-shadow:0 0 0 3px rgba(227,179,65,.55),0 16px 30px rgba(0,0,0,.35)}
+  .brf-xmas__media .brf-hl-tile span{background:#FFF8EA;color:#0F3B2E}
+  .brf-xmas__bow{position:absolute;top:-22px;left:calc(20% - 32px);width:64px;height:48px;z-index:3;filter:drop-shadow(0 4px 6px rgba(0,0,0,.35))}
+  .brf-xmas__lights{position:absolute;top:0;left:0;right:0;height:46px;z-index:3;display:flex;justify-content:space-around;pointer-events:none;background:radial-gradient(120% 60px at 50% -30px,transparent 98%,#0A1F17 99%,transparent 100%)}
+  .brf-xmas__lights::before{content:"";position:absolute;left:-2%;right:-2%;top:-26px;height:52px;border-bottom:2px solid #0A1F17;border-radius:0 0 50% 50% / 0 0 30px 30px}
+  .brf-xmas__lights i{position:relative;top:14px;width:10px;height:16px;border-radius:50% 50% 50% 50% / 60% 60% 40% 40%;background:#E3B341;box-shadow:0 0 12px 3px rgba(227,179,65,.7);animation:brfTwinkle 1.8s infinite alternate}
+  .brf-xmas__lights i::before{content:"";position:absolute;top:-4px;left:2px;width:6px;height:5px;border-radius:2px;background:#2A3B33}
+  .brf-xmas__lights i:nth-child(3n+1){background:#E8384F;box-shadow:0 0 12px 3px rgba(232,56,79,.7);animation-delay:-.6s}
+  .brf-xmas__lights i:nth-child(3n+2){background:#4FD18B;box-shadow:0 0 12px 3px rgba(79,209,139,.7);animation-delay:-1.2s}
+  .brf-xmas__lights i:nth-child(odd){top:20px}
+  @keyframes brfTwinkle{from{opacity:1}to{opacity:.45}}
+  .brf-xmas__snow{position:absolute;inset:0;z-index:1;pointer-events:none}
+  .brf-xmas__snow i{position:absolute;top:-10px;width:6px;height:6px;border-radius:50%;background:#fff;opacity:.8;animation:brfSnow 11s linear infinite}
+  {%- for i in (1..26) -%}{%- assign l = i | times: 37 | modulo: 100 -%}{%- assign d = i | times: 7 | modulo: 11 -%}{%- assign z = i | modulo: 3 | plus: 3 -%}
+  .brf-xmas__snow i:nth-child({{ i }}){left:{{ l }}%;animation-delay:-{{ d }}s;width:{{ z }}px;height:{{ z }}px;animation-duration:{{ z | times: 3 | plus: 2 }}s}
+  {%- endfor %}
+  @keyframes brfSnow{from{transform:translate3d(0,-10px,0)}50%{transform:translate3d(14px,300px,0)}to{transform:translate3d(-6px,640px,0)}}
+  @media (max-width:640px){.brf-hs__slide--xmas>.brf-hero{padding-top:56px}.brf-xmas__lights i:nth-child(n+11){display:none}.brf-xmas__snow i:nth-child(n+14){display:none}.brf-xmas__bow{left:calc(27% - 26px);width:52px;height:40px;top:-18px}}
+  @media (prefers-reduced-motion:reduce){.brf-xmas__snow,.brf-xmas__lights i{animation:none}.brf-xmas__snow{display:none}}
   @media (max-width:1023px){
     .brf-wrap{padding:0 32px}
     .brf-hero{grid-template-columns:1fr;gap:40px}
@@ -212,39 +391,198 @@
   {%- comment -%} HERO {%- endcomment -%}
   {%- assign hero_col = section.settings.hero_collection -%}{%- if hero_col.handle == blank -%}{%- assign hero_col = collections[section.settings.hero_collection] -%}{%- endif -%}
   {%- if hero_col == blank or hero_col.handle == blank -%}{%- assign hero_col = collections['rose-hubble'] -%}{%- endif -%}
-  <section class="brf-wrap brf-hero">
-    <div>
-      <h1 class="brf-hero__h1"><span class="brf-eyebrow">{{ section.settings.hero_eyebrow }}</span> <span class="brf-serif brf-hero__title">{{ section.settings.hero_heading }}</span></h1>
-      <p>{{ section.settings.hero_text }}</p>
-      <div class="brf-hero__ctas">
-        <a class="brf-btn brf-btn--solid" href="{{ section.settings.hero_btn1_link | default: '/collections' }}">{{ section.settings.hero_btn1_label }}</a>
-        <a class="brf-btn brf-btn--line" href="{{ section.settings.hero_btn2_link | default: '/pages/wholesale-trade-enquiries' }}">{{ section.settings.hero_btn2_label }}</a>
+  {%- assign hl_items = nil -%}
+  {%- for l in linklists['main-menu-2026'].links -%}{%- assign lt = l.title | strip | handleize -%}{%- if lt == 'home-lifestyle' -%}{%- assign hl_items = l.links -%}{%- endif -%}{%- endfor -%}
+  {%- assign hl_col = collections['home-lifestyle'] -%}
+  {%- assign hs_today = 'now' | date: '%Y%m%d' | plus: 0 -%}
+  {%- assign hs_end = section.settings.halloween_end | remove: '-' | strip | plus: 0 -%}
+  {%- assign hs_hw_show = section.settings.hs_halloween -%}
+  {%- if hs_end > 0 and hs_today > hs_end -%}{%- assign hs_hw_show = false -%}{%- endif -%}
+  {%- assign hs_hw = section.settings.halloween_collection -%}{%- if hs_hw.handle == blank -%}{%- assign hs_hw = collections[section.settings.halloween_collection] -%}{%- endif -%}
+  {%- if hs_hw.handle == blank -%}{%- assign hs_hw = collections['halloween'] -%}{%- endif -%}
+  {%- assign hs_hd = collections['halloween-home-decor'] -%}
+  <div class="brf-hs" data-brf-hs data-brf-nofx>
+    <div class="brf-hs__track" data-brf-hs-track tabindex="-1">
+    {%- if section.settings.hl_enable and hl_items.size > 0 -%}
+    <div class="brf-hs__slide" role="group" aria-roledescription="slide" aria-label="Home &amp; Lifestyle">
+    <section class="brf-wrap brf-hero">
+      <div>
+        <h2 class="brf-hs__h"><span class="brf-eyebrow"><span class="brf-hs__new">New</span>{{ section.settings.hl_eyebrow }}</span> <span class="brf-serif">{{ section.settings.hl_heading }}</span></h2>
+        <p>{{ section.settings.hl_text }}</p>
+        <ul class="brf-hs__chips" aria-label="Home &amp; Lifestyle categories">
+          {%- for l in hl_items -%}{%- if l.object.products_count > 0 or l.object == blank -%}<li><a href="{{ l.url }}">{{ l.title | strip }}</a></li>{%- endif -%}{%- endfor -%}
+        </ul>
+        <div class="brf-hero__ctas">
+          <a class="brf-btn brf-btn--solid" href="{{ hl_col.url | default: '/collections/home-lifestyle' }}">{{ section.settings.hl_btn_label }}</a>
+          <a class="brf-btn brf-btn--line" href="/collections">Shop fabrics</a>
+        </div>
       </div>
-    </div>
-    <div class="brf-hero__media">
-      {%- assign m1 = section.settings.hero_image_1 | default: hero_col.image -%}
-      {%- assign m2 = section.settings.hero_image_2 | default: collections['plush-velvet'].image -%}
-      {%- assign m3 = section.settings.hero_image_3 | default: collections['satin'].image -%}
-      <div class="brf-swatch">{% if m1 %}<img src="{{ m1 | img_url: '900x' }}" alt="{{ m1.alt | default: hero_col.title | escape }}" width="900" height="1100" fetchpriority="high">{% endif %}</div>
-      <div class="brf-swatch" style="background-color:#1F4A4F">{% if m2 %}<img src="{{ m2 | img_url: '600x' }}" alt="{{ m2.alt | escape }}" loading="lazy">{% endif %}</div>
-      <div class="brf-swatch" style="background-color:#D9C3A0">{% if m3 %}<img src="{{ m3 | img_url: '600x' }}" alt="{{ m3.alt | escape }}" loading="lazy">{% endif %}</div>
-      {%- if hero_col.handle != blank -%}
-      <div class="brf-hero__card">
-        <span class="brf-eyebrow">{{ section.settings.hero_card_label }}</span>
-        <strong>{{ section.settings.hero_card_title | default: hero_col.title }}</strong>
-        <a href="{{ hero_col.url }}">Shop {{ hero_col.products_count }} designs &rarr;</a>
+      <div class="brf-hero__media brf-hero__media--hl">
+        {%- assign shown = 0 -%}
+        {%- for l in hl_items -%}
+          {%- if shown >= 5 -%}{%- break -%}{%- endif -%}
+          {%- assign c = l.object -%}
+          {%- if c == blank or c.products_count == 0 -%}{%- continue -%}{%- endif -%}
+          {%- assign ti = c.image -%}{%- assign photo = true -%}
+          {%- unless ti -%}{%- assign ti = c.products.first.featured_image -%}{%- assign photo = false -%}{%- endunless -%}
+          {%- unless ti -%}{%- continue -%}{%- endunless -%}
+          <a class="brf-hl-tile{% if photo %} is-photo{% endif %}" href="{{ l.url }}"><img src="{{ ti | img_url: '700x' }}" alt="" {% if shown == 0 %}fetchpriority="high"{% else %}loading="lazy"{% endif %}><span>{{ l.title | strip }}</span></a>
+          {%- assign shown = shown | plus: 1 -%}
+        {%- endfor -%}
       </div>
-      {%- endif -%}
+    </section>
     </div>
-  </section>
+    {%- endif -%}
+    <div class="brf-hs__slide" role="group" aria-roledescription="slide" aria-label="Fabric by the metre">
+    <section class="brf-wrap brf-hero">
+      <div>
+        <h1 class="brf-hero__h1"><span class="brf-eyebrow">{{ section.settings.hero_eyebrow }}</span> <span class="brf-serif brf-hero__title">{{ section.settings.hero_heading }}</span></h1>
+        <p>{{ section.settings.hero_text }}</p>
+        <div class="brf-hero__ctas">
+          <a class="brf-btn brf-btn--solid" href="{{ section.settings.hero_btn1_link | default: '/collections' }}">{{ section.settings.hero_btn1_label }}</a>
+          <a class="brf-btn brf-btn--line" href="{{ section.settings.hero_btn2_link | default: '/pages/wholesale-trade-enquiries' }}">{{ section.settings.hero_btn2_label }}</a>
+        </div>
+      </div>
+      <div class="brf-hero__media">
+        {%- assign m1 = section.settings.hero_image_1 | default: hero_col.image -%}
+        {%- assign m2 = section.settings.hero_image_2 | default: collections['plush-velvet'].image -%}
+        {%- assign m3 = section.settings.hero_image_3 | default: collections['satin'].image -%}
+        <div class="brf-swatch">{% if m1 %}<img src="{{ m1 | img_url: '900x' }}" alt="{{ m1.alt | default: hero_col.title | escape }}" width="900" height="1100" fetchpriority="high">{% endif %}</div>
+        <div class="brf-swatch" style="background-color:#1F4A4F">{% if m2 %}<img src="{{ m2 | img_url: '600x' }}" alt="{{ m2.alt | escape }}" loading="lazy">{% endif %}</div>
+        <div class="brf-swatch" style="background-color:#D9C3A0">{% if m3 %}<img src="{{ m3 | img_url: '600x' }}" alt="{{ m3.alt | escape }}" loading="lazy">{% endif %}</div>
+        {%- if hero_col.handle != blank -%}
+        <div class="brf-hero__card">
+          <span class="brf-eyebrow">{{ section.settings.hero_card_label }}</span>
+          <strong>{{ section.settings.hero_card_title | default: hero_col.title }}</strong>
+          <a href="{{ hero_col.url }}">Shop {{ hero_col.products_count }} designs &rarr;</a>
+        </div>
+        {%- endif -%}
+      </div>
+    </section>
+    </div>
+    {%- if hs_hw_show and hs_hw.handle != blank and hs_hw.products_count > 0 -%}
+    {%- assign hs_total = hs_hw.products_count | plus: hs_hd.products_count -%}
+    <div class="brf-hs__slide brf-hs__slide--spooky" role="group" aria-roledescription="slide" aria-label="Halloween">
+    {%- render 'brf-spooky-layer' -%}
+    <div class="brf-scary__flash" aria-hidden="true"></div>
+    <svg class="brf-scary__moon" viewBox="0 0 120 120" aria-hidden="true"><circle cx="60" cy="60" r="52" fill="#F3E3B8"/><circle cx="44" cy="46" r="8" fill="#E2CE98"/><circle cx="74" cy="72" r="11" fill="#E2CE98"/><circle cx="78" cy="38" r="5" fill="#E2CE98"/></svg>
+    <div class="brf-scary__eyes" aria-hidden="true"><i style="left:6%;top:62%"></i><i style="left:88%;top:70%;animation-delay:-2.3s"></i><i style="left:78%;top:20%;animation-delay:-4.1s;transform:scale(.7)"></i><i class="brf-scary__desk" style="left:16%;top:28%;animation-delay:-1.2s;transform:scale(.6)"></i><i class="brf-scary__desk" style="left:94%;top:44%;animation-delay:-3.4s;transform:scale(.8)"></i></div>
+    <svg class="brf-scary__trees" viewBox="0 0 1440 120" preserveAspectRatio="none" aria-hidden="true"><path fill="#0A080D" d="M0 120V92c40-6 70-30 96-28 22 2 30-24 54-22s40 30 70 26 40-38 74-36 34 26 62 30 52-12 80-10 44 26 80 24 40-20 66-18 34 18 62 16c30-2 46-34 80-32s36 30 66 30 38-22 70-20 48 28 82 26 42-26 76-24 36 24 64 22 46-16 76-14 40 22 70 18 34-24 66-22 38 24 70 22 36-12 54-10V120z"/><path fill="#0A080D" d="M1180 120V40l6-8-10-10 8-2-4-14 10 12 6-10 2 14 12-6-8 12 10 4-14 4v78zM250 120V56l-12-14 10 2-6-16 10 10 4-12 4 14 10-8-6 14 12-2-16 12v64z"/></svg>
+    <div class="brf-scary">
+      <span class="brf-scary__eyebrow">&#x1F383; {{ section.settings.hs_hw_eyebrow }}</span>
+      <h2 class="brf-scary__title">Dare to enter&hellip;</h2>
+      <div class="brf-scary__count" data-brf-countdown data-to="{{ 'now' | date: '%Y' }}-10-31T00:00:00" role="timer" aria-label="Countdown to Halloween">
+        <p class="brf-scary__count-lbl">Countdown to Halloween</p>
+        <div class="brf-scary__stones">
+          <div class="brf-scary__stone"><b data-d>--</b><span>Days</span></div>
+          <div class="brf-scary__stone"><b data-h>--</b><span>Hours</span></div>
+          <div class="brf-scary__stone"><b data-m>--</b><span>Mins</span></div>
+          <div class="brf-scary__stone"><b data-s>--</b><span>Secs</span></div>
+        </div>
+        <p class="brf-scary__here" hidden>The witching hour is here. Happy Halloween!</p>
+      </div>
+      {%- assign hs_quotes = section.settings.hs_hw_quotes | newline_to_br | split: '<br />' -%}
+      <div class="brf-scary__quotes" data-brf-quotes aria-live="off">
+        {%- for q in hs_quotes -%}{%- assign qs = q | strip -%}{%- if qs != blank -%}{%- assign qp = qs | split: '|' -%}<blockquote class="brf-scary__q{% if forloop.first %} is-on{% endif %}"><p>&ldquo;{{ qp[0] | strip }}&rdquo;</p>{%- if qp[1] -%}<cite>{{ qp[1] | strip }}</cite>{%- endif -%}</blockquote>{%- endif -%}{%- endfor -%}
+      </div>
+      <a class="brf-scary__cta" href="{{ hs_hw.url }}"><span>Enter the Halloween shop</span> <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+      <p class="brf-scary__sub">{{ hs_total }} frightful fabrics &amp; décor lurk inside&hellip; if you dare.</p>
+    </div>
+    </div>
+    {%- endif -%}
+    {%- assign hs_xd = section.settings.xmas_end | remove: '-' | strip | plus: 0 -%}
+    {%- assign hs_x_show = section.settings.hs_xmas -%}
+    {%- if hs_xd > 0 and hs_today > hs_xd -%}{%- assign hs_x_show = false -%}{%- endif -%}
+    {%- assign hs_x = section.settings.xmas_collection -%}{%- if hs_x.handle == blank -%}{%- assign hs_x = collections[section.settings.xmas_collection] -%}{%- endif -%}
+    {%- if hs_x.handle == blank -%}{%- assign hs_x = collections['christmas'] -%}{%- endif -%}
+    {%- if hs_x_show and hs_x.handle != blank and hs_x.products_count > 0 -%}
+    <div class="brf-hs__slide brf-hs__slide--xmas" role="group" aria-roledescription="slide" aria-label="Christmas">
+    <div class="brf-xmas__lights" aria-hidden="true">{%- for i in (1..18) -%}<i></i>{%- endfor -%}</div>
+    <div class="brf-xmas__snow" aria-hidden="true">{%- for i in (1..26) -%}<i></i>{%- endfor -%}</div>
+    <section class="brf-wrap brf-hero">
+      <div>
+        <h2 class="brf-hs__h"><span class="brf-eyebrow"><span class="brf-hs__new" data-brf-sleeps data-to="{{ 'now' | date: '%Y' }}-12-25T00:00:00">&#x1F384; Christmas</span>{{ section.settings.xmas_eyebrow }}</span> <span class="brf-serif">{{ section.settings.xmas_heading }}</span></h2>
+        <p>{{ section.settings.xmas_text }}</p>
+        <ul class="brf-hs__chips" aria-label="Christmas shortcuts">
+          {%- assign hs_words = 'santa,reindeer,snowflake,snowman,tartan,gnome,stars,glitter,felt,red,gold' | split: ',' -%}{%- assign hs_c = 0 -%}
+          {%- for w in hs_words -%}{%- if hs_c >= 6 -%}{%- break -%}{%- endif -%}
+            {%- for t in hs_x.all_tags -%}{%- assign td = t | downcase -%}{%- if td == w -%}<li><a href="{{ hs_x.url }}/{{ t | handleize }}">{{ t | capitalize }}</a></li>{%- assign hs_c = hs_c | plus: 1 -%}{%- break -%}{%- endif -%}{%- endfor -%}
+          {%- endfor -%}
+        </ul>
+        <div class="brf-hero__ctas">
+          <a class="brf-btn brf-btn--solid" href="{{ hs_x.url }}">Shop Christmas</a>
+          <a class="brf-btn brf-btn--line" href="{{ hs_x.url }}">See all {{ hs_x.products_count }} designs</a>
+        </div>
+      </div>
+      <div class="brf-hero__media brf-hero__media--hl brf-xmas__media">
+        {%- assign shown = 0 -%}
+        {%- for pr in hs_x.products limit: 30 -%}
+          {%- if shown >= 5 -%}{%- break -%}{%- endif -%}
+          {%- unless pr.available and pr.featured_image -%}{%- continue -%}{%- endunless -%}
+          <a class="brf-hl-tile is-photo" href="{{ pr.url }}"><img src="{{ pr.featured_image | img_url: '700x' }}" alt="" loading="lazy"><span>{{ pr.title | split: ' - ' | first | truncate: 28 }}</span></a>
+          {%- assign shown = shown | plus: 1 -%}
+        {%- endfor -%}
+        <svg class="brf-xmas__bow" viewBox="0 0 64 48" aria-hidden="true"><path fill="#C8102E" d="M32 22C24 8 6 2 4 14s14 14 28 8zM32 22c8-14 26-20 28-8S46 28 32 22z"/><path fill="#9E0B23" d="M30 22l-10 24 8-4 4 6 2-26zM34 22l10 24-8-4-4 6-2-26z"/><circle cx="32" cy="22" r="6" fill="#E3B341"/></svg>
+      </div>
+    </section>
+    </div>
+    {%- endif -%}
+    </div>
+    <div class="brf-hs__nav" data-brf-hs-nav hidden>
+      <button type="button" class="brf-hs__arrow" data-brf-hs-prev aria-label="Previous slide"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg></button>
+      <div class="brf-hs__dots" data-brf-hs-dots></div>
+      <button type="button" class="brf-hs__arrow" data-brf-hs-next aria-label="Next slide"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></button>
+    </div>
+  </div>
+  <script>
+  (function(){
+    var root=document.querySelector('[data-brf-hs]');if(!root)return;
+    var track=root.querySelector('[data-brf-hs-track]'),slides=track.children,n=slides.length;if(n<2)return;
+    var nav=root.querySelector('[data-brf-hs-nav]'),dotsEl=root.querySelector('[data-brf-hs-dots]'),dots=[],cur=0,timer=null,paused=false;
+    var reduce=window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches;
+    for(var i=0;i<n;i++){(function(i){var b=document.createElement('button');b.type='button';b.className='brf-hs__dot';b.setAttribute('aria-label','Slide '+(i+1)+' of '+n);b.onclick=function(){go(i);restart();};dotsEl.appendChild(b);dots.push(b);})(i);}
+    nav.hidden=false;
+    function mark(i){cur=i;for(var k=0;k<n;k++){dots[k].setAttribute('aria-current',k===i?'true':'false');slides[k].setAttribute('aria-hidden',k===i?'false':'true');slides[k].inert=k!==i;}}
+    function go(i){i=(i+n)%n;track.scrollTo({left:slides[i].offsetLeft-track.offsetLeft,behavior:reduce?'auto':'smooth'});mark(i);}
+    var t;track.addEventListener('scroll',function(){clearTimeout(t);t=setTimeout(function(){var i=Math.round(track.scrollLeft/track.clientWidth);if(i!==cur)mark(Math.max(0,Math.min(n-1,i)));},80);},{passive:true});
+    root.querySelector('[data-brf-hs-prev]').onclick=function(){go(cur-1);restart();};
+    root.querySelector('[data-brf-hs-next]').onclick=function(){go(cur+1);restart();};
+    function start(){if(reduce||timer)return;timer=setInterval(function(){if(!paused&&!document.hidden)go(cur+1);},{{ section.settings.hl_autoplay | default: 7 | times: 1000 }});}
+    function stop(){clearInterval(timer);timer=null;}
+    function restart(){stop();start();}
+    track.addEventListener('focusin',function(e){if(e.target.matches&&e.target.matches(':focus-visible'))paused=true;});track.addEventListener('focusout',function(){paused=false;});
+    track.addEventListener('touchend',restart,{passive:true});
+    mark(0);start();
+  })();
+  (function(){
+    var c=document.querySelector('[data-brf-countdown]');
+    if(c){var to=new Date(c.getAttribute('data-to')),f=function(n){return n<10?'0'+n:''+n},el=function(k){return c.querySelector('[data-'+k+']')};
+      var tick=function(){var ms=to-new Date();if(ms<=0){c.querySelector('.brf-scary__stones').hidden=true;c.querySelector('.brf-scary__count-lbl').hidden=true;c.querySelector('.brf-scary__here').hidden=false;return false;}
+        var s=Math.floor(ms/1000);el('d').textContent=Math.floor(s/86400);el('h').textContent=f(Math.floor(s%86400/3600));el('m').textContent=f(Math.floor(s%3600/60));el('s').textContent=f(s%60);return true;};
+      if(tick())var iv=setInterval(function(){if(!tick())clearInterval(iv);},1000);}
+    var qb=document.querySelector('[data-brf-quotes]');
+    if(qb){var qs=qb.children,qi=0;if(qs.length>1&&!(window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches))setInterval(function(){if(document.hidden)return;qs[qi].classList.remove('is-on');qi=(qi+1)%qs.length;qs[qi].classList.add('is-on');},6000);}
+    var sl=document.querySelector('[data-brf-sleeps]');
+    if(sl){var d=Math.ceil((new Date(sl.getAttribute('data-to'))-new Date())/864e5);if(d>1)sl.textContent='\u{1F384} '+d+' sleeps to go';else if(d===1)sl.textContent='\u{1F384} 1 sleep to go!';}
+  })();
+  </script>
 
   {%- comment -%} TRUST STRIP {%- endcomment -%}
   <div class="brf-wrap">
+    {%- comment -%} STAR BUY: one product in a banner of its own (hides when sold out) {%- endcomment -%}
+    {%- if section.settings.spot_show -%}
+      {%- assign spot_p = section.settings.spot_product -%}
+      {%- if spot_p == blank or spot_p.handle == blank -%}{%- assign spot_p = all_products['trudeau-seasoning-station-6-piece-set'] -%}{%- endif -%}
+      {%- render 'brf-spotlight', p: spot_p, eyebrow: section.settings.spot_eyebrow, heading: section.settings.spot_heading, text: section.settings.spot_text, btn: section.settings.spot_btn -%}
+    {%- endif -%}
+    {%- if section.settings.cp_show -%}
+      {%- render 'brf-clearpay', mode: 'home', heading: section.settings.cp_heading, text: section.settings.cp_text -%}
+    {%- endif -%}
     <div class="brf-trust">
       <div class="brf-trust__item"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 7h11v9H3zM14 10h4l3 3v3h-7z"/><circle cx="7" cy="17.5" r="1.8"/><circle cx="17" cy="17.5" r="1.8"/></svg><div><strong>{{ section.settings.trust_1_title }}</strong><span>{{ section.settings.trust_1_text }}</span></div></div>
       <div class="brf-trust__item"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/></svg><div><strong>{{ section.settings.trust_2_title }}</strong><span>{{ section.settings.trust_2_text }}</span></div></div>
       <div class="brf-trust__item"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12l9-8 9 8M5 10v10h14V10"/><path d="M10 20v-6h4v6"/></svg><div><strong>{{ section.settings.trust_3_title }}</strong><span>{{ section.settings.trust_3_text }}</span></div></div>
-      <div class="brf-trust__item"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="10" width="14" height="10" rx="2"/><path d="M8 10V7a4 4 0 018 0v3"/></svg><div><strong>{{ section.settings.trust_4_title }}</strong><span>{{ section.settings.trust_4_text }}</span></div></div>
+      <div class="brf-trust__item"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="10" width="14" height="10" rx="2"/><path d="M8 10V7a4 4 0 018 0v3"/></svg><div><strong>{{ section.settings.trust_4_title }}</strong><span>{% unless section.settings.trust_4_text contains 'Clearpay' %}Clearpay, {% endunless %}{{ section.settings.trust_4_text }}</span></div></div>
     </div>
   </div>
 
@@ -311,7 +649,7 @@
             {%- if product.has_only_default_variant -%}
               {%- form 'product', product -%}
                 <input type="hidden" name="id" value="{{ product.selected_or_first_available_variant.id }}">
-                <button type="submit" class="brf-btn brf-btn--line">Add to basket</button>
+                <button type="submit" class="brf-btn brf-btn--line">Add to bag</button>
               {%- endform -%}
             {%- else -%}
               <a class="brf-btn brf-btn--line" href="{{ product.url | within: hw }}">Choose options</a>
@@ -319,8 +657,46 @@
           </div>
         {%- endfor -%}
       </div>
+      {%- comment -%} R11. Halloween Home & Décor (smart collection: type Halloween + tag home-lifestyle) {%- endcomment -%}
+      {%- assign hd = collections['halloween-home-decor'] -%}
+      {%- if hd.products_count > 0 -%}
+        <div class="brf-spooky__decor">
+          <div class="brf-spooky__decor-head">
+            <div>
+              <span class="brf-eyebrow">Spooky home décor</span>
+              <h3 class="brf-serif">Haunt the house too</h3>
+            </div>
+            <a class="brf-spooky__decor-all" href="{{ hd.url }}">See all {{ hd.products_count }} &rarr;</a>
+          </div>
+          <div class="brf-spooky__rail">
+            {%- for product in hd.products limit: 8 -%}
+              <div class="brf-card">
+                <a class="brf-card__media" href="{{ product.url | within: hd }}">
+                  <div class="brf-swatch">{% if product.featured_image %}<img src="{{ product.featured_image | img_url: '600x' }}" alt="{{ product.featured_image.alt | default: product.title | escape }}" loading="lazy">{% endif %}</div>
+                  {%- unless product.available -%}<span class="brf-badge">Sold out</span>{%- endunless -%}
+                </a>
+                <a class="brf-card__title" href="{{ product.url | within: hd }}">{{ product.title }}</a>
+                <div class="brf-card__price">
+                  {%- if product.price_varies -%}<strong>From {{ product.price_min | money }}</strong>
+                  {%- elsif product.compare_at_price > product.price -%}<strong class="is-sale">{{ product.price | money }}</strong><s>{{ product.compare_at_price | money }}</s>
+                  {%- else -%}<strong>{{ product.price | money }}</strong>{%- endif -%}
+                </div>
+                {%- if product.has_only_default_variant and product.available -%}
+                  {%- form 'product', product -%}
+                    <input type="hidden" name="id" value="{{ product.selected_or_first_available_variant.id }}">
+                    <button type="submit" class="brf-btn brf-btn--line">Add to bag</button>
+                  {%- endform -%}
+                {%- else -%}
+                  <a class="brf-btn brf-btn--line" href="{{ product.url | within: hd }}">{% if product.available %}Choose options{% else %}View{% endif %}</a>
+                {%- endif -%}
+              </div>
+            {%- endfor -%}
+          </div>
+        </div>
+      {%- endif -%}
       <div class="brf-spooky__foot">
         <a class="brf-btn brf-btn--pumpkin" href="{{ hw.url }}">Shop all {{ hw.products_count }} Halloween fabrics</a>
+        {%- if hd.products_count > 0 -%}<a class="brf-btn brf-btn--line brf-spooky__foot-2" href="{{ hd.url }}">Shop Halloween décor</a>{%- endif -%}
       </div>
     </div>
   </section>
@@ -417,7 +793,7 @@
             {%- if product.available and product.has_only_default_variant -%}
               {%- form 'product', product -%}
                 <input type="hidden" name="id" value="{{ product.selected_or_first_available_variant.id }}">
-                <button type="submit" class="brf-btn brf-btn--line">Add to basket</button>
+                <button type="submit" class="brf-btn brf-btn--line">Add to bag</button>
               {%- endform -%}
             {%- elsif product.available -%}
               <a class="brf-btn brf-btn--line" href="{{ product.url | within: feat }}">Choose options</a>
@@ -471,7 +847,7 @@
           {%- if section.settings.outlet_hours != blank -%}<div><strong>Opening hours</strong><br><span>{{ section.settings.outlet_hours | newline_to_br }}</span></div>{%- endif -%}
         </div>
         {%- endif -%}
-        <a href="{{ section.settings.outlet_link | default: '/pages/about-us' }}">{{ section.settings.outlet_link_label }} &rarr;</a>
+        <a href="{{ section.settings.outlet_link | default: '/pages/contact' }}">{{ section.settings.outlet_link_label }} &rarr;</a>
       </div>
     </div>
   </section>
@@ -521,6 +897,23 @@
     { "type": "collection", "id": "hero_collection", "label": "Featured collection (card over image)" },
     { "type": "text", "id": "hero_card_label", "label": "Card label", "default": "New in" },
     { "type": "text", "id": "hero_card_title", "label": "Card title", "default": "Rose & Hubble Cotton Poplins" },
+    { "type": "header", "content": "Home & Lifestyle banner slide" },
+    { "type": "checkbox", "id": "hl_enable", "label": "Show Home & Lifestyle slide", "default": true },
+    { "type": "text", "id": "hl_eyebrow", "label": "Small label", "default": "Home & Lifestyle" },
+    { "type": "text", "id": "hl_heading", "label": "Heading", "default": "Big-brand bits for every room." },
+    { "type": "textarea", "id": "hl_text", "label": "Text", "default": "Our new department: homeware, garden, furniture, tech, toys and more, at the same friendly prices as our fabrics. New curtains deserve a comfy new sofa, right?" },
+    { "type": "text", "id": "hl_btn_label", "label": "Button label", "default": "Shop Home & Lifestyle" },
+    { "type": "range", "id": "hl_autoplay", "label": "Seconds per slide", "min": 3, "max": 12, "step": 1, "default": 7 },
+    { "type": "checkbox", "id": "hs_halloween", "label": "Show Halloween slide", "info": "Hides itself after the Halloween end date below", "default": true },
+    { "type": "text", "id": "hs_hw_eyebrow", "label": "Halloween slide label", "default": "Spooky season" },
+    { "type": "textarea", "id": "hs_hw_quotes", "label": "Halloween slide quotes", "info": "One per line. Add the author after a | sign", "default": "Double, double toil and trouble; fire burn and cauldron bubble.|William Shakespeare, Macbeth\nDeep into that darkness peering, long I stood there, wondering, fearing.|Edgar Allan Poe, The Raven\nWhen witches go riding and black cats are seen, the moon laughs and whispers, 'tis near Halloween.|Traditional rhyme\nThe needle is sharp, the thread is black, once you sew a cape there's no turning back.|The Bull Ring cutting table" },
+    { "type": "header", "content": "Christmas banner slide" },
+    { "type": "checkbox", "id": "hs_xmas", "label": "Show Christmas slide", "default": true },
+    { "type": "text", "id": "xmas_end", "label": "Hide Christmas slide after", "info": "Date as YYYY-MM-DD. Leave empty to keep showing.", "default": "2026-12-25" },
+    { "type": "collection", "id": "xmas_collection", "label": "Christmas collection", "info": "Defaults to Christmas" },
+    { "type": "text", "id": "xmas_eyebrow", "label": "Small label", "default": "Christmas at Bull Ring" },
+    { "type": "text", "id": "xmas_heading", "label": "Heading", "default": "Deck the halls (and the hems)." },
+    { "type": "textarea", "id": "xmas_text", "label": "Text", "default": "Festive prints, sparkly glitter, cosy felts and tartans for stockings, tree skirts, table runners and matching Christmas jumpers. Elves cut to order, same-day dispatch." },
     { "type": "header", "content": "Reassurance strip" },
     { "type": "text", "id": "trust_1_title", "label": "Item 1 title", "default": "Free UK delivery over £65" },
     { "type": "text", "id": "trust_1_text", "label": "Item 1 text", "default": "2-day tracked, UK mainland" },
@@ -528,6 +921,17 @@
     { "type": "text", "id": "trust_2_text", "label": "Item 2 text", "default": "Order before 10pm, Mon–Fri" },
     { "type": "text", "id": "trust_3_title", "label": "Item 3 title", "default": "Wholesale & trade" },
     { "type": "text", "id": "trust_3_text", "label": "Item 3 text", "default": "Rolls and job lots for business" },
+    { "type": "header", "content": "Star buy banner", "info": "One product in its own banner under the main banner. It hides itself when the product sells out." },
+    { "type": "checkbox", "id": "spot_show", "label": "Show star buy banner", "default": true },
+    { "type": "product", "id": "spot_product", "label": "Product", "info": "Leave empty to show the Trudeau Seasoning Station" },
+    { "type": "text", "id": "spot_eyebrow", "label": "Badge", "default": "Kitchen star buy" },
+    { "type": "text", "id": "spot_heading", "label": "Heading", "default": "Spin. Sprinkle. Serve!" },
+    { "type": "textarea", "id": "spot_text", "label": "Text", "default": "Salt, pepper, oil and vinegar all on one twirly acacia lazy susan. A little table-top magic for every meal, and a cracking gift for the cook in your life." },
+    { "type": "text", "id": "spot_btn", "label": "Second button label", "default": "Take a look" },
+    { "type": "header", "content": "Clearpay banner" },
+    { "type": "checkbox", "id": "cp_show", "label": "Show Clearpay banner", "default": true },
+    { "type": "text", "id": "cp_heading", "label": "Heading (Clearpay logo follows)", "default": "Now accepting" },
+    { "type": "textarea", "id": "cp_text", "label": "Text", "default": "Craft now, pay later! Split your fabric haul into 4 interest-free payments, one every 2 weeks. Just pick Clearpay at checkout." },
     { "type": "text", "id": "trust_4_title", "label": "Item 4 title", "default": "Secure checkout" },
     { "type": "text", "id": "trust_4_text", "label": "Item 4 text", "default": "PayPal, Apple Pay, cards" },
     { "type": "header", "content": "Halloween" },

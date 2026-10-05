@@ -1,0 +1,557 @@
+{%- comment -%}
+  Bull Ring Fabrics — bespoke mega menu (desktop) + image-led drawer (mobile).
+  Menu structure comes from the header's navigation menu (main-menu-2026).
+  Promo tiles can be overridden in Customize → Header → "Mega menu promo" blocks.
+  Params: menu (linklist), blocks (section.blocks)
+{%- endcomment -%}
+
+{%- liquid
+  assign c_sale = collections['sale']
+  assign c_clear = collections['pound-fabrics']
+  assign c_hallo = collections['halloween']
+  assign c_trade = collections['bulk-buy-trade']
+
+  assign clear_from = nil
+  for p in c_clear.products
+    if p.available
+      if clear_from == nil or p.price < clear_from
+        assign clear_from = p.price
+      endif
+    endif
+  endfor
+
+  assign sale_img = nil
+  for p in c_sale.products
+    if p.available and p.featured_image and p.price < 3000
+      assign sale_img = p.featured_image
+      break
+    endif
+  endfor
+  assign clear_img = nil
+  for p in c_clear.products
+    if p.available and p.featured_image
+      assign clear_img = p.featured_image
+      break
+    endif
+  endfor
+  assign hallo_img = nil
+  for p in c_hallo.products
+    if p.available and p.featured_image
+      assign pt = p.title | downcase
+      if pt contains 'skull' or pt contains 'spider' or pt contains 'pumpkin' or pt contains 'bat' or pt contains 'halloween'
+        assign hallo_img = p.featured_image
+        break
+      endif
+    endif
+  endfor
+  if hallo_img == nil
+    for p in c_hallo.products
+      if p.available and p.featured_image
+        assign hallo_img = p.featured_image
+        break
+      endif
+    endfor
+  endif
+-%}
+
+{%- capture promo_sale -%}
+  {%- if c_sale.products_count > 0 -%}
+  <a class="brf-promo brf-promo--sale" href="{{ c_sale.url }}">
+    {%- if sale_img -%}<img src="{{ sale_img | image_url: width: 640 }}" alt="" loading="lazy" width="640" height="640">{%- endif -%}
+    <span class="brf-promo__body">
+      <span class="brf-promo__tag">Sale</span>
+      <span class="brf-promo__title">Fabric sale</span>
+      <span class="brf-promo__text">{{ c_sale.products_count }} fabrics reduced – while stocks last</span>
+      <span class="brf-promo__cta">Shop the sale</span>
+    </span>
+  </a>
+  {%- endif -%}
+{%- endcapture -%}
+
+{%- capture promo_clear -%}
+  {%- if c_clear.products_count > 0 -%}
+  <a class="brf-promo brf-promo--clear" href="{{ c_clear.url }}">
+    {%- if clear_img -%}<img src="{{ clear_img | image_url: width: 640 }}" alt="" loading="lazy" width="640" height="640">{%- endif -%}
+    <span class="brf-promo__body">
+      <span class="brf-promo__tag brf-promo__tag--gold">Clearance</span>
+      <span class="brf-promo__title">Pound Fabrics</span>
+      <span class="brf-promo__text">{% if clear_from %}From {{ clear_from | money }} a metre{% else %}Bargain fabrics by the metre{% endif %}</span>
+      <span class="brf-promo__cta">Shop clearance</span>
+    </span>
+  </a>
+  {%- endif -%}
+{%- endcapture -%}
+
+{%- capture promo_hallo -%}
+  {%- if c_hallo.products_count > 0 -%}
+  <a class="brf-promo brf-promo--hallo" href="{{ c_hallo.url }}">
+    {%- if hallo_img -%}<img src="{{ hallo_img | image_url: width: 640 }}" alt="" loading="lazy" width="640" height="640">{%- endif -%}
+    <span class="brf-promo__body">
+      <span class="brf-promo__tag brf-promo__tag--orange">Spooky savings</span>
+      <span class="brf-promo__title">Halloween fabrics</span>
+      <span class="brf-promo__text">Prints, lamé &amp; tulle for costumes and décor</span>
+      <span class="brf-promo__cta">Shop Halloween</span>
+    </span>
+  </a>
+  {%- endif -%}
+{%- endcapture -%}
+
+{%- capture promo_trade -%}
+  <a class="brf-promo brf-promo--trade" href="/pages/wholesale-trade-enquiries">
+    <span class="brf-promo__body">
+      <span class="brf-promo__tag">Trade</span>
+      <span class="brf-promo__title">Buying for a business?</span>
+      <span class="brf-promo__text">Full rolls and bulk pricing for schools, theatres, upholsterers and makers.</span>
+      <span class="brf-promo__cta">Open a trade enquiry</span>
+    </span>
+  </a>
+{%- endcapture -%}
+
+{%- comment -%} ================= DESKTOP ================= {%- endcomment -%}
+<nav class="brf-mm" data-brf-mm aria-label="Main menu">
+  <div class="container">
+    <ul class="brf-mm__bar" role="list">
+      {%- for link in menu.links -%}
+        {%- liquid
+          assign key = link.title | handleize
+          assign url = link.url
+          if key contains 'wholesale' and link.object == nil
+            assign url = c_trade.url | default: '/pages/wholesale-trade-enquiries'
+          endif
+          assign has_kids = false
+          if link.links.size > 0
+            assign has_kids = true
+          endif
+          assign top_is_link = false
+          if key == 'home-lifestyle' and collections['home-lifestyle'].url != blank
+            assign url = collections['home-lifestyle'].url
+            assign top_is_link = true
+          elsif has_kids and pages[key].url != blank
+            # A page with the department's handle (e.g. /pages/dress-fabric) is its landing page:
+            # hover opens the panel, click goes to the landing page.
+            assign url = pages[key].url
+            assign top_is_link = true
+          endif
+          assign panel_id = 'brf-mm-' | append: forloop.index
+        -%}
+        <li class="brf-mm__item" data-brf-item>
+          {%- if has_kids and top_is_link == false -%}
+            <button type="button" class="brf-mm__top" aria-expanded="false" aria-controls="{{ panel_id }}">{{ link.title | strip }}</button>
+          {%- else -%}
+            <a class="brf-mm__top" href="{{ url }}" aria-expanded="false" aria-controls="{{ panel_id }}">{{ link.title | strip }}</a>
+          {%- endif -%}
+
+          <div class="brf-mm__panel" id="{{ panel_id }}" data-brf-panel>
+            <div class="container">
+              {%- if has_kids -%}
+                {%- liquid
+                  assign occ_title = ''
+                  assign occ = ''
+                  assign tiles = ''
+                  assign promo = 'sale'
+                  case key
+                    when 'dress-fabric'
+                      assign occ_title = 'Shop by occasion'
+                      assign occ = 'All dressmaking fabric|/collections/dressmaking-fabric;Bridal & wedding|/collections/bridal-fabric;Prom & party|/collections/sequins;Evening & formal|/collections/satin;Summer dresses|/collections/cotton-fabric;Stretch & dancewear|/collections/stretch-fabric;Costume & cosplay|/collections/lame;Tartan & tailoring|/collections/tartan-check-fabric'
+                      assign tiles = 'satin,lace,sequins,taffeta'
+                      assign promo = 'hallo'
+                    when 'craft-fabric'
+                      assign occ_title = 'Shop by project'
+                      assign occ = 'Quilting & patchwork|/collections/quilting-fabric;Kids’ prints|/collections/kids-novelty-fabric;Kids’ crafts & felt|/collections/felt;Blankets & soft toys|/collections/fleece;Costumes & dress-up|/collections/glitter-fabrics;Outdoor & waterproof|/collections/ripstop;Fabric under £5|/collections/cheap-fabric-under-5'
+                      assign tiles = 'craft-cotton,craft-cotton-prints,felt,fleece'
+                      assign promo = 'clear'
+                    when 'upholstery-curtains'
+                      assign occ_title = 'Shop by room'
+                      assign occ = 'Sofas & armchairs|/collections/upholstery-fabric;Curtains & blinds|/collections/curtain-fabric;Linen & linen-look|/collections/linen-fabric;Cushions & throws|/collections/tapestry;Kitchen & dining|/collections/pvc;Car seats & interiors|/collections/car-upholstery-fabric'
+                      assign tiles = 'plush-velvet,curtaining-brocades,tapestry,leather'
+                      assign promo = 'sale'
+                    when 'home-lifestyle'
+                      assign occ_title = 'Popular right now'
+                      assign occ = 'Garden & outdoor|/collections/garden-outdoor;Storage ideas|/collections/storage-organisation;Cleaning essentials|/collections/cleaning-household'
+                      assign tiles = 'garden-outdoor,storage-organisation,cleaning-household,diy-tools'
+                      assign promo = 'clear'
+                  endcase
+                  assign occ_list = occ | split: ';'
+                  assign tile_list = tiles | split: ','
+                -%}
+                <div class="brf-mm__grid">
+                  <div class="brf-mm__col brf-mm__col--links">
+                    <p class="brf-mm__h">{% if key == 'home-lifestyle' %}Shop by category{% else %}Shop by fabric{% endif %}</p>
+                    <ul class="brf-mm__links{% if link.links.size > 8 %} brf-mm__links--2{% endif %}" role="list">
+                      {%- for sub in link.links -%}
+                        <li><a href="{{ sub.url }}" class="brf-mm__link">{{ sub.title }}</a></li>
+                      {%- endfor -%}
+                    </ul>
+                    {%- if top_is_link -%}
+                      <a class="brf-mm__all" href="{{ url }}">Explore all {{ link.title | strip }} <span aria-hidden="true">→</span></a>
+                    {%- else -%}
+                      <a class="brf-mm__all" href="/collections">Browse all categories <span aria-hidden="true">→</span></a>
+                    {%- endif -%}
+                  </div>
+
+                  <div class="brf-mm__col brf-mm__col--occ">
+                    {%- if occ != '' -%}
+                      <p class="brf-mm__h">{{ occ_title }}</p>
+                      <ul class="brf-mm__links" role="list">
+                        {%- for o in occ_list -%}
+                          {%- assign bits = o | split: '|' -%}
+                          <li><a href="{{ bits[1] }}" class="brf-mm__link">{{ bits[0] }}</a></li>
+                        {%- endfor -%}
+                      </ul>
+                    {%- endif -%}
+                    {%- if key == 'home-lifestyle' -%}
+                      <a class="brf-mm__help" href="{{ url }}">
+                        <span class="brf-mm__help-t">Discover {{ link.title | strip }}</span>
+                        <span class="brf-mm__help-s">Every category on one page, with in-stock items ready to send today</span>
+                      </a>
+                    {%- else -%}
+                      <a class="brf-mm__help" href="/pages/how-to-buy-fabrics">
+                        <span class="brf-mm__help-t">New to fabric?</span>
+                        <span class="brf-mm__help-s">How buying by the metre works, and which fabric to pick</span>
+                      </a>
+                    {%- endif -%}
+                  </div>
+
+                  <div class="brf-mm__col brf-mm__col--tiles">
+                    <p class="brf-mm__h">Most popular</p>
+                    <div class="brf-mm__tiles">
+                      {%- for h in tile_list -%}
+                        {%- assign c = collections[h] -%}
+                        {%- if c == blank or c.products_count == 0 -%}{%- continue -%}{%- endif -%}
+                        {%- assign cimg = c.image | default: c.products.first.featured_image -%}
+                        <a class="brf-tile" href="{{ c.url }}">
+                          <span class="brf-tile__img">{%- if cimg -%}<img src="{{ cimg | image_url: width: 320, height: 320, crop: 'center' }}" alt="" loading="lazy" width="320" height="320">{%- endif -%}</span>
+                          <span class="brf-tile__t">{% render 'brf-mm-label', handle: h, fallback: c.title %}</span>
+                          <span class="brf-tile__s">{% render 'brf-mm-hint', handle: h %}</span>
+                        </a>
+                      {%- endfor -%}
+                    </div>
+                  </div>
+
+                  <div class="brf-mm__col brf-mm__col--promo">
+                    {%- render 'brf-mm-promo', blocks: blocks, key: key, fallback: promo, promo_sale: promo_sale, promo_clear: promo_clear, promo_hallo: promo_hallo, promo_trade: promo_trade -%}
+                  </div>
+                </div>
+              {%- else -%}
+                {%- liquid
+                  assign c = link.object
+                  if key contains 'wholesale'
+                    assign c = c_trade
+                  endif
+                  assign blurb = ''
+                  assign promo = 'sale'
+                  case key
+                    when 'rose-hubble'
+                      assign blurb = 'Soft, breathable 100% cotton poplin in cheerful prints – easy to sew and perfect for summer dresses, shirts, kidswear and quilting.'
+                      assign promo = 'sale'
+                    when 'halloween'
+                      assign blurb = 'Skulls, cobwebs, pumpkins and gothic lace – everything for costumes, parties and spooky décor, cut to your length.'
+                      assign promo = 'clear'
+                    when 'pound-fabrics'
+                      assign blurb = 'Our clearance corner – end-of-roll and bargain fabrics at pocket-money prices. Stock changes weekly.'
+                      assign promo = 'sale'
+                    when 'wholesale-trade'
+                      assign blurb = 'Full rolls and bulk lengths at trade prices for schools, theatres, upholsterers, event stylists and makers.'
+                      assign promo = 'trade'
+                  endcase
+                  if c.description != blank and blurb == ''
+                    assign blurb = c.description | strip_html | truncatewords: 30
+                  endif
+                -%}
+                <div class="brf-mm__grid brf-mm__grid--feature">
+                  <div class="brf-mm__col brf-mm__col--intro">
+                    <p class="brf-mm__h">{{ link.title | strip }}</p>
+                    <p class="brf-mm__intro">{{ blurb }}</p>
+                    <a class="brf-mm__btn" href="{{ url }}">Shop {{ link.title | strip }}{% assign c_n = c.products_count | plus: 0 %}{% if c_n > 0 %} <span class="brf-mm__btn-n">{{ c_n }}</span>{% endif %}</a>
+                    {%- if key contains 'wholesale' -%}
+                      <a class="brf-mm__all" href="/pages/wholesale-trade-enquiries">Trade enquiries <span aria-hidden="true">→</span></a>
+                    {%- endif -%}
+                  </div>
+                  <div class="brf-mm__col brf-mm__col--products">
+                    <p class="brf-mm__h">{% if key == 'pound-fabrics' %}Bargains in stock{% else %}Popular picks{% endif %}</p>
+                    <div class="brf-mm__prods">
+                      {%- assign shown = 0 -%}
+                      {%- for p in c.products -%}
+                        {%- unless p.available -%}{%- continue -%}{%- endunless -%}
+                        {%- unless key contains 'wholesale' -%}{%- if p.price > 3000 or p.title contains 'Roll' or p.title contains 'Wholesale' -%}{%- continue -%}{%- endif -%}{%- endunless -%}
+                        {%- render 'brf-mm-product', p: p -%}
+                        {%- assign shown = shown | plus: 1 -%}
+                        {%- if shown >= 4 -%}{%- break -%}{%- endif -%}
+                      {%- endfor -%}
+                    </div>
+                  </div>
+                  <div class="brf-mm__col brf-mm__col--promo">
+                    {%- render 'brf-mm-promo', blocks: blocks, key: key, fallback: promo, promo_sale: promo_sale, promo_clear: promo_clear, promo_hallo: promo_hallo, promo_trade: promo_trade -%}
+                  </div>
+                </div>
+              {%- endif -%}
+            </div>
+          </div>
+        </li>
+      {%- endfor -%}
+
+      {%- if c_sale.products_count > 0 -%}
+        <li class="brf-mm__item" data-brf-item>
+          {%- comment -%} Sale is a straight link to the sale page, with no dropdown {%- endcomment -%}
+          <a class="brf-mm__top brf-mm__top--sale" href="{{ c_sale.url }}">Sale</a>
+        </li>
+      {%- endif -%}
+    </ul>
+  </div>
+</nav>
+
+{%- comment -%} ================= MOBILE DRAWER ================= {%- endcomment -%}
+<div class="brf-md" id="brf-md" data-brf-md aria-hidden="true" role="dialog" aria-modal="true" aria-label="Menu">
+  <div class="brf-md__scrim" data-brf-md-close></div>
+  <div class="brf-md__sheet">
+    <div class="brf-md__view is-active" data-view="root">
+      <div class="brf-md__head">
+        <span class="brf-md__title">Shop</span>
+        <button type="button" class="brf-md__x" data-brf-md-close aria-label="Close menu">{%- render 'icon', icon: 'close' -%}</button>
+      </div>
+      <div class="brf-md__scroll">
+        <div class="brf-md__promos">{{ promo_sale }}{{ promo_clear }}{{ promo_hallo }}</div>
+
+        <ul class="brf-md__list" role="list">
+          {%- for link in menu.links -%}
+            {%- liquid
+              assign key = link.title | handleize
+              assign url = link.url
+              if key contains 'wholesale' and link.object == nil
+                assign url = c_trade.url | default: '/pages/wholesale-trade-enquiries'
+              endif
+              assign thumb = nil
+              assign cc_n = 0
+              if link.links.size > 0
+                for sub in link.links
+                  if sub.object.image
+                    assign thumb = sub.object.image
+                    break
+                  endif
+                endfor
+                assign sub_n = link.links.size
+              else
+                assign cc = link.object
+                if key contains 'wholesale'
+                  assign cc = c_trade
+                endif
+                assign thumb = cc.image | default: cc.products.first.featured_image
+                assign cc_n = cc.products_count | plus: 0
+              endif
+            -%}
+            <li>
+              {%- if link.links.size > 0 -%}
+                <button type="button" class="brf-md__row" data-brf-go="m-{{ forloop.index }}">
+              {%- else -%}
+                <a class="brf-md__row" href="{{ url }}">
+              {%- endif -%}
+                  <span class="brf-md__thumb">{%- if thumb -%}<img src="{{ thumb | image_url: width: 120, height: 120, crop: 'center' }}" alt="" loading="lazy" width="60" height="60">{%- endif -%}</span>
+                  <span class="brf-md__row-t">{{ link.title | strip }}
+                    <small>{%- if link.links.size > 0 -%}{{ sub_n }} categories{%- elsif cc_n > 0 -%}{{ cc_n }} products{%- endif -%}</small>
+                  </span>
+                  <span class="brf-md__chev" aria-hidden="true">›</span>
+              {%- if link.links.size > 0 -%}</button>{%- else -%}</a>{%- endif -%}
+            </li>
+          {%- endfor -%}
+          {%- if c_sale.products_count > 0 -%}
+            <li>
+              <a class="brf-md__row brf-md__row--sale" href="{{ c_sale.url }}">
+                <span class="brf-md__thumb">{%- if sale_img -%}<img src="{{ sale_img | image_url: width: 120, height: 120, crop: 'center' }}" alt="" loading="lazy" width="60" height="60">{%- endif -%}</span>
+                <span class="brf-md__row-t">Sale<small>{{ c_sale.products_count }} fabrics reduced</small></span>
+                <span class="brf-md__chev" aria-hidden="true">›</span>
+              </a>
+            </li>
+          {%- endif -%}
+        </ul>
+
+        <div class="brf-md__help">
+          <a href="/pages/how-to-buy-fabrics"><strong>New to fabric?</strong> How buying by the metre works</a>
+          <a href="/pages/delivery-times">Delivery</a>
+          <a href="/pages/returns-policy">Returns</a>
+          <a href="/pages/contact">Contact us</a>
+          <a href="{% if customer %}/account{% else %}/account/login{% endif %}">{% if customer %}My account{% else %}Sign in{% endif %}</a>
+        </div>
+      </div>
+    </div>
+
+    {%- for link in menu.links -%}
+      {%- if link.links.size == 0 -%}{%- continue -%}{%- endif -%}
+      {%- liquid
+        assign key = link.title | handleize
+        assign occ_title = ''
+        assign occ = ''
+        assign promo = 'sale'
+        case key
+          when 'dress-fabric'
+            assign occ_title = 'Shop by occasion'
+            assign occ = 'All dressmaking fabric|/collections/dressmaking-fabric;Bridal & wedding|/collections/bridal-fabric;Prom & party|/collections/sequins;Evening & formal|/collections/satin;Summer dresses|/collections/cotton-fabric;Stretch & dancewear|/collections/stretch-fabric;Costume & cosplay|/collections/lame;Tartan & tailoring|/collections/tartan-check-fabric'
+            assign promo = 'hallo'
+          when 'craft-fabric'
+            assign occ_title = 'Shop by project'
+            assign occ = 'Quilting & patchwork|/collections/quilting-fabric;Kids’ prints|/collections/kids-novelty-fabric;Kids’ crafts & felt|/collections/felt;Blankets & soft toys|/collections/fleece;Costumes & dress-up|/collections/glitter-fabrics;Outdoor & waterproof|/collections/ripstop;Fabric under £5|/collections/cheap-fabric-under-5'
+            assign promo = 'clear'
+          when 'upholstery-curtains'
+            assign occ_title = 'Shop by room'
+            assign occ = 'Sofas & armchairs|/collections/upholstery-fabric;Curtains & blinds|/collections/curtain-fabric;Linen & linen-look|/collections/linen-fabric;Cushions & throws|/collections/tapestry;Kitchen & dining|/collections/pvc;Car seats & interiors|/collections/car-upholstery-fabric'
+          when 'home-lifestyle'
+            assign promo = 'clear'
+        endcase
+        assign occ_list = occ | split: ';'
+      -%}
+      <div class="brf-md__view" data-view="m-{{ forloop.index }}" aria-hidden="true">
+        <div class="brf-md__head">
+          <button type="button" class="brf-md__back" data-brf-back aria-label="Back">‹</button>
+          <span class="brf-md__title">{{ link.title | strip }}</span>
+          <button type="button" class="brf-md__x" data-brf-md-close aria-label="Close menu">{%- render 'icon', icon: 'close' -%}</button>
+        </div>
+        <div class="brf-md__scroll">
+          {%- if occ != '' -%}
+            <p class="brf-md__h">{{ occ_title }}</p>
+            <div class="brf-md__chips">
+              {%- for o in occ_list -%}
+                {%- assign bits = o | split: '|' -%}
+                <a href="{{ bits[1] }}" class="brf-md__chip">{{ bits[0] }}</a>
+              {%- endfor -%}
+            </div>
+          {%- endif -%}
+          {%- liquid
+            assign feat_url = ''
+            assign feat_sub = ''
+            if key == 'home-lifestyle' and collections['home-lifestyle'].url != blank
+              assign feat_url = collections['home-lifestyle'].url
+              assign feat_sub = collections['home-lifestyle'].products_count | append: ' products across ' | append: link.links.size | append: ' categories'
+            elsif link.links.size > 0 and pages[key].url != blank
+              assign feat_url = pages[key].url
+              assign feat_sub = link.links.size | append: ' fabric types on one page'
+            endif
+          -%}
+          {%- if feat_url != '' -%}
+            <style>.brf-md__row--feature{margin:4px 0 16px;padding:14px 16px;border-radius:16px;background:#F6F3EE}.brf-md__row--feature .brf-md__row-t{font-weight:600}</style>
+            <a class="brf-md__row brf-md__row--feature" href="{{ feat_url }}">
+              <span class="brf-md__row-t">Explore all {{ link.title | strip }}<small>{{ feat_sub }}</small></span>
+              <span class="brf-md__chev" aria-hidden="true">›</span>
+            </a>
+          {%- endif -%}
+          <p class="brf-md__h">{% if key == 'home-lifestyle' %}Shop by category{% else %}Shop by fabric{% endif %}</p>
+          <div class="brf-md__grid">
+            {%- for sub in link.links -%}
+              {%- assign so = sub.object -%}
+              {%- assign simg = so.image | default: so.products.first.featured_image -%}
+              <a class="brf-tile brf-tile--m" href="{{ sub.url }}">
+                <span class="brf-tile__img">{%- if simg -%}<img src="{{ simg | image_url: width: 300, height: 300, crop: 'center' }}" alt="" loading="lazy" width="300" height="300">{%- endif -%}</span>
+                <span class="brf-tile__t">{{ sub.title }}</span>
+                {%- if so.handle -%}<span class="brf-tile__s">{% render 'brf-mm-hint', handle: so.handle %}</span>{%- endif -%}
+              </a>
+            {%- endfor -%}
+          </div>
+          <div class="brf-md__promo">
+            {%- render 'brf-mm-promo', blocks: blocks, key: key, fallback: promo, promo_sale: promo_sale, promo_clear: promo_clear, promo_hallo: promo_hallo, promo_trade: promo_trade -%}
+          </div>
+          <a class="brf-md__allcats" href="/collections">Browse all categories →</a>
+        </div>
+      </div>
+    {%- endfor -%}
+  </div>
+</div>
+
+<script>
+(function(){
+  /* ---------- Desktop mega menu ---------- */
+  var nav = document.querySelector('[data-brf-mm]');
+  if (nav && !nav.__brf) {
+    nav.__brf = true;
+    var items = [].slice.call(nav.querySelectorAll('[data-brf-item]'));
+    var openItem = null, tOpen = null, tClose = null;
+    var scrim = document.createElement('div');
+    scrim.className = 'brf-mm__scrim';
+    document.body.appendChild(scrim);
+
+    function place(){ var r = nav.getBoundingClientRect(); scrim.style.top = Math.max(0, r.bottom) + 'px'; }
+    function open(li){
+      if (openItem === li) return;
+      if (openItem) close(openItem, true);
+      openItem = li; li.classList.add('is-open');
+      var t = li.querySelector('.brf-mm__top'); t.setAttribute('aria-expanded','true');
+      place(); scrim.classList.add('is-on'); document.documentElement.classList.add('brf-mm-open');
+    }
+    function close(li, swap){
+      li.classList.remove('is-open');
+      li.querySelector('.brf-mm__top').setAttribute('aria-expanded','false');
+      if (openItem === li) openItem = null;
+      if (!swap) { scrim.classList.remove('is-on'); document.documentElement.classList.remove('brf-mm-open'); }
+    }
+    function closeAll(){ if (openItem) close(openItem); }
+
+    items.forEach(function(li){
+      var top = li.querySelector('.brf-mm__top');
+      var hasPanel = !!li.querySelector('[data-brf-panel]');
+      li.addEventListener('mouseenter', function(e){
+        if (e.pointerType === 'touch') return;
+        if (!hasPanel) { clearTimeout(tOpen); clearTimeout(tClose); tClose = setTimeout(closeAll, 60); return; }
+        clearTimeout(tClose); clearTimeout(tOpen);
+        tOpen = setTimeout(function(){ open(li); }, openItem ? 0 : 110);
+      });
+      li.addEventListener('mouseleave', function(){
+        clearTimeout(tOpen); clearTimeout(tClose);
+        tClose = setTimeout(closeAll, 180);
+      });
+      top.addEventListener('click', function(e){
+        if (!hasPanel) return;
+        if (top.tagName === 'BUTTON') { e.preventDefault(); openItem === li ? close(li) : open(li); return; }
+        /* Link with a panel: first tap on touch opens the panel, second tap follows the link */
+        if (window.matchMedia('(hover: none)').matches && openItem !== li) { e.preventDefault(); open(li); }
+      });
+      top.addEventListener('keydown', function(e){
+        if (!hasPanel) return;
+        if (e.key === 'ArrowDown') { e.preventDefault(); open(li); var f = li.querySelector('[data-brf-panel] a'); if (f) f.focus(); }
+      });
+    });
+    nav.addEventListener('keydown', function(e){
+      if (e.key === 'Escape' && openItem) { var t = openItem.querySelector('.brf-mm__top'); closeAll(); t.focus(); }
+    });
+    nav.addEventListener('focusout', function(e){ if (!nav.contains(e.relatedTarget)) closeAll(); });
+    scrim.addEventListener('mouseenter', function(){ clearTimeout(tClose); tClose = setTimeout(closeAll, 60); });
+    scrim.addEventListener('click', closeAll);
+    window.addEventListener('scroll', function(){ if (openItem) place(); }, {passive:true});
+  }
+
+  /* ---------- Mobile drawer ---------- */
+  var md = document.querySelector('[data-brf-md]');
+  if (md && !md.__brf) {
+    md.__brf = true;
+    document.body.appendChild(md); /* escape the glass header so position:fixed is relative to the viewport */
+    var stack = [];
+    var root = md.querySelector('[data-view="root"]');
+    function show(v, back){
+      var cur = md.querySelector('.brf-md__view.is-active');
+      if (cur === v) return;
+      cur.classList.remove('is-active'); cur.classList.add(back ? 'is-right' : 'is-left'); cur.setAttribute('aria-hidden','true');
+      v.classList.remove('is-left','is-right'); v.classList.add('is-active'); v.removeAttribute('aria-hidden');
+      var s = v.querySelector('.brf-md__scroll'); if (s && !back) s.scrollTop = 0;
+      setTimeout(function(){ var f = v.querySelector('.brf-md__back, .brf-md__x'); if (f) f.focus({preventScroll:true}); }, 260);
+    }
+    function openMd(){
+      md.classList.add('is-open'); md.setAttribute('aria-hidden','false');
+      document.documentElement.classList.add('brf-md-open');
+      [].forEach.call(document.querySelectorAll('[data-brf-mm-open]'), function(b){ b.setAttribute('aria-expanded','true'); });
+      setTimeout(function(){ var x = root.querySelector('.brf-md__x'); if (x) x.focus({preventScroll:true}); }, 60);
+    }
+    function closeMd(){
+      md.classList.remove('is-open'); md.setAttribute('aria-hidden','true');
+      document.documentElement.classList.remove('brf-md-open');
+      [].forEach.call(document.querySelectorAll('[data-brf-mm-open]'), function(b){ b.setAttribute('aria-expanded','false'); });
+      setTimeout(function(){ stack = []; [].forEach.call(md.querySelectorAll('.brf-md__view'), function(v){ v.classList.remove('is-active','is-left','is-right'); if (v !== root) v.setAttribute('aria-hidden','true'); }); root.classList.add('is-active'); }, 300);
+    }
+    document.addEventListener('click', function(e){
+      var o = e.target.closest('[data-brf-mm-open]');
+      if (o) { e.preventDefault(); e.stopPropagation(); md.classList.contains('is-open') ? closeMd() : openMd(); return; }
+      if (!md.contains(e.target)) return;
+      if (e.target.closest('[data-brf-md-close]')) { closeMd(); return; }
+      var g = e.target.closest('[data-brf-go]');
+      if (g) { var v = md.querySelector('[data-view="' + g.getAttribute('data-brf-go') + '"]'); if (v) { stack.push(md.querySelector('.brf-md__view.is-active')); show(v); } return; }
+      if (e.target.closest('[data-brf-back]')) { show(stack.pop() || root, true); }
+    }, true);
+    document.addEventListener('keydown', function(e){ if (e.key === 'Escape' && md.classList.contains('is-open')) closeMd(); });
+  }
+})();
+</script>
