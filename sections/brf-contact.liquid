@@ -1,0 +1,624 @@
+{%- comment -%}
+  Bull Ring Fabrics — bespoke Contact us page (/pages/contact, rendered by templates/page.contact.liquid).
+  Live "open now" badge (UK time), three ways to reach us, quick answers before writing, a guided
+  contact form (topic chips, order number when it matters), find-us card with map and hours, and
+  the most-asked questions (with FAQ structured data). Phone, email, hours and address are editable
+  in Customize.
+{%- endcomment -%}
+{%- liquid
+  assign c_phone = section.settings.phone | default: '0330 088 2120'
+  assign c_tel = c_phone | remove: ' ' | remove: '(' | remove: ')' | remove: '-'
+  assign c_email = section.settings.email | default: shop.email
+  assign c_addr = section.settings.address | default: 'Unit 1 Byron Road, Birmingham, B10 0EN'
+  assign c_map_q = c_addr | url_encode
+  assign wk_open = section.settings.weekday_open | default: '10:00'
+  assign wk_close = section.settings.weekday_close | default: '18:00'
+  assign sat = section.settings.saturday | default: 'Closed'
+  assign sun = section.settings.sunday | default: 'Closed'
+-%}
+
+<div class="ct" data-ct data-open="{{ wk_open }}" data-close="{{ wk_close }}" data-sat="{{ sat | escape }}" data-sun="{{ sun | escape }}">
+
+  {%- comment -%} ---------- HERO ---------- {%- endcomment -%}
+  <section class="ct-hero">
+    <div class="ct-hero__glow" aria-hidden="true"></div>
+    <div class="container ct-hero__in">
+      <div class="ct-hero__copy ct-rise">
+        <nav class="ct-crumbs" aria-label="Breadcrumb"><a href="{{ routes.root_url }}">Home</a><span aria-hidden="true">›</span><span aria-current="page">Contact us</span></nav>
+        <p class="ct-status" data-ct-status hidden><span class="ct-status__dot" aria-hidden="true"></span><span data-ct-status-t></span></p>
+        <h1 class="ct-hero__title">Let’s talk fabric.</h1>
+        <p class="ct-hero__text">Whether it’s a question about an order, help choosing the right fabric, or a roll for your business, our Birmingham team is happy to help. Real people, real fabric know-how.</p>
+        <ul class="ct-hero__chips" role="list">
+          <li>Same-day dispatch before 10pm</li>
+          <li>Free UK delivery over £65</li>
+          <li>30-day returns</li>
+        </ul>
+      </div>
+
+      <ul class="ct-ways" role="list">
+        <li class="ct-rise">
+          <a class="ct-way" href="tel:{{ c_tel }}">
+            <span class="ct-way__ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M5 4h3.5l1.8 4.4-2.2 1.4a11 11 0 0 0 6.1 6.1l1.4-2.2L20 15.5V19a1.5 1.5 0 0 1-1.6 1.5A16.5 16.5 0 0 1 3.5 5.6 1.5 1.5 0 0 1 5 4z"/></svg></span>
+            <span class="ct-way__t">Call us</span>
+            <span class="ct-way__v">{{ c_phone }}</span>
+            <span class="ct-way__s" data-ct-phone-note>Monday to Friday, {{ wk_open }} to {{ wk_close }}</span>
+          </a>
+        </li>
+        <li class="ct-rise">
+          <a class="ct-way" href="mailto:{{ c_email }}">
+            <span class="ct-way__ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2.5"/><path d="m4 7 8 6 8-6"/></svg></span>
+            <span class="ct-way__t">Email us</span>
+            <span class="ct-way__v ct-way__v--sm">{{ c_email }}</span>
+            <span class="ct-way__s">Include your order number if you have one</span>
+          </a>
+          <button type="button" class="ct-copy" data-ct-copy="{{ c_email | escape }}" aria-label="Copy email address"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="8" y="8" width="12" height="12" rx="2.5"/><path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2"/></svg><span>Copy</span></button>
+        </li>
+        <li class="ct-rise">
+          <a class="ct-way" href="#ct-form" data-ct-jump>
+            <span class="ct-way__ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3h11A2.5 2.5 0 0 1 20 5.5v8a2.5 2.5 0 0 1-2.5 2.5H10l-4.5 4v-4h0A1.5 1.5 0 0 1 4 14.5z"/><path d="M8 8.5h8M8 11.5h5"/></svg></span>
+            <span class="ct-way__t">Send a message</span>
+            <span class="ct-way__v ct-way__v--sm">Use our quick form</span>
+            <span class="ct-way__s">Pick a topic and we’ll get it to the right person</span>
+          </a>
+        </li>
+      </ul>
+    </div>
+  </section>
+
+  {%- comment -%} ---------- QUICK ANSWERS ---------- {%- endcomment -%}
+  <section class="ct-sec" aria-labelledby="ct-quick-t">
+    <div class="container">
+      <div class="ct-sec__head ct-rise">
+        <h2 class="ct-sec__title" id="ct-quick-t">Quick answers, no waiting.</h2>
+        <p class="ct-sec__sub">Most questions are answered here in seconds.</p>
+      </div>
+      <div class="ct-quick">
+        <a class="ct-q ct-q--track ct-rise" href="{{ routes.account_url }}">
+          <span class="ct-q__ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7h11v9H3z"/><path d="M14 10h4l3 3v3h-7"/><circle cx="7" cy="17.5" r="1.8"/><circle cx="17.5" cy="17.5" r="1.8"/></svg></span>
+          <span class="ct-q__t">Where’s my order?</span>
+          <span class="ct-q__s">We email a tracking link the moment your parcel leaves us. You can also see every order in your account.</span>
+          <span class="ct-q__go">Track an order <span aria-hidden="true">›</span></span>
+        </a>
+        <a class="ct-q ct-rise" href="/pages/delivery-times">
+          <span class="ct-q__ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/></svg></span>
+          <span class="ct-q__t">Delivery &amp; dispatch</span>
+          <ul class="ct-q__list" role="list">
+            <li>Order by 10pm Mon–Fri, dispatched the same day</li>
+            <li>Free UK delivery over £65, or £3.99</li>
+            <li>Free next day over £150 (order by 9pm)</li>
+            <li>Europe from £13.95, free over £400</li>
+          </ul>
+          <span class="ct-q__go">Delivery details <span aria-hidden="true">›</span></span>
+        </a>
+        <a class="ct-q ct-rise" href="/pages/returns-policy">
+          <span class="ct-q__ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 14 4 9l5-5"/><path d="M4 9h10.5a5.5 5.5 0 0 1 0 11H11"/></svg></span>
+          <span class="ct-q__t">Returns &amp; refunds</span>
+          <span class="ct-q__s">30 days to return unused, uncut items. Email us your order number and we’ll send a returns label. Fabric cut to your length can only come back if it’s faulty.</span>
+          <span class="ct-q__go">Returns policy <span aria-hidden="true">›</span></span>
+        </a>
+        <a class="ct-q ct-rise" href="/pages/how-much-fabric-do-i-need">
+          <span class="ct-q__ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 16.5 16.5 3l4.5 4.5L7.5 21z"/><path d="m7 13 2 2M10 10l2 2M13 7l2 2"/></svg></span>
+          <span class="ct-q__t">How much fabric do I need?</span>
+          <span class="ct-q__s">Our quantity guide works it out for dresses, curtains, cushions, sofas and more. Fabric is sold by the metre and cut in one continuous length.</span>
+          <span class="ct-q__go">Read the guide <span aria-hidden="true">›</span></span>
+        </a>
+        <a class="ct-q ct-rise" href="/pages/wholesale-trade-enquiries">
+          <span class="ct-q__ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16v12H4z"/><path d="M9 7V5h6v2"/><path d="M4 12h16"/></svg></span>
+          <span class="ct-q__t">Wholesale &amp; trade</span>
+          <span class="ct-q__s">Full rolls and bulk pricing for schools, theatres, upholsterers and makers. We aim to reply to trade enquiries within 2 working days.</span>
+          <span class="ct-q__go">Trade enquiry <span aria-hidden="true">›</span></span>
+        </a>
+        <a class="ct-q ct-rise" href="/pages/how-to-buy-fabrics">
+          <span class="ct-q__ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="7" r="2.5"/><circle cx="6" cy="17" r="2.5"/><path d="M8 8.5 20 17M8 15.5 20 7"/></svg></span>
+          <span class="ct-q__t">Buying by the metre</span>
+          <span class="ct-q__s">Need 8 metres? Choose a quantity of 8. Want it cut into pieces? Add a note at checkout and we’ll cut it to suit.</span>
+          <span class="ct-q__go">How it works <span aria-hidden="true">›</span></span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  {%- comment -%} ---------- FORM + FIND US ---------- {%- endcomment -%}
+  <section class="ct-sec ct-sec--form" id="ct-form">
+    <div class="container ct-split">
+      <div class="ct-card ct-card--form ct-rise">
+        {%- form 'contact', id: 'ct-contact-form', class: 'ct-form' -%}
+          {%- if form.posted_successfully? -%}
+            <div class="ct-sent" data-ct-sent>
+              <span class="ct-sent__tick" aria-hidden="true"><svg viewBox="0 0 52 52" width="64" height="64"><circle cx="26" cy="26" r="24" fill="none" stroke="currentColor" stroke-width="2.5"/><path d="M15 27l7 7 15-15" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+              <h2 class="ct-sent__t">Message received. Thank you!</h2>
+              <p class="ct-sent__s">It’s on its way to our team, and we’ll reply by email as soon as we can. In the meantime, why not have a browse?</p>
+              <div class="ct-sent__ctas">
+                <a class="ct-btn ct-btn--dark" href="{{ routes.collections_url }}">Browse fabrics</a>
+                <a class="ct-btn ct-btn--ghost" href="/collections/new-arrivals">New arrivals</a>
+              </div>
+            </div>
+          {%- else -%}
+            <h2 class="ct-form__t">Send us a message</h2>
+            <p class="ct-form__s">Tell us a little about what you need and we’ll take it from there.</p>
+
+            {%- if form.errors -%}
+              <div class="ct-err" role="alert">
+                {%- for field in form.errors -%}
+                  <p>{%- if field == 'form' -%}{{ form.errors.messages[field] }}{%- else -%}{{ form.errors.translated_fields[field] | capitalize }} {{ form.errors.messages[field] }}{%- endif -%}</p>
+                {%- endfor -%}
+              </div>
+            {%- endif -%}
+
+            <fieldset class="ct-topics">
+              <legend class="ct-label">What’s it about?</legend>
+              <div class="ct-topics__row">
+                {%- assign topics = 'An order I’ve placed|order,Delivery|order,Returns & refunds|order,Fabric advice|advice,Wholesale & trade|trade,Something else|other' | split: ',' -%}
+                {%- for t in topics -%}
+                  {%- assign tb = t | split: '|' -%}
+                  <label class="ct-topic"><input type="radio" name="contact[Topic]" value="{{ tb[0] | escape }}" data-kind="{{ tb[1] }}"{% if forloop.first %} required{% endif %}><span>{{ tb[0] | escape }}</span></label>
+                {%- endfor -%}
+              </div>
+            </fieldset>
+
+            <div class="ct-hint" data-ct-hint hidden></div>
+
+            <div class="ct-grid">
+              <div class="ct-field">
+                <input id="ct-name" type="text" name="contact[name]" autocomplete="name" placeholder=" " required{% if customer %} value="{{ customer.name | escape }}"{% endif %}>
+                <label for="ct-name">Your name</label>
+              </div>
+              <div class="ct-field">
+                <input id="ct-email" type="email" name="contact[email]" autocomplete="email" placeholder=" " required{% if customer %} value="{{ customer.email | escape }}"{% endif %}>
+                <label for="ct-email">Email address</label>
+              </div>
+              <div class="ct-field">
+                <input id="ct-phone" type="tel" name="contact[phone]" autocomplete="tel" placeholder=" ">
+                <label for="ct-phone">Phone <em>(optional)</em></label>
+              </div>
+              <div class="ct-field" data-ct-order hidden>
+                <input id="ct-order" type="text" name="contact[Order number]" inputmode="numeric" placeholder=" ">
+                <label for="ct-order">Order number <em>(e.g. #1234)</em></label>
+              </div>
+            </div>
+            <div class="ct-field ct-field--area">
+              <textarea id="ct-msg" name="contact[body]" rows="6" placeholder=" " required data-ct-msg></textarea>
+              <label for="ct-msg">How can we help?</label>
+              <span class="ct-count" data-ct-count aria-hidden="true"></span>
+            </div>
+            <div class="ct-form__foot">
+              <button type="submit" class="ct-btn ct-btn--green ct-send"><span>Send message</span><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"/></svg></button>
+              <p class="ct-form__small">We only use your details to reply to you. <a href="{{ shop.privacy_policy.url | default: '/policies/privacy-policy' }}">Privacy policy</a></p>
+            </div>
+          {%- endif -%}
+        {%- endform -%}
+      </div>
+
+      <aside class="ct-find ct-rise" aria-labelledby="ct-find-t">
+        <div class="ct-card ct-card--find">
+          <h2 class="ct-find__t" id="ct-find-t">Find us</h2>
+          <address class="ct-find__addr">Bullring Fabrics<br>{{ c_addr | replace: ', ', '<br>' }}</address>
+          <div class="ct-find__ctas">
+            <a class="ct-btn ct-btn--dark ct-btn--sm" href="https://www.google.com/maps/dir/?api=1&destination={{ c_map_q }}" target="_blank" rel="noopener">Directions</a>
+            <button type="button" class="ct-btn ct-btn--ghost ct-btn--sm" data-ct-copy="Bullring Fabrics, {{ c_addr | escape }}">Copy address</button>
+          </div>
+          {%- if section.settings.collection_note != blank -%}<p class="ct-find__note">{{ section.settings.collection_note | escape }}</p>{%- endif -%}
+
+          <h3 class="ct-find__h">Opening hours <span>UK time</span></h3>
+          <ul class="ct-hours" role="list" data-ct-hours>
+            {%- assign days = 'Monday,Tuesday,Wednesday,Thursday,Friday,Saturday,Sunday' | split: ',' -%}
+            {%- for d in days -%}
+              <li data-day="{{ forloop.index | modulo: 7 }}"><span>{{ d }}</span><span>{%- if forloop.index <= 5 -%}{{ wk_open }} – {{ wk_close }}{%- elsif forloop.index == 6 -%}{{ sat | escape }}{%- else -%}{{ sun | escape }}{%- endif -%}</span></li>
+            {%- endfor -%}
+          </ul>
+          <p class="ct-find__small">Orders placed online any time before 10pm, Monday to Friday, still go out the same day.</p>
+        </div>
+        <div class="ct-map" data-ct-map data-src="https://maps.google.com/maps?q={{ c_map_q }}&z=15&output=embed">
+          <button type="button" class="ct-map__btn" data-ct-map-load>
+            <span class="ct-map__pin" aria-hidden="true"><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-7-5.6-7-11a7 7 0 0 1 14 0c0 5.4-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/></svg></span>
+            <span>Show map</span>
+          </button>
+        </div>
+      </aside>
+    </div>
+  </section>
+
+  {%- comment -%} ---------- FAQS ---------- {%- endcomment -%}
+  {%- capture faq_rows -%}
+How quickly will my order be dispatched?|Every order placed before 10pm (UK time), Monday to Friday, is dispatched the same day. Orders placed after 10pm, at the weekend or on a bank holiday go out the next working day.
+How much does delivery cost?|UK standard delivery is £3.99, and free on orders over £65. Next day delivery is £6.99, or free on orders over £150 placed before 9pm. Europe Express is £13.95 and the rest of the world £20–£24.95, both free over £400.
+Will my fabric arrive in one piece?|Yes. Fabric is cut from the roll in one continuous length wherever possible. If you’d like it cut into specific pieces, add a note to your order.
+Can I return fabric?|Unused, uncut items can be returned within 30 days. Fabric cut to your chosen length can only be returned if it’s faulty. Email us with your order number to start a return.
+Is everything on the website in stock?|Our fabrics are held at our West Midlands warehouse, and the website shows the stock available on the day you order.
+Do you sell wholesale or full rolls?|Yes. We supply trade buyers across the UK with full rolls and bulk quantities. Send a trade enquiry and we aim to reply within 2 working days.
+  {%- endcapture -%}
+  {%- assign faqs = faq_rows | strip | newline_to_br | split: '<br />' -%}
+  <section class="ct-sec ct-sec--faq" aria-labelledby="ct-faq-t">
+    <div class="container ct-faq">
+      <div class="ct-faq__head ct-rise">
+        <h2 class="ct-sec__title" id="ct-faq-t">Often asked.</h2>
+        <p class="ct-sec__sub">The questions we hear most, answered.</p>
+        <a class="ct-btn ct-btn--ghost" href="/pages/faqs">All FAQs</a>
+      </div>
+      <div class="ct-faq__list ct-rise">
+        {%- for f in faqs -%}
+          {%- assign fb = f | strip | split: '|' -%}
+          {%- if fb.size < 2 -%}{%- continue -%}{%- endif -%}
+          <details class="ct-acc"{% if forloop.first %} open{% endif %}>
+            <summary><span>{{ fb[0] }}</span><i aria-hidden="true"></i></summary>
+            <div class="ct-acc__a"><p>{{ fb[1] }}</p></div>
+          </details>
+        {%- endfor -%}
+      </div>
+    </div>
+  </section>
+  <script type="application/ld+json">
+  {"@context":"https://schema.org","@type":"FAQPage","mainEntity":[
+    {%- for f in faqs -%}{%- assign fb = f | strip | split: '|' -%}{%- if fb.size < 2 -%}{%- continue -%}{%- endif -%}{%- unless forloop.first -%},{%- endunless -%}
+    {"@type":"Question","name":{{ fb[0] | json }},"acceptedAnswer":{"@type":"Answer","text":{{ fb[1] | json }}}}
+    {%- endfor -%}
+  ]}
+  </script>
+
+  {%- comment -%} ---------- SIGN-OFF BAND ---------- {%- endcomment -%}
+  <section class="ct-sec ct-sec--band">
+    <div class="container">
+      <div class="ct-band ct-rise">
+        <div>
+          <h2 class="ct-band__t">Buying for a business?</h2>
+          <p class="ct-band__s">Schools, theatres, upholsterers, event stylists and makers get full rolls at trade prices.</p>
+        </div>
+        <div class="ct-band__ctas">
+          <a class="ct-btn ct-btn--light" href="/pages/wholesale-trade-enquiries">Make a trade enquiry</a>
+          {%- if section.settings.facebook != blank -%}<a class="ct-btn ct-btn--line" href="{{ section.settings.facebook }}" target="_blank" rel="noopener">Follow us on Facebook</a>{%- endif -%}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="ct-toast" data-ct-toast role="status" aria-live="polite"></div>
+</div>
+
+<style>
+  .ct{--ink:#1D1D1F;--sub:#6B665F;--line:#E4DDD1;--sand:#F6F3EE;--green:#149954;--deep:#1F4D3A;color:var(--ink)}
+  .ct a{color:inherit}
+  .template-page .ct{margin-bottom:24px}
+
+  .ct-btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;height:48px;padding:0 24px;border:0;border-radius:980px;font:inherit;font-size:15px;font-weight:600;text-decoration:none;cursor:pointer;white-space:nowrap;transition:transform .2s,background .2s,box-shadow .2s}
+  .ct-btn--sm{height:40px;padding:0 18px;font-size:14px}
+  .ct-btn--dark{background:var(--ink);color:#fff!important}
+  .ct-btn--dark:hover{background:#000;transform:translateY(-1px)}
+  .ct-btn--ghost{background:rgba(255,255,255,.7);box-shadow:inset 0 0 0 1px var(--ink);color:var(--ink)}
+  .ct-btn--ghost:hover{background:#fff;transform:translateY(-1px)}
+  .ct-btn--green{background:linear-gradient(180deg,#1DAE65 0%,#149954 52%,#0F884A 100%);color:#fff!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.3),0 10px 22px -12px rgba(20,153,84,.9)}
+  .ct-btn--green:hover{transform:translateY(-1px)}
+  .ct-btn--light{background:#fff;color:var(--ink)!important}
+  .ct-btn--light:hover{transform:translateY(-1px)}
+  .ct-btn--line{box-shadow:inset 0 0 0 1px rgba(255,255,255,.6);color:#fff!important}
+  .ct-btn--line:hover{background:rgba(255,255,255,.1)}
+  .ct-btn:focus-visible,.ct-way:focus-visible,.ct-q:focus-visible,.ct-copy:focus-visible{outline:3px solid rgba(20,153,84,.45);outline-offset:3px}
+
+  /* Hero */
+  .ct-hero{position:relative;overflow:hidden;background:linear-gradient(180deg,#FBF9F5 0%,#F3EEE6 100%)}
+  .ct-hero__glow{position:absolute;inset:-20% -10% auto auto;width:70%;height:140%;pointer-events:none;
+    background:radial-gradient(closest-side,rgba(255,182,219,.35),rgba(255,182,219,0) 70%) 10% 30%/55% 55% no-repeat,radial-gradient(closest-side,rgba(146,206,255,.35),rgba(146,206,255,0) 70%) 70% 20%/60% 60% no-repeat,radial-gradient(closest-side,rgba(140,230,186,.35),rgba(140,230,186,0) 70%) 50% 75%/60% 60% no-repeat;
+    filter:blur(10px);animation:ct-drift 18s ease-in-out infinite alternate}
+  @keyframes ct-drift{to{transform:translate(-6%,4%) rotate(8deg)}}
+  .ct-hero__in{position:relative;display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,1fr);align-items:center;gap:48px;padding-top:40px;padding-bottom:64px}
+  .ct-crumbs{display:flex;gap:8px;margin:0 0 22px;font-size:13px;color:var(--sub)}
+  .ct-crumbs a{text-decoration:none}
+  .ct-crumbs a:hover{text-decoration:underline}
+  .ct-status{display:inline-flex;align-items:center;gap:8px;margin:0 0 16px;padding:7px 14px 7px 12px;border-radius:980px;font-size:13.5px;line-height:1.35;font-weight:600;
+    background:rgba(255,255,255,.74);-webkit-backdrop-filter:saturate(180%) blur(16px);backdrop-filter:saturate(180%) blur(16px);border:1px solid rgba(255,255,255,.6);box-shadow:0 1px 0 rgba(255,255,255,.8) inset,0 6px 18px -8px rgba(0,0,0,.2)}
+  .ct-status__dot{position:relative;width:8px;height:8px;border-radius:50%;background:#B3B0A9}
+  .ct-status.is-open .ct-status__dot{background:var(--green)}
+  .ct-status.is-open .ct-status__dot::after{content:"";position:absolute;inset:-4px;border-radius:50%;border:2px solid rgba(20,153,84,.45);animation:ct-ping 1.8s ease-out infinite}
+  @keyframes ct-ping{from{transform:scale(.6);opacity:1}to{transform:scale(1.8);opacity:0}}
+  .ct-hero__title{margin:0;font:600 clamp(40px,5.6vw,68px)/1.02 var(--heading-font-family);letter-spacing:-.025em;color:var(--ink)}
+  .ct-hero__text{max-width:520px;margin:18px 0 0;font-size:clamp(16px,1.5vw,19px);line-height:1.55;color:#4A463F}
+  .ct-hero__chips{display:flex;flex-wrap:wrap;gap:8px 18px;margin:24px 0 0;padding:0;list-style:none;font-size:13.5px;color:var(--sub)}
+  .ct-hero__chips li{display:flex;align-items:center;gap:7px}
+  .ct-hero__chips li::before{content:"";width:16px;height:16px;border-radius:50%;background:var(--green) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='m4.5 8.2 2.2 2.2 4.8-4.8' fill='none' stroke='%23fff' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center/16px no-repeat}
+
+  /* Three ways to reach us: frosted glass cards */
+  .ct-ways{display:grid;gap:14px;margin:0;padding:0;list-style:none}
+  .ct-ways>li{position:relative}
+  .ct-way{display:grid;grid-template-columns:52px minmax(0,1fr);grid-template-rows:auto auto auto;column-gap:16px;align-items:center;padding:20px 22px;border-radius:24px;text-decoration:none;
+    background:rgba(255,255,255,.72);-webkit-backdrop-filter:saturate(180%) blur(22px);backdrop-filter:saturate(180%) blur(22px);border:1px solid rgba(255,255,255,.7);
+    box-shadow:0 1px 0 rgba(255,255,255,.9) inset,0 18px 40px -24px rgba(50,35,20,.35);transition:transform .35s cubic-bezier(.2,.8,.2,1),box-shadow .35s,background .2s}
+  .ct-way:hover{transform:translateY(-3px);background:rgba(255,255,255,.88);box-shadow:0 1px 0 #fff inset,0 26px 50px -24px rgba(50,35,20,.45)}
+  .ct-way__ic{grid-row:1/4;display:grid;place-items:center;width:52px;height:52px;border-radius:16px;background:linear-gradient(160deg,#1DAE65,#0F884A);color:#fff;box-shadow:inset 0 1px 0 rgba(255,255,255,.35),0 8px 18px -10px rgba(20,153,84,.9)}
+  .ct-way__t{font-size:13px;font-weight:600;letter-spacing:.02em;color:var(--sub)}
+  .ct-way__v{font-size:21px;font-weight:600;letter-spacing:-.01em;line-height:1.25;overflow-wrap:anywhere}
+  .ct-way__v--sm{font-size:17px}
+  .ct-way__s{font-size:13.5px;color:var(--sub)}
+  .ct-copy{position:absolute;right:16px;top:16px;display:inline-flex;align-items:center;gap:5px;height:30px;padding:0 11px;border:0;border-radius:980px;background:rgba(29,29,31,.06);color:var(--ink);font:600 12px/1 inherit;cursor:pointer;transition:background .2s}
+  .ct-copy:hover{background:rgba(29,29,31,.12)}
+
+  /* Sections */
+  .ct-sec{padding:64px 0 8px}
+  .ct-sec__head{margin-bottom:26px}
+  .ct-sec__title{margin:0;font:600 clamp(28px,3.4vw,40px)/1.1 var(--heading-font-family);letter-spacing:-.015em;color:var(--ink)}
+  .ct-sec__sub{margin:8px 0 0;font-size:17px;line-height:1.45;color:var(--sub)}
+
+  /* Quick answers */
+  .ct-quick{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+  .ct-q{display:flex;flex-direction:column;gap:8px;padding:26px 24px 22px;border-radius:24px;background:var(--sand);text-decoration:none;transition:transform .35s cubic-bezier(.2,.8,.2,1),box-shadow .35s,background .2s}
+  .ct-q:hover{transform:translateY(-4px);background:#fff;box-shadow:0 0 0 1px var(--line),0 24px 44px -28px rgba(40,30,15,.45)}
+  .ct-q__ic{display:grid;place-items:center;width:46px;height:46px;margin-bottom:6px;border-radius:14px;background:#fff;color:var(--green);box-shadow:0 0 0 1px var(--line)}
+  .ct-q__t{font-size:18px;font-weight:600;letter-spacing:-.01em}
+  .ct-q__s{font-size:14.5px;line-height:1.5;color:var(--sub)}
+  .ct-q__list{display:grid;gap:5px;margin:0;padding:0;list-style:none;font-size:14px;line-height:1.4;color:var(--sub)}
+  .ct-q__list li{position:relative;padding-left:16px}
+  .ct-q__list li::before{content:"";position:absolute;left:2px;top:.55em;width:6px;height:6px;border-radius:50%;background:var(--green)}
+  .ct-q__go{margin-top:auto;padding-top:10px;font-size:14.5px;font-weight:600;color:var(--ink)}
+  .ct-q--track{background:linear-gradient(150deg,#1F4D3A 0%,#2C6A50 100%);color:#fff}
+  .ct-q--track:hover{background:linear-gradient(150deg,#1F4D3A 0%,#2C6A50 100%);box-shadow:0 24px 44px -24px rgba(31,77,58,.7)}
+  .ct-q--track .ct-q__ic{background:rgba(255,255,255,.14);color:#fff;box-shadow:inset 0 0 0 1px rgba(255,255,255,.25)}
+  .ct-q--track .ct-q__s{color:rgba(255,255,255,.8)}
+  .ct-q--track .ct-q__t,.ct-q--track .ct-q__go{color:#fff}
+  .ct-q--track .ct-q__go{color:#fff}
+
+  /* Form + find us */
+  .ct-split{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(0,1fr);gap:24px;align-items:start}
+  #ct-form{scroll-margin-top:90px}
+  .ct-card{border-radius:28px;background:#fff;box-shadow:0 0 0 1px var(--line),0 30px 60px -40px rgba(40,30,15,.35)}
+  .ct-card--form{padding:36px 36px 30px}
+  .ct-form__t{margin:0;font:600 clamp(24px,2.4vw,30px)/1.15 var(--heading-font-family);letter-spacing:-.01em}
+  .ct-form__s{margin:6px 0 22px;font-size:15px;color:var(--sub)}
+  .ct-err{margin:0 0 18px;padding:12px 16px;border-radius:14px;background:#FDECEA;color:#8A1F17;font-size:14px}
+  .ct-err p{margin:0}
+  .ct-label{margin:0 0 10px;padding:0;font-size:13px;font-weight:600;letter-spacing:.02em;color:var(--sub)}
+  .ct-topics{min-width:0;margin:0 0 18px;padding:0;border:0}
+  .ct-topics__row{display:flex;flex-wrap:wrap;gap:8px}
+  .ct-topic{position:relative;cursor:pointer}
+  .ct-topic input{position:absolute;opacity:0;width:1px;height:1px}
+  .ct-topic span{display:inline-flex;align-items:center;height:38px;padding:0 15px;border-radius:980px;background:var(--sand);box-shadow:inset 0 0 0 1px var(--line);font-size:14px;font-weight:500;transition:background .2s,color .2s,box-shadow .2s,transform .25s cubic-bezier(.3,1.5,.4,1)}
+  .ct-topic:hover span{background:#EFEAE2}
+  .ct-topic input:checked+span{background:var(--ink);color:#fff;box-shadow:none;transform:scale(1.03)}
+  .ct-topic input:focus-visible+span{outline:3px solid rgba(20,153,84,.45);outline-offset:2px}
+  .ct-hint{margin:-4px 0 16px;padding:11px 14px;border-radius:14px;background:#EAF6EF;color:#0C5C32;font-size:14px;line-height:1.45;animation:ct-in .35s ease}
+  .ct-hint a{font-weight:600}
+  @keyframes ct-in{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:none}}
+  .ct-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+  .ct-field{position:relative;margin:0 0 12px}
+  .ct-grid .ct-field{margin:0}
+  .ct-grid+.ct-field{margin-top:12px}
+  .ct-field[hidden]{display:none}
+  .ct-field input,.ct-field textarea{display:block;width:100%;box-sizing:border-box;height:56px;margin:0;padding:22px 16px 8px;border:0;border-radius:16px;background:var(--sand);box-shadow:inset 0 0 0 1px var(--line);font:inherit;font-size:16px;color:var(--ink);transition:box-shadow .2s,background .2s;-webkit-appearance:none;appearance:none}
+  .ct-field textarea{height:auto;min-height:150px;padding-top:28px;resize:vertical;line-height:1.5}
+  .ct-field input:focus,.ct-field textarea:focus{outline:0;background:#fff;box-shadow:inset 0 0 0 2px var(--green)}
+  .ct-field label{position:absolute;left:16px;top:18px;font-size:15.5px;color:var(--sub);pointer-events:none;transform-origin:0 0;transition:transform .2s ease,color .2s}
+  .ct-field label em{font-style:normal;color:#9A948A}
+  .ct-field input:focus+label,.ct-field input:not(:placeholder-shown)+label,.ct-field textarea:focus+label,.ct-field textarea:not(:placeholder-shown)+label{transform:translateY(-10px) scale(.78);color:var(--deep)}
+  .ct-count{position:absolute;right:14px;bottom:10px;font-size:12px;color:#9A948A}
+  .ct-form__foot{display:flex;align-items:center;flex-wrap:wrap;gap:12px 18px;margin-top:6px}
+  .ct-send svg{transition:transform .3s cubic-bezier(.3,1.5,.4,1)}
+  .ct-send:hover svg{transform:translateX(4px)}
+  .ct-send.is-busy{pointer-events:none;opacity:.8}
+  .ct-form__small{margin:0;font-size:13px;color:var(--sub)}
+
+  .ct-sent{padding:24px 4px;text-align:center}
+  .ct-sent__tick{display:inline-block;color:var(--green)}
+  .ct-sent__tick circle{stroke-dasharray:151;stroke-dashoffset:151;animation:ct-draw .7s ease forwards}
+  .ct-sent__tick path{stroke-dasharray:40;stroke-dashoffset:40;animation:ct-draw .45s ease .55s forwards}
+  @keyframes ct-draw{to{stroke-dashoffset:0}}
+  .ct-sent__t{margin:14px 0 6px;font:600 28px/1.15 var(--heading-font-family)}
+  .ct-sent__s{max-width:440px;margin:0 auto;font-size:15.5px;line-height:1.5;color:var(--sub)}
+  .ct-sent__ctas{display:flex;justify-content:center;flex-wrap:wrap;gap:10px;margin-top:20px}
+
+  .ct-find{display:grid;gap:16px}
+  .ct-card--find{padding:30px 28px}
+  .ct-find__t{margin:0 0 10px;font:600 26px/1.15 var(--heading-font-family)}
+  .ct-find__addr{margin:0;font-style:normal;font-size:16px;line-height:1.55}
+  .ct-find__ctas{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+  .ct-find__note{margin:14px 0 0;padding:10px 12px;border-radius:12px;background:var(--sand);font-size:13.5px;color:var(--sub)}
+  .ct-find__h{display:flex;align-items:baseline;justify-content:space-between;margin:24px 0 8px;font-size:15px;font-weight:600}
+  .ct-find__h span{font-size:12px;font-weight:500;color:var(--sub)}
+  .ct-hours{margin:0;padding:0;list-style:none}
+  .ct-hours li{display:flex;justify-content:space-between;padding:8px 10px;margin:0 -10px;border-radius:10px;font-size:14.5px;color:#4A463F}
+  .ct-hours li+li{box-shadow:0 -1px 0 #F0EBE3}
+  .ct-hours li.is-today{background:#EAF6EF;box-shadow:none;color:#0C5C32;font-weight:600}
+  .ct-hours li.is-today+li{box-shadow:none}
+  .ct-find__small{margin:14px 0 0;font-size:13px;line-height:1.45;color:var(--sub)}
+  .ct-map{position:relative;height:240px;border-radius:28px;overflow:hidden;background:
+    linear-gradient(0deg,rgba(246,243,238,.25),rgba(246,243,238,.25)),
+    repeating-linear-gradient(35deg,#EDE7DC 0 2px,transparent 2px 46px),repeating-linear-gradient(-55deg,#EDE7DC 0 2px,transparent 2px 60px),#F6F3EE;box-shadow:0 0 0 1px var(--line)}
+  .ct-map iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+  .ct-map__btn{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;width:100%;border:0;background:transparent;font:600 14.5px/1 inherit;color:var(--ink);cursor:pointer}
+  .ct-map__pin{display:grid;place-items:center;width:56px;height:56px;border-radius:50%;background:rgba(255,255,255,.8);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);color:var(--green);box-shadow:0 12px 26px -12px rgba(0,0,0,.35);animation:ct-bob 2.4s ease-in-out infinite}
+  @keyframes ct-bob{50%{transform:translateY(-5px)}}
+
+  /* FAQs */
+  .ct-faq{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.8fr);gap:40px;align-items:start}
+  .ct-faq__head .ct-btn{margin-top:20px}
+  .ct-acc{border-radius:20px;background:var(--sand);margin:0 0 10px;transition:background .2s}
+  .ct-acc[open]{background:#fff;box-shadow:0 0 0 1px var(--line)}
+  .ct-acc summary{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:18px 22px;font-size:16px;font-weight:600;cursor:pointer;list-style:none}
+  .ct-acc summary::-webkit-details-marker{display:none}
+  .ct-acc summary i{position:relative;flex:0 0 28px;height:28px;border-radius:50%;background:#fff;box-shadow:0 0 0 1px var(--line);transition:transform .3s cubic-bezier(.3,1.4,.4,1),background .2s}
+  .ct-acc summary i::before,.ct-acc summary i::after{content:"";position:absolute;left:50%;top:50%;width:11px;height:1.8px;margin:-.9px 0 0 -5.5px;border-radius:2px;background:var(--ink)}
+  .ct-acc summary i::after{transform:rotate(90deg);transition:transform .3s}
+  .ct-acc[open] summary i{transform:rotate(180deg);background:var(--ink)}
+  .ct-acc[open] summary i::before,.ct-acc[open] summary i::after{background:#fff}
+  .ct-acc[open] summary i::after{transform:rotate(0)}
+  .ct-acc__a{padding:0 22px 20px}
+  .ct-acc__a p{margin:0;font-size:15px;line-height:1.6;color:#4A463F}
+  .ct-acc[open] .ct-acc__a{animation:ct-in .3s ease}
+
+  /* Band */
+  .ct-sec--band{padding-top:48px;padding-bottom:40px}
+  .ct-band{display:flex;align-items:center;justify-content:space-between;gap:24px;padding:36px 40px;border-radius:28px;background:linear-gradient(120deg,#1F4D3A 0%,#2C6A50 100%);color:#fff}
+  .ct-band__t{margin:0;font:600 clamp(22px,2.4vw,30px)/1.15 var(--heading-font-family);letter-spacing:-.01em;color:#fff}
+  .ct-band__s{margin:8px 0 0;font-size:15.5px;color:rgba(255,255,255,.8)}
+  .ct-band__ctas{display:flex;flex-wrap:wrap;gap:10px;flex:0 0 auto}
+
+  .ct-toast{position:fixed;left:50%;bottom:calc(24px + env(safe-area-inset-bottom));z-index:60;padding:11px 18px;border-radius:980px;background:rgba(29,29,31,.9);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);color:#fff;font-size:14px;font-weight:500;
+    opacity:0;transform:translate(-50%,12px);pointer-events:none;transition:opacity .25s,transform .35s cubic-bezier(.2,1.3,.3,1)}
+  .ct-toast.is-on{opacity:1;transform:translate(-50%,0)}
+
+  /* Rise in as you scroll */
+  .ct-js .ct-rise{opacity:0;transform:translateY(18px);transition:opacity .6s ease,transform .6s cubic-bezier(.2,.8,.2,1)}
+  .ct-js .ct-rise.is-in{opacity:1;transform:none}
+  @media (prefers-reduced-motion:reduce){
+    .ct-hero__glow,.ct-map__pin,.ct-status.is-open .ct-status__dot::after{animation:none}
+    .ct-js .ct-rise{opacity:1;transform:none;transition:none}
+  }
+
+  @media (max-width:999px){
+    .ct-hero__in{grid-template-columns:minmax(0,1fr);gap:28px}
+    .ct-ways{grid-template-columns:repeat(3,minmax(0,1fr))}
+    .ct-way{grid-template-columns:minmax(0,1fr);row-gap:4px;padding:18px}
+    .ct-way__ic{grid-row:auto;width:44px;height:44px;border-radius:14px;margin-bottom:8px}
+    .ct-way__v{font-size:18px}
+    .ct-way__v--sm{font-size:15px}
+    .ct-quick{grid-template-columns:repeat(2,minmax(0,1fr))}
+    .ct-split{grid-template-columns:minmax(0,1fr)}
+    .ct-find{grid-template-columns:repeat(2,minmax(0,1fr))}
+    .ct-map{height:auto;min-height:260px}
+    .ct-faq{grid-template-columns:minmax(0,1fr);gap:20px}
+    .ct-band{flex-direction:column;align-items:flex-start}
+  }
+  @media (max-width:749px){
+    .ct-hero__in{padding-top:22px;padding-bottom:40px}
+    .ct-crumbs{margin-bottom:14px}
+    .ct-ways{grid-template-columns:minmax(0,1fr);gap:10px}
+    .ct-way{grid-template-columns:44px minmax(0,1fr);column-gap:14px;padding:16px 18px;border-radius:20px}
+    .ct-way__ic{grid-row:1/4;margin:0}
+    .ct-copy{top:12px;right:12px}
+    .ct-copy span{display:none}
+    .ct-sec{padding-top:44px}
+    .ct-sec__sub{font-size:15.5px}
+    .ct-quick{grid-template-columns:minmax(0,1fr);gap:10px}
+    .ct-q{padding:20px}
+    .ct-card--form{padding:24px 18px 22px;border-radius:24px}
+    .ct-grid{grid-template-columns:minmax(0,1fr)}
+    .ct-topics__row{flex-wrap:nowrap;overflow-x:auto;margin:0 -18px;padding:2px 18px 4px;scrollbar-width:none}
+    .ct-topics__row::-webkit-scrollbar{display:none}
+    .ct-topic span{white-space:nowrap}
+    .ct-send{width:100%}
+    .ct-find{grid-template-columns:minmax(0,1fr)}
+    .ct-card--find{padding:24px 20px;border-radius:24px}
+    .ct-map{min-height:220px;border-radius:24px}
+    .ct-band{padding:26px 22px;border-radius:22px}
+    .ct-band__ctas,.ct-band__ctas .ct-btn{width:100%}
+  }
+</style>
+
+<script>
+(function(){
+  var root = document.querySelector('[data-ct]'); if (!root || root.__ct) return; root.__ct = true;
+  var calm = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var toastEl = root.querySelector('[data-ct-toast]'), toastT = 0;
+  function toast(t){ toastEl.textContent = t; toastEl.classList.add('is-on'); clearTimeout(toastT); toastT = setTimeout(function(){ toastEl.classList.remove('is-on'); }, 2200); }
+
+  /* Rise in as sections scroll into view */
+  if ('IntersectionObserver' in window && !calm) {
+    root.classList.add('ct-js');
+    var io = new IntersectionObserver(function(es){ es.forEach(function(e){ if (e.isIntersecting) { e.target.classList.add('is-in'); io.unobserve(e.target); } }); }, {rootMargin: '0px 0px -6% 0px'});
+    [].forEach.call(root.querySelectorAll('.ct-rise'), function(el, i){ el.style.transitionDelay = (i % 4) * 70 + 'ms'; io.observe(el); });
+  }
+
+  /* Open now? Worked out in UK time, so it's right wherever the shopper is */
+  function ukNow(){
+    try {
+      var parts = new Intl.DateTimeFormat('en-GB', {timeZone: 'Europe/London', weekday: 'short', hour: '2-digit', minute: '2-digit', hourCycle: 'h23'}).formatToParts(new Date()), o = {};
+      parts.forEach(function(p){ o[p.type] = p.value; });
+      return {day: ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'].indexOf(o.weekday), mins: parseInt(o.hour, 10) * 60 + parseInt(o.minute, 10)};
+    } catch (e) { var d = new Date(); return {day: d.getDay(), mins: d.getHours() * 60 + d.getMinutes()}; }
+  }
+  function toMins(s){ var m = /^(\d{1,2}):(\d{2})$/.exec((s || '').trim()); return m ? +m[1] * 60 + +m[2] : null; }
+  function nice(s){ var m = toMins(s); if (m == null) return s; var h = Math.floor(m / 60), mm = m % 60, ap = h >= 12 ? 'pm' : 'am'; h = h % 12 || 12; return h + (mm ? ':' + (mm < 10 ? '0' : '') + mm : '') + ap; }
+  function hoursFor(day){
+    if (day >= 1 && day <= 5) return [root.getAttribute('data-open'), root.getAttribute('data-close')];
+    var v = root.getAttribute(day === 6 ? 'data-sat' : 'data-sun') || '', m = /(\d{1,2}:\d{2})\s*[–-]\s*(\d{1,2}:\d{2})/.exec(v);
+    return m ? [m[1], m[2]] : null;
+  }
+  function status(){
+    var now = ukNow(), today = hoursFor(now.day), el = root.querySelector('[data-ct-status]'), t = root.querySelector('[data-ct-status-t]');
+    [].forEach.call(root.querySelectorAll('[data-ct-hours] li'), function(li){ li.classList.toggle('is-today', +li.getAttribute('data-day') === now.day); });
+    var open = today && now.mins >= toMins(today[0]) && now.mins < toMins(today[1]);
+    if (open) {
+      var left = toMins(today[1]) - now.mins;
+      t.textContent = left <= 45 ? 'Open now · closing soon, at ' + nice(today[1]) : 'We’re open · until ' + nice(today[1]) + ' today';
+    } else {
+      var k, nd = null, label = '';
+      for (k = 0; k < 8; k++) {
+        var d = (now.day + k) % 7, h = hoursFor(d);
+        if (!h) continue;
+        if (k === 0 && now.mins >= toMins(h[0])) continue;
+        nd = h; label = k === 0 ? 'today' : k === 1 ? 'tomorrow' : ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'][d]; break;
+      }
+      t.textContent = nd ? 'Closed now · back ' + label + ' at ' + nice(nd[0]) + '. Messages welcome any time' : 'Messages welcome any time';
+    }
+    el.classList.toggle('is-open', !!open); el.hidden = false;
+  }
+  status(); setInterval(status, 60000);
+
+  /* Copy email / address */
+  [].forEach.call(root.querySelectorAll('[data-ct-copy]'), function(b){
+    b.addEventListener('click', function(e){
+      e.preventDefault(); var v = b.getAttribute('data-ct-copy');
+      var done = function(){ toast('Copied to your clipboard ✂️'); };
+      if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(v).then(done, function(){ toast(v); });
+      else toast(v);
+    });
+  });
+
+  /* Smooth jump to the form */
+  [].forEach.call(root.querySelectorAll('[data-ct-jump]'), function(a){
+    a.addEventListener('click', function(e){
+      var t = document.getElementById('ct-form'); if (!t) return; e.preventDefault();
+      t.scrollIntoView({behavior: calm ? 'auto' : 'smooth', block: 'start'});
+      var first = root.querySelector('.ct-topic input'); if (first) setTimeout(function(){ first.focus({preventScroll: true}); }, calm ? 0 : 600);
+    });
+  });
+
+  /* Map loads only when asked (keeps the page fast and cookie-free until then) */
+  var map = root.querySelector('[data-ct-map]');
+  if (map) map.querySelector('[data-ct-map-load]').addEventListener('click', function(){
+    var f = document.createElement('iframe'); f.src = map.getAttribute('data-src'); f.title = 'Map showing Bullring Fabrics'; f.loading = 'lazy'; f.referrerPolicy = 'no-referrer-when-downgrade';
+    map.innerHTML = ''; map.appendChild(f);
+  });
+
+  /* Guided form: the topic decides the hint and whether we ask for an order number */
+  var form = root.querySelector('#ct-contact-form'); if (!form) return;
+  var hint = form.querySelector('[data-ct-hint]'), orderF = form.querySelector('[data-ct-order]'), msg = form.querySelector('[data-ct-msg]'), count = form.querySelector('[data-ct-count]');
+  var HINTS = {
+    'An order I’ve placed': 'Pop your order number in below and we’ll find it straight away. To see where your parcel is, the tracking link is in your dispatch email.',
+    'Delivery': 'Orders placed by 10pm Monday to Friday leave us the same day. Your tracking link is in your dispatch email. <a href="/pages/delivery-times">Delivery details</a>',
+    'Returns & refunds': 'Tell us your order number and which items you’d like to return, and we’ll send you a returns label. <a href="/pages/returns-policy">Returns policy</a>',
+    'Fabric advice': 'Tell us about your project, the look you’re after and any colours. A link to the fabric you’re considering helps too!',
+    'Wholesale & trade': 'For full rolls and bulk pricing, our <a href="/pages/wholesale-trade-enquiries">trade enquiry form</a> gets you to the right person fastest.',
+    'Something else': ''
+  };
+  var PH = {order: 'How can we help with your order?', advice: 'Tell us about your project…', trade: 'What are you looking for, and roughly how much?', other: 'How can we help?'};
+  [].forEach.call(form.querySelectorAll('.ct-topic input'), function(r){
+    r.addEventListener('change', function(){
+      var h = HINTS[r.value] || '';
+      hint.innerHTML = h; hint.hidden = !h;
+      if (h) { hint.style.animation = 'none'; void hint.offsetWidth; hint.style.animation = ''; }
+      orderF.hidden = r.getAttribute('data-kind') !== 'order';
+      var lab = form.querySelector('label[for="ct-msg"]'); if (lab) lab.textContent = PH[r.getAttribute('data-kind')] || PH.other;
+    });
+  });
+  if (msg && count) msg.addEventListener('input', function(){ var n = msg.value.length; count.textContent = n > 20 ? n + ' characters' : ''; });
+  form.addEventListener('submit', function(){ var b = form.querySelector('.ct-send'); if (b) { b.classList.add('is-busy'); b.querySelector('span').textContent = 'Sending…'; } });
+
+  /* After sending, bring the thank-you into view */
+  var sent = root.querySelector('[data-ct-sent]');
+  if (sent) setTimeout(function(){ sent.scrollIntoView({behavior: calm ? 'auto' : 'smooth', block: 'center'}); }, 200);
+})();
+</script>
+
+{% schema %}
+{
+  "name": "Contact us page",
+  "settings": [
+    { "type": "text", "id": "phone", "label": "Phone number", "default": "0330 088 2120" },
+    { "type": "text", "id": "email", "label": "Email address", "info": "Leave empty to use the store's email address" },
+    { "type": "text", "id": "address", "label": "Address (comma separated lines)", "default": "Unit 1 Byron Road, Birmingham, B10 0EN" },
+    { "type": "text", "id": "weekday_open", "label": "Monday to Friday opens (24h, e.g. 10:00)", "default": "10:00" },
+    { "type": "text", "id": "weekday_close", "label": "Monday to Friday closes (24h, e.g. 18:00)", "default": "18:00" },
+    { "type": "text", "id": "saturday", "label": "Saturday", "info": "Closed, or hours like 10:00 – 16:00", "default": "Closed" },
+    { "type": "text", "id": "sunday", "label": "Sunday", "info": "Closed, or hours like 10:00 – 16:00", "default": "Closed" },
+    { "type": "text", "id": "collection_note", "label": "Note under the address", "default": "We’re an online warehouse, so collection in person is currently unavailable. Everything ships fast, though!" },
+    { "type": "url", "id": "facebook", "label": "Facebook page", "default": "https://www.facebook.com/bullringfabrics" }
+  ]
+}
+{% endschema %}

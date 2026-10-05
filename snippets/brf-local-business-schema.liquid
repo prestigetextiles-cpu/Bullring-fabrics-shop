@@ -1,0 +1,45 @@
+{%- comment -%}
+  Store structured data for Google: Birmingham outlet with real opening hours.
+  Replaces the TinySEO "store" embed, which described the shop as online-only and open 24/7.
+{%- endcomment -%}
+{%- if request.page_type == 'index' or page.handle == 'contact' or page.handle == 'contact-us' or page.handle == 'about-us' or page.handle == 'about-us-1' -%}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Store",
+  "@id": {{ shop.url | append: '/#store' | json }},
+  "name": "Bullring Fabrics",
+  "url": {{ shop.url | json }},
+  "description": "Birmingham fabric supplier selling dress, craft and upholstery fabric by the metre, with wholesale and trade supply across the UK.",
+  "image": "https://cdn.shopify.com/s/files/1/0289/3443/8987/files/Bullring_Logo.png?v=1759690847",
+  "logo": "https://cdn.shopify.com/s/files/1/0289/3443/8987/files/Bullring_Logo.png?v=1759690847",
+  "sameAs": ["https://www.facebook.com/bullringfabrics"],
+  "telephone": "0330 088 2120",
+  "email": "sales@prestigefashionuk.com",
+  "currenciesAccepted": "GBP",
+  "address": {
+    "@type": "PostalAddress",
+    "streetAddress": "Unit 1 Byron Road",
+    "addressLocality": "Birmingham",
+    "addressRegion": "West Midlands",
+    "postalCode": "B10 0EN",
+    "addressCountry": "GB"
+  },
+  "openingHoursSpecification": [
+    {
+      "@type": "OpeningHoursSpecification",
+      "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
+      "opens": "10:00",
+      "closes": "18:00"
+    }
+  ],
+  "contactPoint": {
+    "@type": "ContactPoint",
+    "contactType": "customer support",
+    "telephone": "0330 088 2120",
+    "email": "sales@prestigefashionuk.com",
+    "areaServed": "GB"
+  }
+}
+</script>
+{%- endif -%}

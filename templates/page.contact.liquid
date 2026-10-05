@@ -1,0 +1,5 @@
+{%- if page.handle == 'contact' or page.handle == 'contact-us' or page.handle == 'about-us' -%}
+  {% section 'brf-contact' %}
+{%- else -%}
+  {% section 'page-contact-template' %}
+{%- endif -%}
