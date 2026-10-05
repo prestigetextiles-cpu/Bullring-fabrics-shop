@@ -2,12 +2,10 @@
   Bull Ring Fabrics — bespoke Contact us page (/pages/contact, rendered by templates/page.contact.liquid).
   Live "open now" badge (UK time), three ways to reach us, quick answers before writing, a guided
   contact form (topic chips, order number when it matters), find-us card with map and hours, and
-  the most-asked questions (with FAQ structured data). Phone, email, hours and address are editable
+  the most-asked questions (with FAQ structured data). Live chat opens Shopify Inbox. Email, hours and address are editable
   in Customize.
 {%- endcomment -%}
 {%- liquid
-  assign c_phone = section.settings.phone | default: '0330 088 2120'
-  assign c_tel = c_phone | remove: ' ' | remove: '(' | remove: ')' | remove: '-'
   assign c_email = section.settings.email | default: shop.email
   assign c_addr = section.settings.address | default: 'Unit 1 Byron Road, Birmingham, B10 0EN'
   assign c_map_q = c_addr | url_encode
@@ -37,11 +35,11 @@
 
       <ul class="ct-ways" role="list">
         <li class="ct-rise">
-          <a class="ct-way" href="tel:{{ c_tel }}">
-            <span class="ct-way__ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M5 4h3.5l1.8 4.4-2.2 1.4a11 11 0 0 0 6.1 6.1l1.4-2.2L20 15.5V19a1.5 1.5 0 0 1-1.6 1.5A16.5 16.5 0 0 1 3.5 5.6 1.5 1.5 0 0 1 5 4z"/></svg></span>
-            <span class="ct-way__t">Call us</span>
-            <span class="ct-way__v">{{ c_phone }}</span>
-            <span class="ct-way__s" data-ct-phone-note>Monday to Friday, {{ wk_open }} to {{ wk_close }}</span>
+          <a class="ct-way ct-way--chat" href="#chat" data-ct-chat>
+            <span class="ct-way__ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M20 11.5a7.5 7.5 0 0 1-11 6.6L4 19.5l1.4-4.6A7.5 7.5 0 1 1 20 11.5z"/><path d="M8.6 11.5h.01M12 11.5h.01M15.4 11.5h.01" stroke-width="2.4"/></svg></span>
+            <span class="ct-way__t"><span class="ct-live" aria-hidden="true"></span>Live chat · 24/7</span>
+            <span class="ct-way__v">Chat with us now</span>
+            <span class="ct-way__s">Open 24 hours a day, 7 days a week</span>
           </a>
         </li>
         <li class="ct-rise">
@@ -49,7 +47,7 @@
             <span class="ct-way__ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2.5"/><path d="m4 7 8 6 8-6"/></svg></span>
             <span class="ct-way__t">Email us</span>
             <span class="ct-way__v ct-way__v--sm">{{ c_email }}</span>
-            <span class="ct-way__s">Include your order number if you have one</span>
+            <span class="ct-way__s"><strong class="ct-fast">We respond within 30 minutes</strong> · include your order number</span>
           </a>
           <button type="button" class="ct-copy" data-ct-copy="{{ c_email | escape }}" aria-label="Copy email address"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="8" y="8" width="12" height="12" rx="2.5"/><path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2"/></svg><span>Copy</span></button>
         </li>
@@ -127,7 +125,7 @@
             <div class="ct-sent" data-ct-sent>
               <span class="ct-sent__tick" aria-hidden="true"><svg viewBox="0 0 52 52" width="64" height="64"><circle cx="26" cy="26" r="24" fill="none" stroke="currentColor" stroke-width="2.5"/><path d="M15 27l7 7 15-15" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
               <h2 class="ct-sent__t">Message received. Thank you!</h2>
-              <p class="ct-sent__s">It’s on its way to our team, and we’ll reply by email as soon as we can. In the meantime, why not have a browse?</p>
+              <p class="ct-sent__s">It’s on its way to our team, and we’ll reply by email within 30 minutes. In the meantime, why not have a browse?</p>
               <div class="ct-sent__ctas">
                 <a class="ct-btn ct-btn--dark" href="{{ routes.collections_url }}">Browse fabrics</a>
                 <a class="ct-btn ct-btn--ghost" href="/collections/new-arrivals">New arrivals</a>
@@ -199,7 +197,7 @@
           </div>
           {%- if section.settings.collection_note != blank -%}<p class="ct-find__note">{{ section.settings.collection_note | escape }}</p>{%- endif -%}
 
-          <h3 class="ct-find__h">Opening hours <span>UK time</span></h3>
+          <h3 class="ct-find__h">Office hours <span>UK time</span></h3>
           <ul class="ct-hours" role="list" data-ct-hours>
             {%- assign days = 'Monday,Tuesday,Wednesday,Thursday,Friday,Saturday,Sunday' | split: ',' -%}
             {%- for d in days -%}
@@ -326,6 +324,12 @@ Do you sell wholesale or full rolls?|Yes. We supply trade buyers across the UK w
   .ct-way__t{font-size:13px;font-weight:600;letter-spacing:.02em;color:var(--sub)}
   .ct-way__v{font-size:21px;font-weight:600;letter-spacing:-.01em;line-height:1.25;overflow-wrap:anywhere}
   .ct-way__v--sm{font-size:17px}
+  .ct-way__t{display:inline-flex;align-items:center;gap:7px}
+  .ct-fast{font-weight:600;color:#0C7A40}
+  .ct-live{position:relative;width:7px;height:7px;border-radius:50%;background:var(--green)}
+  .ct-live::after{content:"";position:absolute;inset:-4px;border-radius:50%;border:2px solid rgba(20,153,84,.45);animation:ct-ping 1.8s ease-out infinite}
+  .ct-way--chat.is-busy .ct-way__ic{animation:ct-pulse .9s ease-in-out infinite}
+  @keyframes ct-pulse{50%{transform:scale(.92)}}
   .ct-way__s{font-size:13.5px;color:var(--sub)}
   .ct-copy{position:absolute;right:16px;top:16px;display:inline-flex;align-items:center;gap:5px;height:30px;padding:0 11px;border:0;border-radius:980px;background:rgba(29,29,31,.06);color:var(--ink);font:600 12px/1 inherit;cursor:pointer;transition:background .2s}
   .ct-copy:hover{background:rgba(29,29,31,.12)}
@@ -534,8 +538,7 @@ Do you sell wholesale or full rolls?|Yes. We supply trade buyers across the UK w
     [].forEach.call(root.querySelectorAll('[data-ct-hours] li'), function(li){ li.classList.toggle('is-today', +li.getAttribute('data-day') === now.day); });
     var open = today && now.mins >= toMins(today[0]) && now.mins < toMins(today[1]);
     if (open) {
-      var left = toMins(today[1]) - now.mins;
-      t.textContent = left <= 45 ? 'Open now · closing soon, at ' + nice(today[1]) : 'We’re open · until ' + nice(today[1]) + ' today';
+      t.textContent = 'Live chat open 24/7 · office open until ' + nice(today[1]) + ' today';
     } else {
       var k, nd = null, label = '';
       for (k = 0; k < 8; k++) {
@@ -544,9 +547,9 @@ Do you sell wholesale or full rolls?|Yes. We supply trade buyers across the UK w
         if (k === 0 && now.mins >= toMins(h[0])) continue;
         nd = h; label = k === 0 ? 'today' : k === 1 ? 'tomorrow' : ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'][d]; break;
       }
-      t.textContent = nd ? 'Closed now · back ' + label + ' at ' + nice(nd[0]) + '. Messages welcome any time' : 'Messages welcome any time';
+      t.textContent = nd ? 'Live chat open 24/7 · office back ' + label + ' at ' + nice(nd[0]) : 'Live chat open 24/7';
     }
-    el.classList.toggle('is-open', !!open); el.hidden = false;
+    el.classList.add('is-open'); el.hidden = false;
   }
   status(); setInterval(status, 60000);
 
@@ -568,6 +571,32 @@ Do you sell wholesale or full rolls?|Yes. We supply trade buyers across the UK w
       var first = root.querySelector('.ct-topic input'); if (first) setTimeout(function(){ first.focus({preventScroll: true}); }, calm ? 0 : 600);
     });
   });
+
+  /* Live chat: open the Shopify Inbox chat window */
+  function chatButton(node, depth){
+    var sr = node && node.shadowRoot; if (!sr || depth > 4) return null;
+    var b = sr.querySelector('button.activator, .activator button, button[class*="activator"], [class*="activator"][role="button"]');
+    if (b) return b;
+    var all = sr.querySelectorAll('*');
+    for (var i = 0; i < all.length; i++) { if (all[i].shadowRoot) { b = chatButton(all[i], depth + 1); if (b) return b; } }
+    return null;
+  }
+  function openChat(link){
+    var tries = 0;
+    if (link) link.classList.add('is-busy');
+    (function attempt(){
+      var host = document.querySelector('shopify-chat') || document.querySelector('inbox-online-store-chat');
+      var b = chatButton(host, 0);
+      if (b) { if (link) link.classList.remove('is-busy'); b.click(); return; }
+      if (++tries < 25) return setTimeout(attempt, 240);
+      if (link) link.classList.remove('is-busy');
+      toast('Live chat is still loading, try again in a moment');
+    })();
+  }
+  [].forEach.call(root.querySelectorAll('[data-ct-chat]'), function(a){
+    a.addEventListener('click', function(e){ e.preventDefault(); openChat(a); });
+  });
+  if (location.hash === '#chat') openChat(root.querySelector('[data-ct-chat]'));
 
   /* Map loads only when asked (keeps the page fast and cookie-free until then) */
   var map = root.querySelector('[data-ct-map]');
@@ -610,7 +639,6 @@ Do you sell wholesale or full rolls?|Yes. We supply trade buyers across the UK w
 {
   "name": "Contact us page",
   "settings": [
-    { "type": "text", "id": "phone", "label": "Phone number", "default": "0330 088 2120" },
     { "type": "text", "id": "email", "label": "Email address", "info": "Leave empty to use the store's email address" },
     { "type": "text", "id": "address", "label": "Address (comma separated lines)", "default": "Unit 1 Byron Road, Birmingham, B10 0EN" },
     { "type": "text", "id": "weekday_open", "label": "Monday to Friday opens (24h, e.g. 10:00)", "default": "10:00" },
