@@ -233,7 +233,22 @@
     @media (hover:hover){html body .brf-sab .brf-sab__seg:hover{background:rgba(255,255,255,.85)}}
     html body .brf-sab .brf-sab__add{border-radius:980px!important}
     html body .brf-sab .brf-sab__info{padding-left:2px}
-    @media (max-width:767px){html body .brf-sab .brf-sab__bar{border-radius:980px!important}html body .brf-sab .brf-sab__info{padding-left:0}}
+    /* phones (R13, Abid): squarer corners, and a roomier − / + kept clear of Add to bag */
+    @media (max-width:767px){
+      html body .brf-sab .brf-sab__bar{border-radius:16px!important}
+      html body .brf-sab .brf-sab__info{padding-left:0}
+      html body .brf-sab .brf-sab__thumb{border-radius:11px}
+      html body .brf-sab .brf-sab__seg{border-radius:10px}
+      html body .brf-sab .brf-sab__qty{height:44px;margin-right:6px;border-radius:12px}
+      html body .brf-sab .brf-sab__step{width:36px;height:42px;border-radius:10px;font-size:20px;touch-action:manipulation}
+      html body .brf-sab .brf-sab__in{width:24px;height:42px}
+      html body .brf-sab .brf-sab__add{border-radius:12px!important;touch-action:manipulation}
+    }
+    @media (max-width:374px){
+      html body .brf-sab .brf-sab__step{width:32px}
+      html body .brf-sab .brf-sab__in{width:22px}
+      html body .brf-sab .brf-sab__qty{margin-right:4px}
+    }
     @supports not ((-webkit-backdrop-filter:blur(1px)) or (backdrop-filter:blur(1px))){html body .brf-sab .brf-sab__bar{background:rgba(255,255,255,.97)!important}}
     @media (prefers-reduced-transparency:reduce){html body .brf-sab .brf-sab__bar{background:#fff!important;-webkit-backdrop-filter:none!important;backdrop-filter:none!important}}
   </style>
@@ -248,6 +263,7 @@
     var idEl = form.querySelector('[name="id"]');
     var priceSlot = bar.querySelector('[data-brf-sticky-price]');
     var btn = bar.querySelector('[data-brf-sticky-btn]');
+    var stepAt = 0;
     var thumb = bar.querySelector('[data-brf-sab-top]');
     var opts = bar.querySelector('[data-brf-sab-opts]');
     var priceList = info.querySelector('.product-form__info-content .price-list');
@@ -532,6 +548,7 @@
     if (qIn) {
       qWrap.addEventListener('click', function(e){
         var b = e.target.closest('.brf-sab__step'); if (!b) return;
+        stepAt = Date.now();
         var cur = parseInt(qIn.value, 10) || 1, d = +b.getAttribute('data-d');
         if (d > 0 && cur >= capQ()) { capTip(); return; }
         if (b.disabled) return;
@@ -554,6 +571,8 @@
       });
     }
 
+    /* phones: a tap on Add right after − / + is a slipped finger, not a real add */
+    btn.addEventListener('click', function(e){ if (phone.matches && Date.now() - stepAt < 450) { e.preventDefault(); e.stopImmediatePropagation(); } });
     btn.addEventListener('click', function(){
       if (mainBtn.disabled) return;
       if (qIn) { if (leftNow() === 0) { capTip(); return; } setBarQ(parseInt(qIn.value, 10) || 1, true); }
