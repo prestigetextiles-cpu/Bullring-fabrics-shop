@@ -1,0 +1,582 @@
+{%- comment -%} Bull Ring Fabrics — trust chips under Add to cart + floating glass add-to-cart bar {%- endcomment -%}
+<ul class="brf-trust-chips" role="list">
+  <li class="brf-glass-chip">
+    <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 7h11v9H3z"/><path d="M14 10h4l3 3v3h-7"/><circle cx="7" cy="17.5" r="1.8"/><circle cx="17.5" cy="17.5" r="1.8"/></svg>
+    Free UK delivery over £65
+  </li>
+  <li class="brf-glass-chip">
+    <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/></svg>
+    Same-day dispatch Mon–Fri
+  </li>
+  <li class="brf-glass-chip">
+    <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="10" width="16" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>
+    Secure checkout
+  </li>
+  <li class="brf-glass-chip">
+    <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-5.6-7-11a7 7 0 0 1 14 0c0 5.4-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/></svg>
+    Birmingham fabric specialists
+  </li>
+  <li class="brf-glass-chip brf-gift-chip">
+    <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="9" width="17" height="11.5" rx="1.5"/><path d="M2.5 9h19v-3h-19z"/><path d="M12 6v14.5"/><path d="M12 6c-1.6-3.2-5.6-3.4-5.6-1 0 1.5 2.6 1 5.6 1zM12 6c1.6-3.2 5.6-3.4 5.6-1 0 1.5-2.6 1-5.6 1z"/></svg>
+    <span><b>No prices or packing slips in the parcel.</b> Sending it to someone else? Our lips are sealed.</span>
+  </li>
+</ul>
+<style>
+  /* Frosted glass tiles (Control Center style): soft grey glass, bright white rim, green icon dot */
+  html .brf-trust-chips{gap:10px}
+  html .brf-trust-chips .brf-glass-chip{position:relative;isolation:isolate;gap:10px;min-height:52px;padding:8px 14px 8px 8px;border:0;border-radius:20px;overflow:hidden;font-size:13px;font-weight:600;color:#1D1D1F!important;
+    background:linear-gradient(180deg,rgba(255,255,255,.66) 0%,rgba(226,221,213,.58) 100%);-webkit-backdrop-filter:saturate(170%) blur(22px);backdrop-filter:saturate(170%) blur(22px);
+    box-shadow:inset 0 1.5px 0 #fff,inset 1.5px 0 0 rgba(255,255,255,.8),inset 0 0 0 1px rgba(255,255,255,.5),0 0 0 1px rgba(29,29,31,.08),0 12px 26px -16px rgba(29,29,31,.38),0 2px 6px -3px rgba(29,29,31,.12)!important}
+  html .brf-trust-chips .brf-glass-chip::before{content:"";position:absolute;left:10%;right:10%;top:0;height:42%;z-index:-1;border-radius:0 0 50% 50%/0 0 100% 100%;pointer-events:none;background:linear-gradient(180deg,rgba(255,255,255,.55),rgba(255,255,255,0))}
+  html .brf-trust-chips .brf-glass-chip svg{position:relative;flex:0 0 32px;width:32px;height:32px;padding:7px;border-radius:50%;color:#fff!important;
+    background:linear-gradient(180deg,#1DAE65 0%,#149954 55%,#0F884A 100%);box-shadow:inset 0 1px 0 rgba(255,255,255,.4),inset 0 -1px 0 rgba(0,60,28,.25),0 4px 10px -4px rgba(20,153,84,.7)}
+  html .brf-trust-chips .brf-glass-chip span{position:relative}
+  html .brf-trust-chips .brf-gift-chip{grid-column:1/-1;font-weight:500;color:#3A3835!important}
+  html .brf-trust-chips .brf-gift-chip b{font-weight:700;color:#1D1D1F}
+  @media (max-width:767px){html .brf-trust-chips .brf-glass-chip{gap:8px;min-height:48px;padding:7px 10px 7px 7px;border-radius:18px;font-size:12.5px}html .brf-trust-chips .brf-glass-chip svg{flex-basis:28px;width:28px;height:28px;padding:6px}}
+  @media (prefers-reduced-transparency:reduce){html .brf-trust-chips .brf-glass-chip{background:#fff;-webkit-backdrop-filter:none;backdrop-filter:none}}
+</style>
+
+{%- if template.name == 'product' -%}<script>window.brfIsHL = {% if product.tags contains 'home-lifestyle' %}true{% else %}false{% endif %};</script>{%- endif -%}
+{%- if template.name == 'product' and template != 'product.quick-view' and product.template_suffix != 'contact' -%}
+  {%- comment -%}
+    Floating Add to bag bar (River Island style): the chosen variation's photo, a tap-to-change segment per option,
+    and a big Add to bag with the price. Phones: shows whenever the real button is off screen. Bigger screens: once scrolled past it.
+  {%- endcomment -%}
+  {%- assign brf_sab_first = product.selected_or_first_available_variant -%}
+  {%- assign brf_sab_im = brf_sab_first.featured_image | default: product.featured_image -%}
+  <div class="brf-sticky-atc brf-sab" data-brf-sticky hidden>
+    <div class="brf-sticky-atc__inner brf-sab__bar">
+      <button type="button" class="brf-sab__thumb" data-brf-sab-top aria-label="Back to the photos">
+        {%- if brf_sab_im -%}<img class="brf-sticky-atc__img" src="{{ brf_sab_im | img_url: '160x160', crop: 'center' }}" alt="" width="52" height="52">{%- endif -%}
+      </button>
+      <div class="brf-sab__info">
+        <p class="brf-sab__title">{{ product.title | escape }}</p>
+        <div class="brf-sab__opts" data-brf-sab-opts></div>
+        <p class="brf-sab__stock" data-brf-sab-stock hidden></p>
+      </div>
+      <div class="brf-sab__qty" data-brf-sab-qty>
+        <button type="button" class="brf-sab__step" data-d="-1" aria-label="One less">&minus;</button>
+        <input class="brf-sab__in" type="number" inputmode="numeric" pattern="[0-9]*" min="1" value="1" aria-label="Quantity">
+        <button type="button" class="brf-sab__step" data-d="1" aria-label="One more">+</button>
+      </div>
+      <button type="button" class="brf-sticky-atc__btn brf-sab__add" data-brf-sticky-btn><span class="brf-sab__lbl">Add to bag</span><span class="brf-sab__price" data-brf-sticky-price></span></button>
+    </div>
+  </div>
+  <script type="application/json" data-brf-sab-img>{
+    {%- for v in product.variants -%}
+      {%- assign im = v.featured_image | default: product.featured_image -%}
+      "{{ v.id }}": {% if im %}{{ im | img_url: '160x160', crop: 'center' | json }}{% else %}null{% endif %}{% unless forloop.last %},{% endunless %}
+    {%- endfor -%}
+  }</script>
+  <script type="application/json" data-brf-sab-vars>[
+    {%- for v in product.variants -%}
+      {"i":{{ v.id }},"a":{{ v.available | json }},"o":[{{ v.option1 | json }},{{ v.option2 | json }},{{ v.option3 | json }}]}{% unless forloop.last %},{% endunless %}
+    {%- endfor -%}
+  ]</script>
+  <style>
+    /* ---------- R8 redesign: one tight row that hugs its content ----------
+       [photo] [title / chosen options] [qty] [Add to bag · price] */
+    html body .brf-sab{left:0;right:0;bottom:calc(12px + env(safe-area-inset-bottom));padding:0 10px}
+    html body .brf-sab .brf-sab__bar{display:flex!important;align-items:center;gap:10px!important;box-sizing:border-box;width:auto;max-width:100%;height:auto;min-height:0;padding:7px!important;border-radius:18px!important;
+      background:rgba(255,255,255,.96)!important;-webkit-backdrop-filter:saturate(180%) blur(20px)!important;backdrop-filter:saturate(180%) blur(20px)!important;border:0!important;
+      box-shadow:0 0 0 1px rgba(29,29,31,.08),0 18px 40px -18px rgba(29,29,31,.5),0 3px 10px -5px rgba(29,29,31,.16)!important}
+    .brf-sab__thumb{position:relative;flex:0 0 46px;width:46px;height:46px;padding:0;margin:0;border:0;border-radius:12px;overflow:hidden;background:#ECE6DC;cursor:pointer}
+    html body .brf-sab .brf-sab__thumb img{display:block;width:100%;height:100%;object-fit:cover;border-radius:0;box-shadow:none;transition:opacity .2s ease,transform .45s cubic-bezier(.2,1.4,.3,1)}
+    .brf-sab__thumb.is-swap img{animation:brf-sab-swap .5s cubic-bezier(.2,1.3,.3,1)}
+    @keyframes brf-sab-swap{0%{opacity:.2;transform:scale(.7) rotate(-6deg)}100%{opacity:1;transform:none}}
+    .brf-sab__info{flex:1 1 auto;min-width:0;display:flex;flex-flow:row wrap;align-content:center;align-items:center;column-gap:10px;row-gap:4px}
+    .brf-sab__info .brf-sab__title{flex:1 0 100%}
+    html body .brf-sab .brf-sab__title{margin:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:14px;font-weight:700;line-height:1.2;letter-spacing:-.01em;color:#1D1D1F}
+    .brf-sab__opts{display:flex;gap:6px;min-width:0}
+    .brf-sab__opts:empty{display:none}
+    .brf-sab__seg{display:inline-flex;align-items:center;gap:5px;flex:0 1 auto;min-width:0;height:26px;margin:0;padding:0 8px 0 7px;border:0;border-radius:8px;background:#F4F0EA;color:#1D1D1F;
+      font:600 12.5px/1 inherit;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:background .15s}
+    @media (hover:hover){.brf-sab__seg:hover{background:#ECE6DC}.brf-sab__step:hover{background:rgba(29,29,31,.06)}}
+    .brf-sab__seg:active{background:#E4DDD2}
+    .brf-sab__seg span{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+    .brf-sab__seg svg{flex:0 0 auto;width:9px;height:9px;color:#8C867D}
+    .brf-sab__dot{flex:0 0 auto;width:13px;height:13px;border-radius:50%;background:#ddd center/cover no-repeat;box-shadow:inset 0 0 0 1px rgba(0,0,0,.14)}
+    .brf-sab__more{flex:0 0 auto;font-size:11px;font-weight:600;color:#8C867D}
+    /* stock level */
+    html body .brf-sab .brf-sab__stock{display:flex;align-items:center;gap:5px;margin:0;font-size:11.5px;font-weight:600;line-height:1.2;color:#0C6637;white-space:nowrap}
+    .brf-sab__stock::before{content:"";flex:0 0 auto;width:6px;height:6px;border-radius:50%;background:#149954;box-shadow:0 0 0 2px rgba(20,153,84,.18)}
+    html body .brf-sab .brf-sab__stock.is-low{color:#B45309}
+    .brf-sab__stock.is-low::before{background:#E08A00;box-shadow:0 0 0 2px rgba(224,138,0,.2);animation:brf-sab-blink 1.6s ease-in-out infinite}
+    @keyframes brf-sab-blink{50%{opacity:.35}}
+    .brf-sab__stock[hidden]{display:none!important}
+    .brf-sab-sheet__o em.brf-sab-q{color:#0C6637;font-weight:600}
+    .brf-sab-sheet__o em.brf-sab-q.is-low{color:#B45309}
+    /* quantity */
+    .brf-sab__qty{flex:0 0 auto;display:flex;align-items:center;height:40px;padding:0 2px;border-radius:11px;background:#F4F0EA;box-shadow:inset 0 0 0 1px #E6DFD4}
+    .brf-sab__step{display:grid;place-items:center;width:28px;height:36px;padding:0;border:0;border-radius:9px;background:transparent;color:#1D1D1F;font:500 18px/1 inherit;cursor:pointer;-webkit-tap-highlight-color:transparent}
+    .brf-sab__step:disabled{color:#C9C2B7;cursor:default;background:transparent}
+    html body .brf-sab .brf-sab__in{width:30px;height:36px;min-height:0;margin:0;padding:0;border:0!important;border-radius:0;background:transparent!important;box-shadow:none!important;color:#1D1D1F;font:700 15px/1 inherit;text-align:center;-moz-appearance:textfield;appearance:textfield}
+    .brf-sab__in::-webkit-outer-spin-button,.brf-sab__in::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+    .brf-sab__in:focus{outline:none}
+    .brf-sab__qty:focus-within{box-shadow:inset 0 0 0 2px #149954}
+    .brf-sab__qty{position:relative}
+    .brf-sab__step.is-cap{color:#C9C2B7}
+    .brf-sab__qty.is-max{animation:brf-sab-nudge .4s ease}
+    @keyframes brf-sab-nudge{20%{transform:translateX(-3px)}40%{transform:translateX(3px)}60%{transform:translateX(-2px)}80%{transform:translateX(1px)}}
+    html body .brf-sab .brf-sab__bar{position:relative}
+    .brf-sab__tip{position:absolute;left:var(--ax,50%);bottom:calc(100% + 12px);z-index:2;max-width:calc(100vw - 32px);padding:7px 12px;border-radius:10px;background:#1D1D1F;color:#fff;font-size:12.5px;font-weight:600;line-height:1.3;white-space:nowrap;
+      transform:translate(-50%,6px);opacity:0;pointer-events:none;transition:opacity .2s ease,transform .25s ease}
+    .brf-sab__tip::after{content:"";position:absolute;left:50%;top:100%;margin-left:-6px;border:6px solid transparent;border-top-color:#1D1D1F}
+    .brf-sab__tip.is-on{opacity:1;transform:translate(-50%,0)}
+    @media (max-width:767px){
+      /* phones: a full-width bubble above the bar, its arrow still pointing at the quantity */
+      .brf-sab__tip{left:6px;right:6px;max-width:none;white-space:normal;text-align:center;transform:translateY(6px)}
+      .brf-sab__tip.is-on{transform:none}
+      .brf-sab__tip::after{left:calc(var(--ax,50%) - 6px);margin-left:0}
+    }
+    /* button: "Add to bag" with the price beside it */
+    html body .brf-sab .brf-sab__add{display:flex!important;flex:0 0 auto;flex-direction:row;align-items:center;justify-content:center;gap:8px;min-width:0;height:46px!important;margin:0;padding:0 20px!important;
+      border:0!important;border-radius:12px!important;color:#fff!important;font-weight:700!important;line-height:1;white-space:nowrap;cursor:pointer;
+      background:linear-gradient(180deg,#1DAE65 0%,#149954 52%,#0F884A 100%)!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.3),0 8px 18px -10px rgba(20,153,84,.9)!important;transition:transform .15s ease,background .2s ease}
+    html body .brf-sab .brf-sab__add:hover{background:linear-gradient(180deg,#18A05C 0%,#0F884A 100%)!important}
+    html body .brf-sab .brf-sab__add:active{transform:scale(.97)}
+    html body .brf-sab .brf-sab__add.brf-added{background:#0C6637!important}
+    html body .brf-sab .brf-sab__add:disabled{background:#ECE6DC!important;color:#8C867D!important;box-shadow:none!important;cursor:default}
+    .brf-sab__lbl{font-size:15px;font-weight:700;letter-spacing:-.005em}
+    .brf-sab__lbl.is-added::after{content:"\2713";display:inline-block;margin-left:6px;animation:brf-sab-tick .4s cubic-bezier(.2,1.6,.3,1)}
+    .brf-sab__price{padding-left:9px;border-left:1px solid rgba(255,255,255,.35);font-size:14px;font-weight:600;opacity:.95}
+    .brf-sab__price:empty{display:none}
+    html body .brf-sab .brf-sab__add.is-pop{animation:brf-sab-pop .45s cubic-bezier(.2,1.4,.3,1)}
+    @keyframes brf-sab-pop{0%{transform:scale(.94)}60%{transform:scale(1.04)}100%{transform:none}}
+    @keyframes brf-sab-tick{0%{transform:scale(0)}100%{transform:none}}
+    @media (min-width:768px){
+      html body .brf-sab .brf-sab__bar{width:fit-content;min-width:460px;max-width:min(760px,calc(100vw - 40px));gap:12px!important;padding:8px!important}
+      .brf-sab__thumb{flex-basis:50px;width:50px;height:50px}
+      .brf-sab__info{max-width:330px;padding-right:2px}
+      html body .brf-sab .brf-sab__add{height:50px!important;padding:0 24px!important}
+      .brf-sab__qty{height:44px}
+      .brf-sab__step{width:32px;height:40px}
+      html body .brf-sab .brf-sab__in{width:34px;height:40px;font-size:16px}
+    }
+    /* phones: the title gives way to the chosen option; the price sits under the label */
+    @media (max-width:767px){
+      html body .brf-sab .brf-sab__bar{width:100%;gap:8px!important;padding:6px!important;border-radius:16px!important}
+      html body .brf-sab .brf-sab__title{font-size:13px}
+      .brf-sab.has-opts .brf-sab__title{display:none}
+      .brf-sab__info{flex-flow:column nowrap;align-items:flex-start;justify-content:center;gap:3px}
+      .brf-sab__info .brf-sab__title{flex:0 0 auto}
+      .brf-sab.has-opts .brf-sab__seg{height:28px}
+      html body .brf-sab .brf-sab__stock{font-size:11px;padding-left:2px}
+      .brf-sab:not(.has-opts) .brf-sab__title{white-space:normal;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;font-size:12.5px;line-height:1.25}
+      .brf-sab__seg{height:34px;padding:0 8px;font-size:13px;border-radius:10px}
+      .brf-sab__more{display:none}
+      .brf-sab__qty{height:38px}
+      .brf-sab__step{width:24px;height:34px;font-size:17px}
+      html body .brf-sab .brf-sab__in{width:26px;height:34px;font-size:14.5px}
+      html body .brf-sab .brf-sab__add{flex-direction:column;gap:2px;height:46px!important;padding:0 12px!important}
+      .brf-sab__lbl{font-size:14px}
+      .brf-sab__price{padding:0;border:0;font-size:11.5px;font-weight:500;opacity:.9}
+    }
+    @media (max-width:374px){
+      .brf-sab__thumb{flex-basis:40px;width:40px;height:40px}
+      html body .brf-sab .brf-sab__bar{gap:6px!important}
+      .brf-sab__step{width:21px}
+      html body .brf-sab .brf-sab__in{width:23px}
+      html body .brf-sab .brf-sab__add{padding:0 9px!important}
+      .brf-sab__lbl{font-size:13px}
+    }
+
+    /* option sheet */
+    .brf-sab-scrim{position:fixed;inset:0;z-index:2147483300;background:rgba(10,10,12,.4);opacity:0;transition:opacity .25s ease;-webkit-tap-highlight-color:transparent}
+    .brf-sab-scrim.is-on{opacity:1}
+    .brf-sab-sheet{position:fixed;left:0;right:0;bottom:0;z-index:2147483301;max-height:70vh;max-height:70dvh;display:flex;flex-direction:column;padding:8px 16px calc(16px + env(safe-area-inset-bottom));
+      border-radius:24px 24px 0 0;background:#fff;box-shadow:0 -20px 50px -20px rgba(0,0,0,.4);transform:translateY(105%);transition:transform .38s cubic-bezier(.2,.9,.25,1)}
+    .brf-sab-sheet.is-on{transform:none}
+    .brf-sab-sheet__grab{width:38px;height:5px;margin:2px auto 10px;border-radius:5px;background:#DDD5C8}
+    .brf-sab-sheet__h{display:flex;align-items:center;justify-content:space-between;margin:0 0 12px;font-size:17px;font-weight:700;color:#1D1D1F}
+    .brf-sab-sheet__x{display:grid;place-items:center;width:34px;height:34px;padding:0;border:0;border-radius:50%;background:rgba(29,29,31,.07);color:#1D1D1F;font-size:20px;line-height:1;cursor:pointer}
+    .brf-sab-sheet__body{overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;padding:12px 2px 2px}
+    .brf-sab-sheet__g{margin:14px 2px 8px;font-size:12px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:#8C867D}
+    .brf-sab-sheet__g:first-child{margin-top:0}
+    .brf-sab-sheet__list{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px}
+    .brf-sab-sheet__o{display:flex;align-items:center;gap:10px;min-width:0;padding:10px 12px;border:0;border-radius:14px;background:#F6F3EE;color:#1D1D1F;font:500 14px/1.2 inherit;text-align:left;cursor:pointer;box-shadow:inset 0 0 0 1px transparent;transition:box-shadow .15s,background .15s}
+    .brf-sab-sheet__o span{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+    .brf-sab-sheet__o .brf-sab__dot{width:18px;height:18px}
+    .brf-sab-sheet__o.is-sel{background:#fff;box-shadow:inset 0 0 0 2px #1D1D1F;font-weight:700}
+    .brf-sab-sheet__o.is-oos{color:#9A948B}
+    .brf-sab-sheet__o.is-oos span{text-decoration:line-through;text-decoration-thickness:1.5px;text-decoration-color:#B3261E}
+    .brf-sab-sheet__o.is-oos .brf-sab__dot{opacity:.45;background-image:linear-gradient(135deg,transparent 46%,#B3261E 46%,#B3261E 54%,transparent 54%)!important}
+    .brf-sab-sheet__g b{margin-left:6px;font-weight:700;letter-spacing:0;text-transform:none;color:#1D1D1F}
+    .brf-sab-sheet__list.is-sw{grid-template-columns:repeat(auto-fill,minmax(68px,1fr));gap:8px}
+    .brf-sab-sheet__o.is-sw{position:relative;flex-direction:column;justify-content:center;gap:6px;min-height:72px;padding:10px 4px 8px;overflow:visible;text-align:center}
+    .brf-sab-sheet__o.is-sw .brf-sab__dot{width:30px;height:30px;box-shadow:inset 0 0 0 1px rgba(0,0,0,.14),0 1px 3px rgba(0,0,0,.12)}
+    html body .brf-sab-sheet__o.is-sw em{margin:0;font-size:10.5px;line-height:1.15;white-space:nowrap}
+    .brf-sab-sheet__o.is-sw.is-sel{box-shadow:inset 0 0 0 2px #1D1D1F}
+    /* the colour name: a little bubble on hover (desktop) or on tap (phones) */
+    .brf-sab-sheet__o.is-sw::after{content:attr(data-name);position:absolute;left:50%;bottom:calc(100% + 6px);z-index:3;padding:5px 9px;border-radius:8px;background:#1D1D1F;color:#fff;font-size:12px;font-weight:600;line-height:1.2;white-space:nowrap;
+      transform:translate(-50%,4px);opacity:0;pointer-events:none;transition:opacity .15s ease,transform .2s ease}
+    .brf-sab-sheet__o.is-sw.is-tip::after{opacity:1;transform:translate(-50%,0)}
+    @media (hover:hover){.brf-sab-sheet__o.is-sw:hover::after{opacity:1;transform:translate(-50%,0)}}
+    .brf-sab-sheet__o em{margin-left:auto;flex:0 0 auto;font-style:normal;font-size:10.5px;font-weight:600;letter-spacing:.02em;color:#B3261E}
+    @media (min-width:768px){
+      .brf-sab-sheet{left:50%;right:auto;bottom:96px;width:min(560px,calc(100% - 40px));border-radius:22px;transform:translate(-50%,20px);opacity:0;pointer-events:none;transition:transform .3s cubic-bezier(.2,.9,.25,1),opacity .2s ease}
+      .brf-sab-sheet.is-on{transform:translate(-50%,0);opacity:1;pointer-events:auto}
+      .brf-sab-sheet__grab{display:none}
+    }
+    @media (prefers-reduced-motion:reduce){.brf-sab-sheet,.brf-sab-scrim,.brf-sab__thumb img{transition:none;animation:none!important}}
+
+    /* ---------- R12: frosted glass pill (same glass as the photo arrows, .brf-garrow) ---------- */
+    html body .brf-sab .brf-sab__bar{border-radius:980px!important;
+      background:rgba(255,255,255,.74)!important;-webkit-backdrop-filter:saturate(180%) blur(16px)!important;backdrop-filter:saturate(180%) blur(16px)!important;
+      border:1px solid rgba(255,255,255,.6)!important;box-shadow:0 1px 0 rgba(255,255,255,.8) inset,0 18px 40px -18px rgba(29,29,31,.45),0 3px 10px -5px rgba(29,29,31,.14),0 0 0 .5px rgba(29,29,31,.06)!important}
+    html body .brf-sab .brf-sab__thumb{border-radius:50%}
+    html body .brf-sab .brf-sab__qty{border-radius:980px;background:rgba(255,255,255,.55);box-shadow:inset 0 0 0 1px rgba(255,255,255,.7),0 1px 2px rgba(29,29,31,.06)}
+    html body .brf-sab .brf-sab__qty:focus-within{box-shadow:inset 0 0 0 2px #149954}
+    html body .brf-sab .brf-sab__step{border-radius:50%}
+    html body .brf-sab .brf-sab__seg{border-radius:980px;background:rgba(255,255,255,.6);box-shadow:inset 0 0 0 1px rgba(255,255,255,.7)}
+    @media (hover:hover){html body .brf-sab .brf-sab__seg:hover{background:rgba(255,255,255,.85)}}
+    html body .brf-sab .brf-sab__add{border-radius:980px!important}
+    html body .brf-sab .brf-sab__info{padding-left:2px}
+    @media (max-width:767px){html body .brf-sab .brf-sab__bar{border-radius:980px!important}html body .brf-sab .brf-sab__info{padding-left:0}}
+    @supports not ((-webkit-backdrop-filter:blur(1px)) or (backdrop-filter:blur(1px))){html body .brf-sab .brf-sab__bar{background:rgba(255,255,255,.97)!important}}
+    @media (prefers-reduced-transparency:reduce){html body .brf-sab .brf-sab__bar{background:#fff!important;-webkit-backdrop-filter:none!important;backdrop-filter:none!important}}
+  </style>
+  <script>
+  (function(){
+    var doc = document;
+    var bar = doc.querySelector('[data-brf-sticky]');
+    var info = doc.querySelector('.product-block-list__item--info');
+    var mainBtn = info && info.querySelector('.product-form__add-button');
+    if (!bar || !mainBtn || !('IntersectionObserver' in window)) return;
+    var form = mainBtn.closest('form') || info;
+    var idEl = form.querySelector('[name="id"]');
+    var priceSlot = bar.querySelector('[data-brf-sticky-price]');
+    var btn = bar.querySelector('[data-brf-sticky-btn]');
+    var thumb = bar.querySelector('[data-brf-sab-top]');
+    var opts = bar.querySelector('[data-brf-sab-opts]');
+    var priceList = info.querySelector('.product-form__info-content .price-list');
+    var imgs = {}; try { imgs = JSON.parse((doc.querySelector('[data-brf-sab-img]') || {}).textContent || '{}'); } catch (e) {}
+    var phone = window.matchMedia('(max-width: 767px)');
+    var CHEV = '<svg viewBox="0 0 10 10" aria-hidden="true"><path d="M2 3.5l3 3 3-3" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+    function esc(s){ return String(s).replace(/[&<>"]/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]; }); }
+
+    /* ---- the option groups on the page (radios or a dropdown) ---- */
+    function groups(){
+      return [].slice.call(form.querySelectorAll('.product-form__option[data-selector-type]')).map(function(g, pos){
+        var nameEl = g.querySelector('.product-form__option-name');
+        var name = nameEl ? (nameEl.childNodes[0] ? nameEl.childNodes[0].textContent : nameEl.textContent).replace(/:\s*$/, '').trim() : 'Option';
+        var sel = g.querySelector('select'), values = [];
+        if (sel) {
+          [].forEach.call(sel.options, function(o){ values.push({v: o.value, label: o.textContent.trim(), on: o.selected, pick: function(){ sel.value = o.value; sel.dispatchEvent(new Event('change', {bubbles: true})); }}); });
+        } else {
+          [].forEach.call(g.querySelectorAll('input[type="radio"]'), function(r){
+            var lab = r.id ? form.querySelector('label[for="' + r.id + '"]') : null;
+            values.push({v: r.value, label: r.value, on: r.checked, lab: lab, pick: function(){ if (!r.checked) r.click(); }});
+          });
+        }
+        return {el: g, pos: pos, name: name, type: g.getAttribute('data-selector-type'), values: values};
+      }).filter(function(g){ return g.values.length > 1; });
+    }
+    /* a plain, standard colour dot worked out from the colour's name (not the fabric's own swatch photo) */
+    var COLS = {black:'#111111',jet:'#111111',white:'#FFFFFF','off white':'#F4F1E8',ivory:'#FFFFF0',cream:'#F3E9D2',beige:'#E3D3B4',nude:'#E3BC9A',sand:'#D8C3A0',stone:'#C9BFAE',taupe:'#8B7D6B',camel:'#C19A6B',tan:'#D2B48C',
+      khaki:'#B9A66B',brown:'#7B4A2A',chocolate:'#5A3218',coffee:'#6F4E37',mocha:'#7B5B47',rust:'#B7410E',copper:'#B87333',bronze:'#A97142',gold:'#D4AF37',mustard:'#D9A51E',lemon:'#FFF44F',yellow:'#F7D21E',
+      orange:'#F28C28',peach:'#F7B89A',coral:'#F27B6B',salmon:'#F59A8A',red:'#D32F2A',scarlet:'#E3241B',cherry:'#C2182B',wine:'#722F37',burgundy:'#800020',maroon:'#7A1F2B',claret:'#7F1734',
+      pink:'#F4A6C1','baby pink':'#F8C8DC','light pink':'#F8C8DC','hot pink':'#FF4FA0','dusty pink':'#D8A1A8',blush:'#F2C6C2',rose:'#E8A0B0',cerise:'#DE3163',fuchsia:'#E0218A',magenta:'#D0167E',
+      lilac:'#C8A2C8',lavender:'#B9A7E0',mauve:'#B784A7',purple:'#6A3FA0',plum:'#6E2C5E',violet:'#7F4FC9',aubergine:'#472C4C',
+      blue:'#2F6FD0','royal blue':'#2851C7','royal':'#2851C7',navy:'#1F2A57','navy blue':'#1F2A57','baby blue':'#A9CCEB','light blue':'#A9CCEB','sky blue':'#7EC3EA',sky:'#7EC3EA',cobalt:'#1F4FB5',denim:'#4A6A94',
+      petrol:'#1F5F6B',teal:'#16808A',turquoise:'#2EC4C6',aqua:'#5FD4D6',jade:'#2F9C78',mint:'#A8E6C8',sage:'#A3B49A',
+      green:'#2E9A55','bottle green':'#0F4D2E','dark green':'#1E5631',emerald:'#0E8A5A',lime:'#A6D93A',olive:'#6E7F2E','forest green':'#24502F',forest:'#24502F',
+      grey:'#9A9A9A',gray:'#9A9A9A','light grey':'#C9C9C9','dark grey':'#555555',silver:'#C0C0C0',charcoal:'#36454F',slate:'#6D7B87'};
+    var COLKEYS = Object.keys(COLS).sort(function(a, b){ return b.length - a.length; });
+    var MULTI = 'background:conic-gradient(#E34B4B,#F2B33D,#4CB15F,#3E7DD6,#9B5BD3,#E34B4B)';
+    function stdColour(name){
+      var n = ' ' + String(name).toLowerCase().replace(/[^a-z ]+/g, ' ').replace(/\s+/g, ' ') + ' ';
+      if (/ (multi|multicolou?r|rainbow|mixed|assorted) /.test(n)) return MULTI;
+      for (var i = 0; i < COLKEYS.length; i++) if (n.indexOf(' ' + COLKEYS[i] + ' ') > -1) return 'background:' + COLS[COLKEYS[i]];
+      return MULTI;
+    }
+    function isColour(g){ return g.type === 'color' || g.type === 'variant' || /colou?r/i.test(g.name); }
+    function swatchStyle(val){ return stdColour(val.label); }
+    function isSwatch(g){ return isColour(g); }
+
+    /* sold out? (with the other options as currently chosen) */
+    var vars = []; try { vars = JSON.parse((doc.querySelector('[data-brf-sab-vars]') || {}).textContent || '[]'); } catch (e) {}
+    function soldOut(gs, g, val){
+      if (!vars.length) return false;
+      var picks = {};
+      gs.forEach(function(o){ if (o !== g) { var s = o.values.filter(function(v){ return v.on; })[0]; if (s) picks[o.pos] = s.v; } });
+      return !vars.some(function(x){
+        if (!x.a || x.o[g.pos] !== val.v) return false;
+        for (var q in picks) if (x.o[q] !== picks[q]) return false;
+        return true;
+      });
+    }
+    /* R9. stock for the variant a value would give (with the other options as chosen); null = not tracked */
+    function stockFor(gs, g, val){
+      var picks = {};
+      gs.forEach(function(o){ if (o !== g) { var s2 = o.values.filter(function(v){ return v.on; })[0]; if (s2) picks[o.pos] = s2.v; } });
+      picks[g.pos] = val.v;
+      var hit = vars.filter(function(x){ for (var q in picks) if (x.o[q] !== picks[q]) return false; return true; })[0];
+      return hit && hit.i ? stockOf(String(hit.i)) : null;
+    }
+    function stockLabel(n){ return n <= 0 ? 'Sold out' : n <= 5 ? 'Only ' + n + ' left' : n + ' in stock'; }
+    function badge(gs, g, v){
+      if (soldOut(gs, g, v)) return '<em>Sold out</em>';
+      var n = stockFor(gs, g, v);
+      return n == null ? '' : '<em class="brf-sab-q' + (n <= 5 ? ' is-low' : '') + '">' + stockLabel(n) + '</em>';
+    }
+
+    var lastSig = '';
+    function paintOpts(){
+      var gs = groups();
+      var show = gs.slice(0, phone.matches ? 1 : 3);
+      bar.classList.toggle('has-opts', gs.length > 0);
+      var sig = show.map(function(g){ var s = g.values.filter(function(v){ return v.on; })[0]; return g.name + '=' + (s ? s.v : ''); }).join('|') + '|' + window.innerWidth;
+      if (sig === lastSig) return; lastSig = sig;
+      opts.innerHTML = show.map(function(g, i){
+        var s = g.values.filter(function(v){ return v.on; })[0];
+        var dot = isSwatch(g) && s ? swatchStyle(s) : '';
+        var more = gs.length > show.length && i === show.length - 1 ? '<em class="brf-sab__more">+' + (gs.length - show.length) + '</em>' : '';
+        return '<button type="button" class="brf-sab__seg" data-i="' + i + '" aria-haspopup="dialog" title="' + esc(g.name) + '" aria-label="Change ' + esc(g.name) + ', now ' + esc(s ? s.label : 'not chosen') + '">' +
+          (dot ? '<i class="brf-sab__dot" style="' + esc(dot) + '"></i>' : '') + '<span>' + esc(s ? s.label : 'Choose ' + g.name) + '</span>' + more + CHEV + '</button>';
+      }).join('');
+    }
+
+    /* ---- the sheet that opens from a segment ---- */
+    var scrim = null, sheet = null;
+    function closeSheet(){
+      if (!sheet) return;
+      var s = sheet, sc = scrim; sheet = scrim = null;
+      s.classList.remove('is-on'); sc.classList.remove('is-on');
+      setTimeout(function(){ s.remove(); sc.remove(); }, 380);
+    }
+    function openSheet(i){
+      var gs = groups(); if (!gs[i]) return;
+      closeSheet();
+      scrim = doc.createElement('div'); scrim.className = 'brf-sab-scrim';
+      sheet = doc.createElement('div'); sheet.className = 'brf-sab-sheet'; sheet.setAttribute('role', 'dialog');
+      var title = gs.length > 1 ? 'Choose your options' : 'Choose ' + gs[0].name.toLowerCase();
+      sheet.setAttribute('aria-label', title);
+      var html = '<div class="brf-sab-sheet__grab"></div><div class="brf-sab-sheet__h"><span>' + esc(title) + '</span><button type="button" class="brf-sab-sheet__x" aria-label="Close">&times;</button></div><div class="brf-sab-sheet__body">';
+      gs.forEach(function(g, gi){
+        var sw = isSwatch(g), cur = g.values.filter(function(v){ return v.on; })[0];
+        /* R10. colours are swatches only (the name shows on hover, or on tap on phones) so the stock line has room */
+        html += (gs.length > 1 || sw ? '<p class="brf-sab-sheet__g" data-g="' + gi + '">' + esc(g.name) + (sw ? ' <b data-sel>' + esc(cur ? cur.label : '') + '</b>' : '') + '</p>' : '') +
+          '<div class="brf-sab-sheet__list' + (sw ? ' is-sw' : '') + '" data-g="' + gi + '">' + g.values.map(function(v, k){
+          var dot = sw ? swatchStyle(v) : '', oos = soldOut(gs, g, v);
+          return '<button type="button" class="brf-sab-sheet__o' + (sw ? ' is-sw' : '') + (v.on ? ' is-sel' : '') + (oos ? ' is-oos' : '') + '" data-k="' + k + '" data-name="' + esc(v.label) + '" aria-pressed="' + v.on + '" aria-label="' + esc(v.label) + (oos ? ', sold out' : '') + '">' +
+            (dot ? '<i class="brf-sab__dot" style="' + esc(dot) + '"></i>' : '') + (sw ? '' : '<span>' + esc(v.label) + '</span>') + badge(gs, g, v) + '</button>';
+        }).join('') + '</div>';
+      });
+      sheet.innerHTML = html + '</div>';
+      doc.body.appendChild(scrim); doc.body.appendChild(sheet);
+      requestAnimationFrame(function(){ scrim.classList.add('is-on'); sheet.classList.add('is-on'); });
+      var target = sheet.querySelector('.brf-sab-sheet__g[data-g="' + i + '"]');
+      if (target && i > 0) setTimeout(function(){ var body = sheet && sheet.querySelector('.brf-sab-sheet__body'); if (body) body.scrollTop = target.offsetTop - body.offsetTop - 4; }, 30);
+      scrim.addEventListener('click', closeSheet);
+      sheet.querySelector('.brf-sab-sheet__x').addEventListener('click', closeSheet);
+      sheet.addEventListener('click', function(e){
+        var o = e.target.closest('.brf-sab-sheet__o'); if (!o) return;
+        var list = o.parentNode, g = groups()[+list.getAttribute('data-g')]; if (!g) return;
+        var v = g.values[+o.getAttribute('data-k')]; if (!v) return;
+        [].forEach.call(list.querySelectorAll('.brf-sab-sheet__o'), function(x){ x.classList.toggle('is-sel', x === o); x.setAttribute('aria-pressed', x === o); });
+        v.pick();
+        if (o.classList.contains('is-sw')) {
+          [].forEach.call(list.querySelectorAll('.is-tip'), function(x){ x.classList.remove('is-tip'); });
+          o.classList.add('is-tip'); clearTimeout(o.__tipT); o.__tipT = setTimeout(function(){ o.classList.remove('is-tip'); }, 1600);
+          var hd = sheet.querySelector('.brf-sab-sheet__g[data-g="' + list.getAttribute('data-g') + '"] [data-sel]'); if (hd) hd.textContent = v.label;
+        }
+        setTimeout(function(){
+          sync();
+          if (gs.length === 1) { closeSheet(); return; }
+          var now = groups();
+          [].forEach.call(sheet ? sheet.querySelectorAll('.brf-sab-sheet__list') : [], function(l){
+            var gg = now[+l.getAttribute('data-g')]; if (!gg) return;
+            [].forEach.call(l.querySelectorAll('.brf-sab-sheet__o'), function(b){
+              var vv = gg.values[+b.getAttribute('data-k')]; if (!vv) return;
+              var oos = soldOut(now, gg, vv); b.classList.toggle('is-oos', oos);
+              var em = b.querySelector('em'); if (em) em.remove(); b.insertAdjacentHTML('beforeend', badge(now, gg, vv));
+            });
+          });
+        }, 220);
+      });
+      var first = sheet.querySelector('[data-g="' + i + '"] .is-sel') || sheet.querySelector('.brf-sab-sheet__o'); if (first) setTimeout(function(){ try { first.focus({preventScroll: true}); } catch (e) {} }, 60);
+    }
+    opts.addEventListener('click', function(e){ var s = e.target.closest('.brf-sab__seg'); if (s) openSheet(+s.getAttribute('data-i')); });
+    doc.addEventListener('keydown', function(e){ if (e.key === 'Escape') closeSheet(); });
+    thumb.addEventListener('click', function(){
+      var g = doc.querySelector('.product-gallery') || doc.querySelector('.product-block-list__item--gallery');
+      if (g) g.scrollIntoView({behavior: 'smooth', block: 'start'}); else window.scrollTo({top: 0, behavior: 'smooth'});
+    });
+
+    /* ---- keep everything in step with the page ---- */
+    var lastId = null, addedUntil = 0, pendingAt = 0;
+    function sync(){
+      var p = priceList ? priceList.querySelector('.price') : null;
+      priceSlot.textContent = p ? p.textContent.trim() : '';
+      btn.disabled = !!mainBtn.disabled;
+      var lbl = btn.querySelector('.brf-sab__lbl');
+      var done = Date.now() < addedUntil;
+      btn.classList.toggle('brf-added', done);
+      if (lbl) {
+        var t = done ? 'Added to bag' : mainBtn.disabled ? (mainBtn.textContent.trim() || 'Sold out') : 'Add to bag';
+        if (lbl.textContent !== t) lbl.textContent = t;
+        lbl.classList.toggle('is-added', done);
+      }
+      var id = idEl && idEl.value;
+      var sEl = bar.querySelector('[data-brf-sab-stock]');
+      if (sEl) {
+        var n = id ? stockOf(id) : null;
+        var t2 = mainBtn.disabled ? '' : n == null ? 'In stock' : stockLabel(n);
+        if (sEl.textContent !== t2) sEl.textContent = t2;
+        sEl.hidden = !t2;
+        sEl.classList.toggle('is-low', n != null && n <= 5);
+      }
+      if (id && id !== lastId) {
+        var src = imgs[id];
+        var im = thumb.querySelector('img');
+        if (src && im && im.getAttribute('src') !== src) {
+          im.src = src; thumb.classList.remove('is-swap'); void thumb.offsetWidth; thumb.classList.add('is-swap');
+        }
+        lastId = id;
+      }
+      paintOpts();
+    }
+    sync();
+    setInterval(function(){ if (!doc.hidden) sync(); }, 400);
+    if (window.MutationObserver) {
+      var mo = new MutationObserver(sync);
+      if (priceList) mo.observe(priceList, {childList: true, subtree: true, characterData: true});
+      mo.observe(mainBtn, {attributes: true, attributeFilter: ['disabled', 'class']});
+    }
+    form.addEventListener('change', function(){ setTimeout(sync, 30); });
+    window.addEventListener('resize', function(){ lastSig = ''; paintOpts(); }, {passive: true});
+
+    /* Phones: the bar floats whenever the real button is off screen (above or below), so Add to bag is always one tap away.
+       Larger screens: only once you've scrolled past it. */
+    var io = new IntersectionObserver(function(entries){
+      var e = entries[0];
+      var past = !e.isIntersecting && (phone.matches || e.boundingClientRect.top < 0);
+      bar.hidden = false;
+      bar.classList.toggle('is-visible', past);
+      doc.body.classList.toggle('brf-sticky-on', past);
+      if (!past) closeSheet();
+    }, {threshold: 0});
+    io.observe(mainBtn);
+    /* ---- quantity box: kept in step with the page's own quantity (select 1–10+, or a box after "10+") ---- */
+    var qWrap = bar.querySelector('[data-brf-sab-qty]'), qIn = qWrap && qWrap.querySelector('.brf-sab__in');
+    /* stock per variant (brf-v3 prints it further down the page, so read it when needed), less what's already in the bag */
+    var stock = null, inBag = {};
+    function stockOf(id){
+      if (!stock) { var el = doc.getElementById('brf-v3-stock'); if (el) { try { stock = JSON.parse(el.textContent || '{}'); } catch (e) { stock = {}; } } }
+      return stock ? stock[id] : null;
+    }
+    function loadBag(){
+      fetch('/cart.js', {credentials: 'same-origin', headers: {Accept: 'application/json'}}).then(function(r){ return r.json(); }).then(function(c){
+        inBag = {}; (c.items || []).forEach(function(it){ inBag[it.variant_id] = (inBag[it.variant_id] || 0) + it.quantity; });
+        if (qIn) setBarQ(parseInt(qIn.value, 10) || 1);
+      }).catch(function(){});
+    }
+    function mainQ(){ return form.querySelector('[name="quantity"]'); }
+    function capQ(){
+      var id = idEl && idEl.value, m = stockOf(id);
+      if (m == null) return 999;
+      return Math.max(1, m - (inBag[id] || 0));
+    }
+    function leftNow(){ var id = idEl && idEl.value, m = stockOf(id); return m == null ? null : Math.max(0, m - (inBag[id] || 0)); }
+    var tip = null, tipT = 0;
+    function capTip(){
+      var n = leftNow(); if (n == null || !qWrap) return;
+      var barEl = bar.querySelector('.brf-sab__bar');
+      if (!tip) { tip = doc.createElement('div'); tip.className = 'brf-sab__tip'; tip.setAttribute('role', 'status'); barEl.appendChild(tip); }
+      var qr = qWrap.getBoundingClientRect(), br = barEl.getBoundingClientRect();
+      tip.style.setProperty('--ax', Math.round(qr.left + qr.width / 2 - br.left) + 'px');
+      var had = inBag[idEl && idEl.value] || 0;
+      tip.textContent = n <= 0 ? 'That\u2019s all we have \u2013 it\u2019s in your bag!'
+        : had ? 'Just ' + n + ' more \u2013 you\u2019ve ' + had + ' in your bag already!'
+        : (n === 1 ? 'Only 1 left \u2013 it\u2019s all yours!' : 'Only ' + n + ' left \u2013 that\u2019s the lot!');
+      tip.classList.remove('is-on'); void tip.offsetWidth; tip.classList.add('is-on');
+      qWrap.classList.remove('is-max'); void qWrap.offsetWidth; qWrap.classList.add('is-max');
+      clearTimeout(tipT); tipT = setTimeout(function(){ tip.classList.remove('is-on'); qWrap.classList.remove('is-max'); }, 2600);
+    }
+    function getMain(){ var q = mainQ(); return q ? Math.max(1, parseInt(q.value, 10) || 1) : 1; }
+    /* R9. Only touch the page's quantity when the number really differs, never re-trigger ourselves,
+       and never leave the page's box focused (that popped the phone keyboard up on its own). */
+    var syncing = false;
+    function fire(el, type){ syncing = true; try { el.dispatchEvent(new Event(type, {bubbles: true})); } finally { syncing = false; } }
+    function setMain(v){
+      var q = mainQ(); if (!q || String(q.value) === String(v)) return;
+      if (q.tagName === 'SELECT') {
+        var has = [].some.call(q.options, function(o){ return o.value === String(v) && o.textContent.indexOf('+') < 0; });
+        if (has) { q.value = String(v); fire(q, 'change'); return; }
+        /* more than the list holds: pick "10+" so the theme swaps in its own box, then fill it */
+        if (![].some.call(q.options, function(o){ return o.value === '10'; })) return;
+        var had = doc.activeElement;
+        q.value = '10'; fire(q, 'change'); q = mainQ();
+        if (q && doc.activeElement === q && had !== q) { q.blur(); if (had === qIn) try { qIn.focus({preventScroll: true}); } catch (e) {} }
+        if (!q || q.tagName === 'SELECT') return;
+      }
+      q.value = String(v); fire(q, 'input');
+    }
+    var lastMainQ = getMain();
+    function paintQ(){
+      if (!qIn) return;
+      var cap = capQ(), v = Math.min(Math.max(1, parseInt(qIn.value, 10) || 1), cap);
+      qWrap.querySelector('[data-d="-1"]').disabled = v <= 1;
+      qWrap.querySelector('[data-d="1"]').classList.toggle('is-cap', v >= cap);
+      return v;
+    }
+    function setBarQ(v, push){
+      if (!qIn) return;
+      v = Math.min(Math.max(1, v || 1), capQ());
+      if (doc.activeElement !== qIn || push) qIn.value = String(v);
+      paintQ();
+      if (push) { setMain(v); lastMainQ = getMain(); }
+    }
+    if (qIn) {
+      qWrap.addEventListener('click', function(e){
+        var b = e.target.closest('.brf-sab__step'); if (!b) return;
+        var cur = parseInt(qIn.value, 10) || 1, d = +b.getAttribute('data-d');
+        if (d > 0 && cur >= capQ()) { capTip(); return; }
+        if (b.disabled) return;
+        setBarQ(cur + d, true);
+        if (d > 0 && cur + d >= capQ() && leftNow() != null) capTip();
+      });
+      qIn.addEventListener('input', function(){ var v = parseInt(qIn.value, 10); if (v > 0) { if (v > capQ()) { qIn.value = String(capQ()); capTip(); } setMain(Math.min(v, capQ())); lastMainQ = getMain(); } paintQ(); });
+      qIn.addEventListener('blur', function(){ setBarQ(parseInt(qIn.value, 10) || 1, true); });
+      qIn.addEventListener('keydown', function(e){ if (e.key === 'Enter') { e.preventDefault(); qIn.blur(); } });
+      /* the page's quantity changed (or the variant's stock cap did): follow it */
+      setInterval(function(){ if (doc.hidden || doc.activeElement === qIn) return; var m = getMain(); if (m !== lastMainQ) { lastMainQ = m; setBarQ(m); } else paintQ(); }, 400);
+      setBarQ(lastMainQ);
+      loadBag();
+      window.addEventListener('product:added', function(){ setTimeout(loadBag, 400); }, true);
+      doc.addEventListener('brf:bag-added-mobile', function(){ setTimeout(loadBag, 400); });
+      /* the variant changed: re-check the cap */
+      form.addEventListener('change', function(e){
+        if (syncing || (e.target && e.target.name === 'quantity')) return;
+        setTimeout(function(){ var v = parseInt(qIn.value, 10) || 1; if (v > capQ()) setBarQ(v, true); else paintQ(); }, 60);
+      });
+    }
+
+    btn.addEventListener('click', function(){
+      if (mainBtn.disabled) return;
+      if (qIn) { if (leftNow() === 0) { capTip(); return; } setBarQ(parseInt(qIn.value, 10) || 1, true); }
+      pendingAt = Date.now(); mainBtn.click();
+    });
+    mainBtn.addEventListener('click', function(){ pendingAt = Date.now(); });
+
+    /* R7. The bar's button says "Added to bag ✓" for a moment after an add (phones and desktop) */
+    function markAdded(){
+      if (!pendingAt || Date.now() - pendingAt > 10000) return;
+      pendingAt = 0; addedUntil = Date.now() + 2200;
+      sync(); btn.classList.remove('is-pop'); void btn.offsetWidth; btn.classList.add('is-pop');
+      setTimeout(sync, 2250);
+    }
+    window.addEventListener('product:added', markAdded, true);
+    doc.addEventListener('brf:bag-added-mobile', markAdded);
+    /* fallback: the bag count goes up */
+    var cnt = doc.querySelector('.header__cart-count');
+    if (cnt && window.MutationObserver) {
+      var lastN = parseInt(cnt.textContent, 10) || 0;
+      new MutationObserver(function(){ var n = parseInt(cnt.textContent, 10) || 0; if (n > lastN) markAdded(); lastN = n; })
+        .observe(cnt, {childList: true, characterData: true, subtree: true});
+    }
+  })();
+  </script>
+{%- endif -%}
