@@ -1,0 +1,311 @@
+{%- comment -%}
+  Bull Ring: mobile UX layer (rendered last in layout/theme.liquid)
+  1. Edge fades on every horizontally scrolling widget (auto-detected)
+  2. Compact frosted-glass cookie consent banner
+  3. Floating buttons on phones: chat (icon only, right) + Rewards (left), lifted above the sticky
+     add-to-cart bar, hidden while the cookie banner or cart is open; Google badge hidden on phones
+  4. Next Day Delivery strip hidden on phones (the message still rotates in the announcement bar)
+  6. Quantity label lined up with its dropdown; Customer Reviews folded into a slim tab until the product has a review
+  5. Product page on phones: edge-to-edge image flush with the header, no thumbnails,
+     "← 1 | 6" counter arrow (River Island style); breadcrumb stays as the glass pill over the image
+{%- endcomment -%}
+<style>
+  /* ---------- 1. Edge fades (uses the .brf-fx classes defined in brf-v3.css) ---------- */
+  .brf-ptiles__track.brf-fx{--fx:56px}
+
+  /* ---------- 2. Cookie consent: compact glass card ---------- */
+  html #shopify-pc__banner.shopify-pc__banner__dialog{
+    left:12px!important;right:12px!important;bottom:calc(12px + env(safe-area-inset-bottom))!important;
+    width:auto!important;max-width:880px;margin:0 auto;padding:14px 16px 14px!important;max-height:none!important;
+    border-radius:20px!important;border:1px solid rgba(255,255,255,.75)!important;
+    background:rgba(255,255,255,.74)!important;
+    -webkit-backdrop-filter:blur(22px) saturate(180%);backdrop-filter:blur(22px) saturate(180%);
+    box-shadow:0 18px 44px -14px rgba(28,27,25,.38),inset 0 1px 0 rgba(255,255,255,.95)!important;
+    font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+    animation:brfConsentIn .35s cubic-bezier(.2,.8,.2,1)}
+  @keyframes brfConsentIn{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+  @supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){html #shopify-pc__banner.shopify-pc__banner__dialog{background:rgba(255,255,255,.96)!important}}
+  html #shopify-pc__banner .shopify-pc__banner__wrapper{flex-direction:column!important;align-items:stretch!important;gap:10px}
+  html #shopify-pc__banner .shopify-pc__banner__body{margin:0!important;width:auto!important}
+  html #shopify-pc__banner h2{margin:0 0 3px!important;font-size:14px!important;font-weight:700!important;letter-spacing:-.01em;color:#1C1B19!important}
+  html #shopify-pc__banner p{font-size:12.5px!important;line-height:1.45!important;color:#3F3B36!important}
+  html #shopify-pc__banner p a{color:#1C1B19!important;font-weight:600;text-underline-offset:2px}
+  html #shopify-pc__banner .shopify-pc__banner__btns{display:grid!important;grid-template-columns:auto 1fr 1fr;align-items:center;gap:8px;min-width:0!important;width:100%!important;flex-direction:row!important}
+  html #shopify-pc__banner .shopify-pc__banner__btns button{margin:0!important;height:40px!important;padding:0 14px!important;border-radius:999px!important;font-size:14px!important;font-weight:600!important;line-height:1!important;white-space:nowrap;transition:background .15s,transform .1s}
+  html #shopify-pc__banner .shopify-pc__banner__btns button:active{transform:scale(.97)}
+  html #shopify-pc__banner .shopify-pc__banner__btn-manage-prefs{order:1!important;padding:0 4px!important;font-size:12.5px!important;font-weight:500!important;color:#3F3B36!important;background:transparent!important}
+  html #shopify-pc__banner .shopify-pc__banner__btn-decline{order:2!important;background:rgba(255,255,255,.55)!important;border:1px solid rgba(28,27,25,.22)!important;color:#1C1B19!important}
+  html #shopify-pc__banner .shopify-pc__banner__btn-decline:hover{background:rgba(255,255,255,.9)!important}
+  html #shopify-pc__banner .shopify-pc__banner__btn-accept{order:3!important;background:#149954!important;border:1px solid #149954!important;color:#fff!important;box-shadow:0 6px 16px -8px rgba(20,153,84,.8)}
+  html #shopify-pc__banner .shopify-pc__banner__btn-accept:hover{background:#0C6637!important}
+  html #shopify-pc__banner button:focus-visible{box-shadow:0 0 0 3px rgba(20,153,84,.45)!important}
+  @media (min-width:900px){
+    html #shopify-pc__banner.shopify-pc__banner__dialog{bottom:20px!important;padding:16px 18px!important}
+    html #shopify-pc__banner .shopify-pc__banner__wrapper{flex-direction:row!important;align-items:center!important;gap:24px}
+    html #shopify-pc__banner .shopify-pc__banner__body{flex:1}
+    html #shopify-pc__banner .shopify-pc__banner__btns{grid-template-columns:auto auto auto;width:auto!important}
+    html #shopify-pc__banner .shopify-pc__banner__btns button{padding:0 20px!important}
+  }
+  html #shopify-pc__prefs__dialog{border-radius:20px!important;overflow:hidden}
+
+  /* ---------- 3. Floating buttons: hidden while the cookie banner, cart or menu is open (all screens) ---------- */
+  html{--brf-float-lift:0px;--brf-float-op:1;--brf-float-vis:visible;--brf-float-pe:auto}
+  html.brf-cart-open,html.brf-md-open,html.brf-consent-open,html.brf-so-open{--brf-float-op:0;--brf-float-vis:hidden;--brf-float-pe:none}
+  html body #smile-ui-lite-launcher-frame-container{opacity:var(--brf-float-op)!important;visibility:var(--brf-float-vis)!important;pointer-events:var(--brf-float-pe)!important}
+  html.brf-consent-open #google-merchantwidget-iframe-wrapper{opacity:0!important;visibility:hidden!important}
+
+  @media (max-width:767px){
+    /* ---------- 3. Floating buttons on phones ---------- */
+    html.brf-lift{--brf-float-lift:78px}
+    html body #smile-ui-lite-launcher-frame-container{left:14px!important;right:auto!important;bottom:calc(14px + env(safe-area-inset-bottom) + var(--brf-float-lift))!important;transition:bottom .3s ease,opacity .2s ease!important}
+    html body #google-merchantwidget-iframe-wrapper{display:none!important}
+    html.brf-consent-open .brf-sticky-atc{opacity:0!important;pointer-events:none!important}
+
+    /* ---------- 4. Next Day Delivery strip ---------- */
+    .brf-nd{display:none!important}
+
+    /* ---------- 5. Product gallery, River Island style ---------- */
+    .template-product .product-block-list__item--gallery{margin:0!important;padding:0!important}
+    .template-product .product-block-list__item--gallery > .card{margin:0!important;border:0!important;border-radius:0!important;background:transparent!important;box-shadow:none!important;-webkit-backdrop-filter:none!important;backdrop-filter:none!important}
+    .template-product .product-block-list__item--gallery .card__section{padding:0!important}
+    .template-product .product-gallery{margin:0!important}
+    .template-product .product-gallery__carousel-wrapper{margin:0!important;background:#EFEBE4}
+    .template-product .product-gallery__carousel{margin:0!important}
+    .template-product .product-gallery__carousel-item{padding:0!important}
+    .template-product .product-gallery__size-limiter{max-width:none!important}
+    .template-product .product-gallery__carousel-item .aspect-ratio{padding-bottom:100%!important;background:#EFEBE4}
+    .template-product .product-gallery__carousel-item .aspect-ratio > img{object-fit:cover!important;width:100%!important;height:100%!important;max-width:none!important}
+    .template-product .product-gallery__zoom-notice{display:none!important}
+    /* thumbnails: kept in the page for the arrows/variant logic, but not shown */
+    .template-product .product-gallery .scroller{position:absolute!important;top:0;left:0;width:1px!important;height:1px!important;overflow:hidden!important;clip:rect(0 0 0 0);clip-path:inset(50%);opacity:0;pointer-events:none;margin:0!important}
+    /* arrows: "← 1 | 6" pill + square arrow */
+    .template-product .brf-garrow{z-index:2;width:40px;height:40px;margin-top:-20px;border-radius:980px;opacity:1;color:#1D1D1F;
+      background:rgba(255,255,255,.74)!important;-webkit-backdrop-filter:saturate(180%) blur(16px);backdrop-filter:saturate(180%) blur(16px);
+      border:1px solid rgba(255,255,255,.6);box-shadow:0 1px 0 rgba(255,255,255,.8) inset,0 6px 18px -8px rgba(0,0,0,.25)}
+    .template-product .brf-garrow:hover,.template-product .brf-garrow:active{background:rgba(255,255,255,.86)!important;transform:none}
+    .template-product .brf-garrow--prev{left:12px;width:auto;padding:0 12px 0 10px;grid-auto-flow:column;gap:8px}
+    .template-product .brf-garrow--next{right:12px}
+    .template-product .brf-garrow__count{display:inline-block;font:600 13px/1 Inter,-apple-system,sans-serif;letter-spacing:.02em;color:#1D1D1F;font-variant-numeric:tabular-nums;white-space:nowrap}
+  }
+  @media (min-width:768px){.brf-garrow__count{display:none}}
+  @media (max-width:767px){
+    /* swipe gallery: native scroll-snap, iOS-style momentum */
+    .template-product .brf-mg-on .product-gallery__carousel{display:none!important}
+    .brf-mg{position:relative;width:100%;aspect-ratio:1/1;background:#EFEBE4;overflow:hidden}
+    .brf-mg__track{display:flex;width:100%;height:100%;margin:0;padding:0;list-style:none;overflow-x:auto;overflow-y:hidden;
+      scroll-snap-type:x mandatory;scroll-behavior:smooth;-webkit-overflow-scrolling:touch;overscroll-behavior-x:contain;scrollbar-width:none;touch-action:pan-x pan-y}
+    .brf-mg__track::-webkit-scrollbar{display:none}
+    .brf-mg__slide{flex:0 0 100%;width:100%;height:100%;scroll-snap-align:center;scroll-snap-stop:always;margin:0;padding:0}
+    .brf-mg__slide img{display:block;width:100%;height:100%;object-fit:cover;-webkit-user-drag:none;user-select:none}
+    /* quantity: line the label up with the dropdown, not with the stock note below it */
+    html .product-form__info-item--quantity > .product-form__info-title{vertical-align:top!important;padding-top:15px!important}
+  }
+  @media (min-width:768px){.brf-mg{display:none!important}}
+  /* products with a video keep the theme gallery: never leave the empty swipe box showing */
+  .product-gallery:not(.brf-mg-on) .brf-mg{display:none!important}
+  @media (prefers-reduced-motion:reduce){.brf-mg__track{scroll-behavior:auto}}
+
+  /* ---------- 6. Customer Reviews folded into a tab until there is a review ---------- */
+  .brf-rev-min > .card > .card__section{display:none}
+  .brf-rev-min.is-open > .card > .card__section{display:block}
+  .brf-rev-min .brf-rev-toggle{display:flex;align-items:center;justify-content:space-between;gap:12px;width:100%;text-align:left}
+  .brf-rev-toggle__text{display:flex;flex-direction:column;gap:2px;min-width:0}
+  .brf-rev-toggle__sub{font-size:13px;font-weight:400;color:#6B665F}
+</style>
+
+{%- assign brf_rev_count = '' -%}
+{%- if product and product.metafields.judgeme.review_widget_data -%}
+  {%- assign brf_rev_count = product.metafields.judgeme.review_widget_data.value.number_of_reviews -%}
+{%- endif -%}
+<script>
+(function(){
+  var root = document.documentElement;
+  var BRF_REV_COUNT = {% if brf_rev_count != blank %}{{ brf_rev_count | plus: 0 }}{% else %}null{% endif %};
+  var phone = window.matchMedia('(max-width:767px)');
+
+  /* ---------- 1. Edge fades on every sideways-scrolling widget ---------- */
+  function upd(el){
+    var max = el.scrollWidth - el.clientWidth;
+    var on = max > 2;
+    el.classList.toggle('brf-fx', on);
+    el.classList.toggle('brf-fx--s', on && el.scrollLeft > 2);
+    el.classList.toggle('brf-fx--e', on && el.scrollLeft < max - 2);
+  }
+  function scan(){
+    var els = document.body.getElementsByTagName('*');
+    for (var i = 0; i < els.length; i++) {
+      var el = els[i];
+      if (el.__brfHx || el.clientWidth < 120 || el.scrollWidth - el.clientWidth <= 2) continue;
+      if (el.closest('[data-brf-nofx],.mini-cart,table,pre,.shopify-pc__prefs__dialog,#shopify-pc__banner')) continue;
+      var ox = getComputedStyle(el).overflowX;
+      if (ox !== 'auto' && ox !== 'scroll') continue;
+      el.__brfHx = 1;
+      (function(el){ el.addEventListener('scroll', function(){ upd(el); }, {passive:true}); })(el);
+      upd(el);
+    }
+  }
+  function refresh(){
+    var els = document.querySelectorAll('.brf-fx');
+    for (var i = 0; i < els.length; i++) if (els[i].__brfHx) upd(els[i]);
+  }
+  var scanT = null;
+  function queueScan(){ clearTimeout(scanT); scanT = setTimeout(scan, 250); }
+  scan(); window.addEventListener('load', scan);
+  window.addEventListener('resize', function(){ queueScan(); refresh(); });
+  new MutationObserver(queueScan).observe(document.body, {childList:true, subtree:true});
+  setInterval(function(){ if (!document.hidden) scan(); }, 4000);
+
+  /* ---------- 2. Cookie banner: shorter wording + hide floating buttons while it is open ---------- */
+  function consent(){
+    var b = document.getElementById('shopify-pc__banner');
+    var open = !!(b && b.getClientRects().length > 0 && getComputedStyle(b).display !== 'none' && getComputedStyle(b).visibility !== 'hidden');
+    if (root.classList.contains('brf-consent-open') !== open) root.classList.toggle('brf-consent-open', open);
+    if (!b) return;
+    var p = b.querySelector('.shopify-pc__banner__body p');
+    if (p && !p.__brfShort) {
+      var a = p.querySelector('a');
+      if (a) {
+        p.__brfShort = 1;
+        p.textContent = 'We and our partners use cookies to personalise your visit, show relevant ads and measure how our site is used – only if you accept. ';
+        a.textContent = 'Privacy Policy';
+        p.appendChild(a);
+      }
+    }
+  }
+  var cq = false;
+  function queueConsent(){ if (cq) return; cq = true; requestAnimationFrame(function(){ cq = false; consent(); }); }
+  consent();
+  new MutationObserver(queueConsent).observe(document.body, {childList:true, subtree:true, attributes:true, attributeFilter:['style']});
+
+  /* ---------- 3. Chat button on phones: icon only, above the sticky bar, hidden with the banner/cart ---------- */
+  var CHAT_CSS = ':host .activator-nudge{opacity:var(--brf-float-op,1)!important;visibility:var(--brf-float-vis,visible)!important;pointer-events:var(--brf-float-pe,auto)!important}'
+    + '@media (max-width:767px){'
+    + ':host .activator-nudge{right:14px!important;bottom:calc(14px + env(safe-area-inset-bottom) + var(--brf-float-lift,0px))!important;transform:none!important;'
+    + 'transition:bottom .3s ease,opacity .2s ease!important}'
+    + ':host .activator{width:52px!important;min-width:52px!important;height:52px!important;padding:0!important;border-radius:50%!important;justify-content:center!important;gap:0!important}'
+    + ':host .activator__label{display:none!important}'
+    + ':host .activator__icon{margin:0!important}}';
+  function styleChat(node){
+    var sr = node && node.shadowRoot; if (!sr) return;
+    if (!sr.getElementById('brf-ux-chat')) { var st = document.createElement('style'); st.id = 'brf-ux-chat'; st.textContent = CHAT_CSS; sr.appendChild(st); }
+    var all = sr.querySelectorAll('*');
+    for (var i = 0; i < all.length; i++) if (all[i].shadowRoot) styleChat(all[i]);
+  }
+  function chat(){ styleChat(document.querySelector('shopify-chat')); }
+  chat(); setInterval(chat, 600);
+  document.addEventListener('click', function(){ setTimeout(chat, 50); setTimeout(chat, 400); }, true);
+
+  /* ---------- 5. Product gallery on phones ---------- */
+  if (!document.body.classList.contains('template-product')) return;
+  function counter(){
+    var prev = document.querySelector('.template-product .brf-garrow--prev'); if (!prev) return false;
+    var gal = prev.closest('.product-gallery'); if (!gal) return false;
+    var span = prev.querySelector('.brf-garrow__count');
+    if (!span) { span = document.createElement('span'); span.className = 'brf-garrow__count'; prev.appendChild(span); }
+    var ts = [].slice.call(gal.querySelectorAll('.product-gallery__thumbnail')).filter(function(t){ return t.offsetParent !== null; });
+    var i = ts.findIndex(function(t){ return t.classList.contains('is-nav-selected'); });
+    span.textContent = (i < 0 ? 1 : i + 1) + ' | ' + ts.length;
+    prev.setAttribute('aria-label', 'Previous image (' + (i < 0 ? 1 : i + 1) + ' of ' + ts.length + ')');
+    if (!gal.__brfObs) {
+      gal.__brfObs = 1;
+      new MutationObserver(function(){ counter(); }).observe(gal, {subtree:true, attributes:true, attributeFilter:['class']});
+    }
+    return true;
+  }
+  var cTries = 0, cT = setInterval(function(){ if (counter() || ++cTries > 30) clearInterval(cT); }, 400);
+
+  /* ---------- 6. Reviews tab ---------- */
+  function reviews(){
+    var blk = document.querySelector('.product-block-list__item--reviews'); if (!blk || blk.__brfRev) return;
+    var card = blk.querySelector(':scope > .card'); if (!card) return;
+    var empty = BRF_REV_COUNT === 0;
+    if (BRF_REV_COUNT === null) {
+      var txt = blk.textContent || '';
+      if (!/Be the first to write a review/i.test(txt)) return;
+      empty = true;
+    }
+    if (!empty) { blk.__brfRev = 1; return; }
+    blk.__brfRev = 1;
+    var id = 'brf-rev-body';
+    var sec = card.querySelector(':scope > .card__section'); if (sec) sec.id = id;
+    var btn = document.createElement('button');
+    btn.type = 'button'; btn.className = 'card__collapsible-button brf-rev-toggle';
+    btn.setAttribute('aria-expanded', 'false'); btn.setAttribute('aria-controls', id);
+    btn.innerHTML = '<span class="brf-rev-toggle__text"><span class="card__title heading h3">Customer Reviews</span><span class="brf-rev-toggle__sub">No reviews yet – be the first</span></span><span class="plus-button plus-button--large"></span>';
+    btn.addEventListener('click', function(){
+      var open = !blk.classList.contains('is-open');
+      blk.classList.toggle('is-open', open); btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+    });
+    card.insertBefore(btn, card.firstChild);
+    blk.classList.add('brf-rev-min');
+  }
+  reviews(); var rT = 0, rI = setInterval(function(){ reviews(); if (++rT > 20) clearInterval(rI); }, 500);
+
+  /* ---------- 5b. Swipe gallery on phones (replaces the fade) ---------- */
+  function galleryInit(){
+    var gal = document.querySelector('.template-product .product-gallery'); if (!gal || gal.__brfMg) return;
+    var wrap = gal.querySelector('.product-gallery__carousel-wrapper');
+    var car = gal.querySelector('.product-gallery__carousel');
+    if (!wrap || !car) return;
+    gal.__brfMg = 1;
+    var mg = document.createElement('div'); mg.className = 'brf-mg';
+    var track = document.createElement('ul'); track.className = 'brf-mg__track'; track.setAttribute('data-brf-nofx', '');
+    track.setAttribute('aria-label', 'Product images'); mg.appendChild(track);
+    wrap.insertBefore(mg, car);
+    var ids = [], fromScroll = false, settleT = null;
+
+    function thumbs(){ return [].slice.call(gal.querySelectorAll('.product-gallery__thumbnail')).filter(function(t){ return !t.classList.contains('is-filtered') && getComputedStyle(t).display !== 'none'; }); }
+    function imgFor(id){
+      var item = car.querySelector('.product-gallery__carousel-item[data-media-id="' + id + '"]');
+      if (!item || item.getAttribute('data-media-type') !== 'image') return null;
+      var im = item.querySelector('img.product-gallery__image'); if (!im) return null;
+      var tpl = im.getAttribute('data-src') || '', alt = im.getAttribute('alt') || '';
+      if (tpl.indexOf('{width}') === -1) return {src: im.currentSrc || im.src, alt: alt};
+      return {src: tpl.replace('{width}', '800'), srcset: [500, 800, 1100].map(function(w){ return tpl.replace('{width}', w) + ' ' + w + 'w'; }).join(', '), alt: alt};
+    }
+    function current(){ var ts = thumbs(); for (var i = 0; i < ts.length; i++) if (ts[i].classList.contains('is-nav-selected')) return i; return 0; }
+    function build(){
+      var ts = thumbs(), next = ts.map(function(t){ return t.getAttribute('data-media-id'); });
+      if (next.join() === ids.join()) return true;
+      var data = next.map(imgFor);
+      if (!data.length || data.some(function(d){ return !d; })) { gal.classList.remove('brf-mg-on'); ids = []; return false; }
+      ids = next;
+      track.innerHTML = data.map(function(d, i){
+        return '<li class="brf-mg__slide" data-index="' + i + '"><img src="' + d.src + '"' + (d.srcset ? ' srcset="' + d.srcset + '" sizes="100vw"' : '') + ' alt="' + d.alt.replace(/"/g, '&quot;') + '"' + (i ? ' loading="lazy"' : '') + ' draggable="false"></li>';
+      }).join('');
+      gal.classList.add('brf-mg-on');
+      track.style.scrollBehavior = 'auto'; track.scrollLeft = current() * track.clientWidth; track.style.scrollBehavior = '';
+      return true;
+    }
+    /* swipe finished -> tell the theme which image is showing (keeps the counter, arrows and variant logic in step) */
+    function settle(){
+      var i = Math.round(track.scrollLeft / Math.max(1, track.clientWidth)), ts = thumbs();
+      if (ts[i] && !ts[i].classList.contains('is-nav-selected')) { fromScroll = true; ts[i].click(); setTimeout(function(){ fromScroll = false; }, 80); }
+    }
+    track.addEventListener('scroll', function(){ clearTimeout(settleT); settleT = setTimeout(settle, 140); }, {passive:true});
+    /* arrows / colour choice -> glide to that image */
+    new MutationObserver(function(){
+      if (!build() || fromScroll) return;
+      var x = current() * track.clientWidth;
+      if (Math.abs(track.scrollLeft - x) > 2) track.scrollTo({left: x, behavior: 'smooth'});
+    }).observe(gal.querySelector('.product-gallery__thumbnail-list') || gal, {subtree:true, attributes:true, attributeFilter:['class','style']});
+    /* tap an image -> open the theme's zoom for it */
+    track.addEventListener('click', function(e){
+      var li = e.target.closest('.brf-mg__slide'); if (!li) return;
+      var item = car.querySelector('.product-gallery__carousel-item[data-media-id="' + ids[+li.getAttribute('data-index')] + '"]');
+      if (item) { var im = item.querySelector('img') || item; im.click(); }
+    });
+    build();
+  }
+  function galleryMode(){
+    if (phone.matches) galleryInit();
+    var gal = document.querySelector('.template-product .product-gallery');
+    if (gal && gal.__brfMg) gal.classList.toggle('brf-mg-on', phone.matches && !!gal.querySelector('.brf-mg__slide'));
+  }
+  galleryMode();
+
+  function relayout(){ try { window.dispatchEvent(new Event('resize')); } catch (e) {} }
+  if (phone.addEventListener) phone.addEventListener('change', function(){ galleryMode(); relayout(); });
+  window.addEventListener('load', relayout); setTimeout(relayout, 600);
+})();
+</script>
